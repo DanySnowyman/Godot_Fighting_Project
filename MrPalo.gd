@@ -6,20 +6,22 @@ var player = 1
 
 var last_position = Vector2()
 
+
+var current_state: String = "" #Standing, Crouching, Jumping
 var is_standing = true
-var is_moving_right = false
-var is_moving_left = false
 var is_crouched = false
 var is_airborne = false
+var is_falling = false
+var is_air_stunned = false
 var startup_frames = false
 
-var jump_vertical = false
-var jump_forward = false
-var jump_backward = false
 var dash_f_ready = false
 var dash_b_ready = false
 
+var can_dash_cancel = false
+
 onready var tween = get_node("Tween")
+onready var tween_h = get_node("Tween_h")
 
 const JUMP_HEIGHT = 80
 const JUMP_LENGHT = 120
@@ -31,11 +33,11 @@ const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
 
 func _ready():
-	
 	if player == 1:
-		self.position = Vector2(120, 140)
-	else: self.position = Vector2(164, 140)
+		self.position = Vector2(120, 195)
+	else: self.position = Vector2(164, 195)
 	
+	current_state = "Standing"
 	$AnimationPlayer.play("Stand")
 
 func player_control(delta):
@@ -101,6 +103,9 @@ func player_control(delta):
 			startup_frames = true
 			is_standing = false
 			normal_LP()
+	# TESTING ONLY ------------------------------------------------------------
+	if Input.is_action_just_pressed("Test hit high"):
+		on_hit()
 
 func stand():
 	$AnimationPlayer.play("Stand")
@@ -129,14 +134,16 @@ func jump_vertical():
 	tween.start()
 	yield(tween, "tween_completed")
 	#Arco descendente -------------------------------
-	tween.interpolate_property(self, "position:y",
-		self.position.y, (self.position.y + JUMP_HEIGHT),
-		JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
-	tween.start()
-	yield(tween, "tween_completed")
-	is_airborne = false
-	is_standing = true
-	$AnimationPlayer.play("Stand")
+	if is_air_stunned == false:
+		tween.interpolate_property(self, "position:y",
+			self.position.y, (self.position.y + JUMP_HEIGHT),
+			JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+		yield(tween, "tween_completed")
+		if is_air_stunned == false:
+			is_airborne = false
+			is_standing = true
+			$AnimationPlayer.play("Stand")
 
 func jump_forward():
 	is_airborne = true
@@ -148,22 +155,23 @@ func jump_forward():
 		JUMP_ASC_TIME, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.interpolate_property(self, "position:y",
 		self.position.y, self.position.y - JUMP_HEIGHT,
-		JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		JUMP_ASC_TIME, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
-	yield(tween, "tween_completed")
-#		#Arco descendente -------------------------------
-	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x + JUMP_LENGHT / 2,
-		JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y + JUMP_HEIGHT,
-		JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
-	tween.start()
-	yield(tween, "tween_completed")
-	yield($AnimationPlayer, "animation_finished")
-	is_airborne = false
-	is_standing = true
-	$AnimationPlayer.play("Stand")
+	yield(tween, "tween_all_completed")
+	#Arco descendente -------------------------------
+	if is_air_stunned == false:
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x + JUMP_LENGHT / 2,
+			JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + JUMP_HEIGHT,
+			JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+		yield(tween, "tween_all_completed")
+		if is_air_stunned == false:
+			is_airborne = false
+			is_standing = true
+			$AnimationPlayer.play("Stand")
 
 func jump_backward():
 	is_airborne = true
@@ -177,20 +185,21 @@ func jump_backward():
 		self.position.y, self.position.y - JUMP_HEIGHT,
 		JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
-	yield(tween, "tween_completed")
-#		#Arco descendente -------------------------------
-	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x - JUMP_LENGHT / 2,
-		JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y + JUMP_HEIGHT,
-		JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
-	tween.start()
-	yield(tween, "tween_completed")
-	yield($AnimationPlayer, "animation_finished")
-	is_airborne = false
-	is_standing = true
-	$AnimationPlayer.play("Stand")
+	yield(tween, "tween_all_completed")
+	#Arco descendente -------------------------------
+	if is_air_stunned == false:
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x - JUMP_LENGHT / 2,
+			JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + JUMP_HEIGHT,
+			JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+		yield(tween, "tween_all_completed")
+		if is_air_stunned == false:
+			is_airborne = false
+			is_standing = true
+			$AnimationPlayer.play("Stand")
 
 func dash_forward():
 	$AnimationPlayer.play("Dash forward")
@@ -211,17 +220,92 @@ func dash_backward():
 	yield(tween, "tween_completed")
 	is_standing = true
 	$AnimationPlayer.play("Stand")
-	
+
 func normal_LP():
 	$AnimationPlayer.play("Normal MP")
 	yield($AnimationPlayer, "animation_finished")
 	is_standing = true
 	$AnimationPlayer.play("Stand")
+	$ProximityBox/ProxBox1.disabled = true
+	$ProximityBox/ProxBox1.position = Vector2(0, 0)
+	$ProximityBox/ProxBox1.shape.extents = Vector2(0, 0)
+
+func on_hit():
+	if is_standing == true:
+		is_standing = false
+		$AnimationPlayer.play("Hit stun high hard")
+		yield($AnimationPlayer, "animation_finished")
+		is_standing = true
+		$AnimationPlayer.play("Stand")
+	elif is_airborne == true:
+		is_air_stunned = true
+		tween.stop_all()
+		$AnimationPlayer.play("Hit stun air")
+		#Arco ascendente --------------------------------
+		tween_h.interpolate_property(self, "position:x",
+			self.position.x, self.position.x - 50,
+			0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		tween_h.interpolate_property(self, "position:y",
+			self.position.y, self.position.y - 50,
+			0.5, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween_h.start()
+		yield(tween_h, "tween_completed")
+		#Arco descendente -------------------------------
+		tween_h.interpolate_property(self, "position:x",
+			self.position.x, self.position.x - 50,
+			0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween_h.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + 250,
+			0.6, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween_h.start()
+		is_falling = true
+		yield(tween_h, "tween_completed")
+		yield($AnimationPlayer, "animation_finished")
+
+func fall(delta):
+	if is_falling == true:
+		if self.position.y == 195:
+			is_falling = false
+			tween.stop_all()
+			is_air_stunned = false
+			is_standing = true
+			is_airborne = false
+			$AnimationPlayer.play("Stand")
+			print("stop falling")
+
+func boxes_auto_visibility():
+	if $HitBoxes/HitBox1.disabled == true:
+		$HitBoxes/HitBox1.visible = false
+	else: $HitBoxes/HitBox1.visible = true
+	
+	if $HurtBoxes/HurtBox1.disabled == true:
+		$HurtBoxes/HurtBox1.visible = false
+	else: $HurtBoxes/HurtBox1.visible = true
+	
+	if $HurtBoxes/HurtBox2.disabled == true:
+		$HurtBoxes/HurtBox2.visible = false
+	else: $HurtBoxes/HurtBox2.visible = true
+	
+	if $HurtBoxes/HurtBox3.disabled == true:
+		$HurtBoxes/HurtBox3.visible = false
+	else: $HurtBoxes/HurtBox3.visible = true
+	
+	if $HurtBoxes/HurtBox4.disabled == true:
+		$HurtBoxes/HurtBox4.visible = false
+	else: $HurtBoxes/HurtBox4.visible = true
+	
+	if $ProximityBox/ProxBox1.disabled == true:
+		$ProximityBox/ProxBox1.visible = false
+	else: $ProximityBox/ProxBox1.visible = true 
 
 func _process(delta):
 	var motion = Vector2()
 	
 	player_control(delta)
+	fall(delta)
+	boxes_auto_visibility()
 	
 	motion = position - last_position
 	last_position = position
+	
+	self.position.y = clamp(self.position.y, -100, 195)
