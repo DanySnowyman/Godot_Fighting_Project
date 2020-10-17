@@ -94,16 +94,23 @@ func player_control(delta):
 			dash_backward()
 	# Normal MP ---------------------------------------------------------------
 	if state == "STANDING":
-		if Input.is_action_just_pressed("ui_accept"):
+		if Input.is_action_just_pressed("Medium Punch"):
 			startup_frames = true
 			state = "ATTACKING"
-			normal_LP()
-
+			standing_MP()
+	# Jumping HK --------------------------------------------------------------
+	if state == "JUMPING":
+		if Input.is_action_just_pressed("Heavy Kick"):
+			startup_frames = true
+			state = "ATTACKING"
+			jumping_HK()
+			
 func manual_hitting():
 	if Input.is_action_just_pressed("Test hit high"):
 		on_hit()
 
 func stand():
+	state = "STANDING"
 	$AnimationPlayer.play("Stand")
 
 func walk_forward(delta):
@@ -227,14 +234,42 @@ func dash_backward():
 		state = "STANDING"
 		$AnimationPlayer.play("Stand")
 
-func normal_LP():
-	$AnimationPlayer.play("Normal MP")
+func standing_MP():
+	$AnimationPlayer.play("Attack standing MP")
 	yield($AnimationPlayer, "animation_finished")
 	state = "STANDING"
 	$AnimationPlayer.play("Stand")
 	$ProximityBox/ProxBox1.disabled = true
-	$ProximityBox/ProxBox1.position = Vector2(0, 0)
-	$ProximityBox/ProxBox1.shape.extents = Vector2(0, 0)
+
+func jumping_HK():
+	$AnimationPlayer.play("Attack jumping HK")
+	yield($AnimationPlayer, "animation_finished")
+	$ProximityBox/ProxBox1.disabled = true
+
+func fall():
+	if state == "FALLING":
+		if self.position.y == 195:
+			tween.remove_all()
+			ground_impact()
+			pre_jump = false
+			
+func ground_impact():
+	if state == "FALLING":
+		state = "GROUND_IMPACT"
+		$AnimationPlayer.play("Ground impact")
+		tween.interpolate_property(self, "position:x", self.position.x,
+				self.position.x - 20, 0.5,
+				Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween.start()
+		yield($AnimationPlayer, "animation_finished")
+		wake_up()
+
+func wake_up():
+	if state == "GROUND_IMPACT":
+		state = "WAKING_UP"
+		$AnimationPlayer.play("Wake up")
+		yield($AnimationPlayer, "animation_finished")
+		stand()
 
 func on_hit():
 #	tween.remove_all()
@@ -269,15 +304,6 @@ func on_hit():
 		state = "FALLING"
 	else: print("simultaneo!")
 
-func fall(delta):
-	if state == "FALLING":
-		if self.position.y == 195:
-			tween.remove_all()
-			state = "STANDING"
-			pre_jump = false
-			$AnimationPlayer.play("Stand")
-			print("stop FALLING")
-
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
 		$HitBoxes/HitBox1.visible = false
@@ -303,12 +329,18 @@ func boxes_auto_visibility():
 		$ProximityBox/ProxBox1.visible = false
 	else: $ProximityBox/ProxBox1.visible = true 
 
+func disable_hurt_boxes():
+	$HurtBoxes/HurtBox1.disabled = true
+	$HurtBoxes/HurtBox2.disabled = true
+	$HurtBoxes/HurtBox3.disabled = true
+	$HurtBoxes/HurtBox4.disabled = true
+	
 func _process(delta):
 	var motion = Vector2()
 	
 	player_control(delta)
 	manual_hitting()
-	fall(delta)
+	fall()
 	boxes_auto_visibility()
 	
 	motion = position - last_position
