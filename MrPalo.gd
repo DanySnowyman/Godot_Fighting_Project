@@ -6,23 +6,26 @@ var player = 1
 
 
 var state: String
+var facing_right = true
+var waiting_for_flip = false
+var flipped = false
 var last_position = Vector2()
 var pre_jump = false
 var startup_frames = false
-
-var dash_f_ready = false
-var dash_b_ready = false
+var dash_r_ready = false
+var dash_l_ready = false
 
 var can_dash_cancel = false
 
 onready var tween = get_node("Tween")
 
 const JUMP_HEIGHT = 80
-const JUMP_LENGHT = 120
+var JUMP_F_LENGHT = 120
+var JUMP_B_LENGHT = 100
 const JUMP_ASC_TIME = 0.4
 const JUMP_DES_TIME = 0.4
-const DASH_F_DIST = 80
-const DASH_B_DIST = 60
+var DASH_F_DIST = 80
+var DASH_B_DIST = 60
 const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
 
@@ -36,6 +39,16 @@ func _ready():
 	$State.set_as_toplevel(true)
 	$State.set_global_position(Vector2(20, 20))
 	
+func facing_direction():
+	if waiting_for_flip == true and state == "STANDING" or state == "CROUCHING":
+		waiting_for_flip = false
+		facing_right = not facing_right
+		JUMP_F_LENGHT = -JUMP_F_LENGHT
+		JUMP_B_LENGHT = -JUMP_B_LENGHT
+		DASH_F_DIST = -DASH_F_DIST
+		DASH_B_DIST = -DASH_B_DIST
+		self.scale.x *= -1
+	
 func player_control(delta):
 	# Negate opposite directions ---------------------------------------------
 	if state == "STANDING":
@@ -44,12 +57,16 @@ func player_control(delta):
 		else:
 	# Walk forward -----------------------------------------------------------
 			if Input.is_action_pressed("ui_right"):
-				walk_forward(delta)
+				if facing_right == true:
+					walk_forward(delta)
+				else: walk_backwards(delta)
 			if Input.is_action_just_released("ui_right"):
 				$AnimationPlayer.play("Stand")
 	# Walk backwards ---------------------------------------------------------
 			if Input.is_action_pressed("ui_left"):
-				walk_backwards(delta)
+				if facing_right == true:
+					walk_backwards(delta)
+				else: walk_forward(delta)
 			if Input.is_action_just_released("ui_left"):
 				$AnimationPlayer.play("Stand")
 	# Crouch -----------------------------------------------------------------
@@ -69,29 +86,37 @@ func player_control(delta):
 			yield(get_tree().create_timer(0.05), "timeout")
 			if state == "PRE_JUMP":
 				if Input.is_action_pressed("ui_right"):
-					jump_forward()
+					if facing_right == true:
+						jump_forward()
+					else: jump_backward()
 				elif Input.is_action_pressed("ui_left"):
-					jump_backward()
+					if facing_right == true:
+						jump_backward()
+					else: jump_forward()
 				else:
 					jump_vertical()
 	# Dash forward -----------------------------------------------------------
-	if Input.is_action_just_pressed("ui_right") and dash_f_ready == false:
-		dash_f_ready = true
-		dash_b_ready = false
+	if Input.is_action_just_pressed("ui_right") and dash_r_ready == false:
+		dash_r_ready = true
+		dash_l_ready = false
 		yield(get_tree().create_timer(0.2), "timeout")
-		dash_f_ready = false
+		dash_r_ready = false
 	if state == "STANDING":
-		if Input.is_action_just_pressed("ui_right") and dash_f_ready == true:
-			dash_forward()
+		if Input.is_action_just_pressed("ui_right") and dash_r_ready == true:
+			if facing_right == true:
+				dash_forward()
+			else: dash_backward()
 	# Dash backward -----------------------------------------------------------
-	if Input.is_action_just_pressed("ui_left") and dash_b_ready == false:
-		dash_b_ready = true
-		dash_f_ready = false
+	if Input.is_action_just_pressed("ui_left") and dash_l_ready == false:
+		dash_l_ready = true
+		dash_r_ready = false
 		yield(get_tree().create_timer(0.2), "timeout")
-		dash_b_ready = false
+		dash_l_ready = false
 	if state == "STANDING":
-		if Input.is_action_just_pressed("ui_left") and dash_b_ready == true:
-			dash_backward()
+		if Input.is_action_just_pressed("ui_left") and dash_l_ready == true:
+			if facing_right == true:
+				dash_backward()
+			else: dash_forward()
 	# Normal MP ---------------------------------------------------------------
 	if state == "STANDING":
 		if Input.is_action_just_pressed("Medium Punch"):
@@ -102,12 +127,16 @@ func player_control(delta):
 	if state == "JUMPING":
 		if Input.is_action_just_pressed("Heavy Kick"):
 			startup_frames = true
-			state = "ATTACKING"
+			state = "AIR_ATTACKING"
 			jumping_HK()
-			
+
 func manual_hitting():
 	if Input.is_action_just_pressed("Test hit high"):
 		on_hit()
+
+func manual_flipping():
+	if Input.is_action_just_pressed("Test flip"):
+		waiting_for_flip = true
 
 func stand():
 	state = "STANDING"
@@ -115,11 +144,15 @@ func stand():
 
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
-	self.position.x += 200 * delta
+	if facing_right == true:
+		self.position.x += 200 * delta
+	else: self.position.x -= 200 * delta
 
 func walk_backwards(delta):
 	$AnimationPlayer.play("Walk backwards")
-	self.position.x -= 100 * delta
+	if facing_right == true:
+		self.position.x -= 100 * delta
+	else: self.position.x += 100 * delta
 
 func crouch():
 	$AnimationPlayer.play("Crouch")
@@ -146,6 +179,7 @@ func jump_vertical():
 			tween.start()
 			yield(tween, "tween_completed")
 			if state != "AIR_STUNNED":
+				disable_hit_boxes()
 				state = "STANDING"
 				pre_jump = false
 				$AnimationPlayer.play("Stand")
@@ -157,7 +191,7 @@ func jump_forward():
 	if state == "PRE_JUMP":
 		$AnimationPlayer.play("Jump forward")
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + JUMP_LENGHT / 2,
+			self.position.x, self.position.x + JUMP_F_LENGHT / 2,
 			JUMP_ASC_TIME, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 		tween.interpolate_property(self, "position:y",
 			self.position.y, self.position.y - JUMP_HEIGHT,
@@ -168,7 +202,7 @@ func jump_forward():
 		#Arco descendente -------------------------------
 		if state != "AIR_STUNNED":
 			tween.interpolate_property(self, "position:x",
-				self.position.x, self.position.x + JUMP_LENGHT / 2,
+				self.position.x, self.position.x + JUMP_F_LENGHT / 2,
 				JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
 			tween.interpolate_property(self, "position:y",
 				self.position.y, self.position.y + JUMP_HEIGHT,
@@ -176,6 +210,7 @@ func jump_forward():
 			tween.start()
 			yield(tween, "tween_all_completed")
 			if state != "AIR_STUNNED":
+				disable_hit_boxes()
 				state = "STANDING"
 				pre_jump = false
 				$AnimationPlayer.play("Stand")
@@ -187,7 +222,7 @@ func jump_backward():
 	if state == "PRE_JUMP":
 		$AnimationPlayer.play("Jump backward")
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x - JUMP_LENGHT / 2,
+			self.position.x, self.position.x - JUMP_B_LENGHT / 2,
 			JUMP_ASC_TIME, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 		tween.interpolate_property(self, "position:y",
 			self.position.y, self.position.y - JUMP_HEIGHT,
@@ -198,7 +233,7 @@ func jump_backward():
 		#Arco descendente -------------------------------
 		if state != "AIR_STUNNED":
 			tween.interpolate_property(self, "position:x",
-				self.position.x, self.position.x - JUMP_LENGHT / 2,
+				self.position.x, self.position.x - JUMP_B_LENGHT / 2,
 				JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
 			tween.interpolate_property(self, "position:y",
 				self.position.y, self.position.y + JUMP_HEIGHT,
@@ -206,6 +241,7 @@ func jump_backward():
 			tween.start()
 			yield(tween, "tween_all_completed")
 			if state != "AIR_STUNNED":
+				disable_hit_boxes()
 				state = "STANDING"
 				pre_jump = false
 				$AnimationPlayer.play("Stand")
@@ -213,8 +249,8 @@ func jump_backward():
 func dash_forward():
 	$AnimationPlayer.play("Dash forward")
 	tween.interpolate_property(self, "position:x", self.position.x,
-		self.position.x + DASH_F_DIST, DASH_F_TIME,
-		Tween.TRANS_QUART, Tween.EASE_OUT)
+			self.position.x + DASH_F_DIST, DASH_F_TIME,
+			Tween.TRANS_QUART, Tween.EASE_OUT)
 	tween.start()
 	state = "DASHING"
 	yield(tween, "tween_completed")
@@ -225,8 +261,8 @@ func dash_forward():
 func dash_backward():
 	$AnimationPlayer.play("Dash backward")
 	tween.interpolate_property(self, "position:x", self.position.x,
-		self.position.x - DASH_B_DIST, DASH_B_TIME,
-		Tween.TRANS_QUINT, Tween.EASE_OUT)
+			self.position.x - DASH_B_DIST, DASH_B_TIME,
+			Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	state = "DASHING"
 	yield(tween, "tween_completed")
@@ -252,7 +288,7 @@ func fall():
 			tween.remove_all()
 			ground_impact()
 			pre_jump = false
-			
+
 func ground_impact():
 	if state == "FALLING":
 		state = "GROUND_IMPACT"
@@ -273,15 +309,17 @@ func wake_up():
 
 func on_hit():
 #	tween.remove_all()
-	if state == "STANDING" or state == "PRE_JUMP":
+	if state == "STANDING" or state == "PRE_JUMP" or state == "ATTACKING":
 		state = "HIT_STUNNED"
+		disable_hit_boxes()
 		$AnimationPlayer.play("Hit stun high hard")
 		yield($AnimationPlayer, "animation_finished")
 		state = "STANDING"
 		pre_jump = false
 		$AnimationPlayer.play("Stand")
-	elif state == "JUMPING" or state == "DASHING":
+	elif state == "JUMPING" or state == "DASHING" or state == "AIR_ATTACKING":
 		state = "AIR_STUNNED"
+		disable_hit_boxes()
 		$AnimationPlayer.play("Hit stun air")
 		#Arco ascendente --------------------------------
 		tween.interpolate_property(self, "position:x",
@@ -334,12 +372,18 @@ func disable_hurt_boxes():
 	$HurtBoxes/HurtBox2.disabled = true
 	$HurtBoxes/HurtBox3.disabled = true
 	$HurtBoxes/HurtBox4.disabled = true
-	
+
+func disable_hit_boxes():
+	$HitBoxes/HitBox1.disabled = true
+	$ProximityBox/ProxBox1.disabled = true
+
 func _process(delta):
 	var motion = Vector2()
 	
 	player_control(delta)
+	facing_direction()
 	manual_hitting()
+	manual_flipping()
 	fall()
 	boxes_auto_visibility()
 	
@@ -349,3 +393,4 @@ func _process(delta):
 	self.position.y = clamp(self.position.y, -100, 195)
 	
 	$State.text = str(state)
+	print(facing_right)
