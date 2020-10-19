@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://gfx/Mr Palo.png" type="Texture" id=1]
 [ext_resource path="res://MrPalo.gd" type="Script" id=2]
@@ -398,6 +398,21 @@ tracks/15/keys = {
 }
 
 [sub_resource type="Animation" id=3]
+resource_name = "Block high"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 98, 99 ]
+}
+
+[sub_resource type="Animation" id=4]
 length = 0.05
 step = 0.0166667
 tracks/0/type = "value"
@@ -509,7 +524,7 @@ tracks/8/keys = {
 "values": [ Vector2( -4, 44 ) ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=5]
 length = 0.4
 step = 0.05
 tracks/0/type = "value"
@@ -525,7 +540,7 @@ tracks/0/keys = {
 "values": [ 28, 29, 30 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.4
 step = 0.0166667
 tracks/0/type = "value"
@@ -552,8 +567,7 @@ tracks/1/keys = {
 "values": [  ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "Ground impact"
+[sub_resource type="Animation" id=7]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -569,7 +583,7 @@ tracks/0/keys = {
 "values": [ 121, 122, 115, 121, 122, 123 ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=8]
 length = 0.666667
 step = 0.0166667
 tracks/0/type = "value"
@@ -585,7 +599,7 @@ tracks/0/keys = {
 "values": [ 112, 113, 114, 115, 116 ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 length = 0.5
 step = 0.0166667
 tracks/0/type = "value"
@@ -601,7 +615,7 @@ tracks/0/keys = {
 "values": [ 105, 106, 107, 106, 105 ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=10]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -617,7 +631,7 @@ tracks/0/keys = {
 "values": [ 48, 47, 46, 45, 44, 43, 42, 49 ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=11]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -633,7 +647,7 @@ tracks/0/keys = {
 "values": [ 42, 43, 44, 45, 46, 47, 48, 49 ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=12]
 length = 0.9
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -768,7 +782,7 @@ tracks/10/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=13]
 length = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -783,7 +797,7 @@ tracks/0/keys = {
 "values": [ 35 ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=14]
 length = 0.833333
 loop = true
 step = 0.0166667
@@ -896,8 +910,7 @@ tracks/8/keys = {
 "values": [ Vector2( -1, 39 ) ]
 }
 
-[sub_resource type="Animation" id=14]
-resource_name = "Wake up"
+[sub_resource type="Animation" id=15]
 length = 0.7
 step = 0.05
 tracks/0/type = "value"
@@ -913,7 +926,8 @@ tracks/0/keys = {
 "values": [ 126, 127, 128, 129, 130 ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=16]
+resource_name = "Walk backward"
 length = 0.4
 loop = true
 step = 0.0166667
@@ -930,7 +944,7 @@ tracks/0/keys = {
 "values": [ 14, 15, 16, 17 ]
 }
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=17]
 length = 0.4
 loop = true
 step = 0.0166667
@@ -947,25 +961,25 @@ tracks/0/keys = {
 "values": [ 7, 8, 9, 10 ]
 }
 
-[sub_resource type="RectangleShape2D" id=17]
+[sub_resource type="RectangleShape2D" id=18]
 extents = Vector2( 15, 20 )
 
-[sub_resource type="RectangleShape2D" id=18]
+[sub_resource type="RectangleShape2D" id=19]
 extents = Vector2( 0, 0 )
 
-[sub_resource type="RectangleShape2D" id=19]
-extents = Vector2( 40, 16 )
-
 [sub_resource type="RectangleShape2D" id=20]
-extents = Vector2( 29, 15 )
+extents = Vector2( 37, 17 )
 
 [sub_resource type="RectangleShape2D" id=21]
-extents = Vector2( 15, 6 )
+extents = Vector2( 24, 21 )
 
 [sub_resource type="RectangleShape2D" id=22]
-extents = Vector2( 21, 10 )
+extents = Vector2( 9, 12 )
 
 [sub_resource type="RectangleShape2D" id=23]
+extents = Vector2( 21, 10 )
+
+[sub_resource type="RectangleShape2D" id=24]
 extents = Vector2( 54, 10 )
 
 [node name="MrPalo" type="KinematicBody2D"]
@@ -981,29 +995,30 @@ texture = ExtResource( 1 )
 offset = Vector2( 9.16904, -5.20171 )
 vframes = 19
 hframes = 7
-frame = 126
+frame = 14
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack jumping HK" = SubResource( 1 )
 "anims/Attack standing MP" = SubResource( 2 )
-anims/Crouch = SubResource( 3 )
-"anims/Dash backward" = SubResource( 4 )
-"anims/Dash forward" = SubResource( 5 )
-"anims/Ground impact" = SubResource( 6 )
-"anims/Hit stun air" = SubResource( 7 )
-"anims/Hit stun high hard" = SubResource( 8 )
-"anims/Jump backward" = SubResource( 9 )
-"anims/Jump forward" = SubResource( 10 )
-"anims/Jump vertical" = SubResource( 11 )
-"anims/Pre jump" = SubResource( 12 )
-anims/Stand = SubResource( 13 )
-"anims/Wake up" = SubResource( 14 )
-"anims/Walk backwards" = SubResource( 15 )
-"anims/Walk forward" = SubResource( 16 )
+"anims/Block high" = SubResource( 3 )
+anims/Crouch = SubResource( 4 )
+"anims/Dash backward" = SubResource( 5 )
+"anims/Dash forward" = SubResource( 6 )
+"anims/Ground impact" = SubResource( 7 )
+"anims/Hit stun air" = SubResource( 8 )
+"anims/Hit stun high hard" = SubResource( 9 )
+"anims/Jump backward" = SubResource( 10 )
+"anims/Jump forward" = SubResource( 11 )
+"anims/Jump vertical" = SubResource( 12 )
+"anims/Pre jump" = SubResource( 13 )
+anims/Stand = SubResource( 14 )
+"anims/Wake up" = SubResource( 15 )
+"anims/Walk backward" = SubResource( 16 )
+"anims/Walk forward" = SubResource( 17 )
 
 [node name="PushBox" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -20 )
-shape = SubResource( 17 )
+shape = SubResource( 18 )
 
 [node name="Tween" type="Tween" parent="."]
 
@@ -1012,7 +1027,7 @@ position = Vector2( -1, -54 )
 
 [node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
 modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-shape = SubResource( 18 )
+shape = SubResource( 19 )
 disabled = true
 
 [node name="HurtBoxes" type="Area2D" parent="."]
@@ -1020,31 +1035,31 @@ position = Vector2( -1, -54 )
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -3, -26 )
-shape = SubResource( 19 )
+position = Vector2( -8, -34 )
+shape = SubResource( 20 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -11, 5 )
-shape = SubResource( 20 )
+position = Vector2( -2, 4 )
+shape = SubResource( 21 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -14, 26 )
-shape = SubResource( 21 )
+position = Vector2( -14, 37 )
+shape = SubResource( 22 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
 visible = false
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
 position = Vector2( 38, -14 )
-shape = SubResource( 22 )
+shape = SubResource( 23 )
 
 [node name="ProximityBox" type="Area2D" parent="."]
 position = Vector2( -1, -54 )
 
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 56, 44 )
-shape = SubResource( 23 )
+shape = SubResource( 24 )
 
 [node name="State" type="Label" parent="."]
 margin_left = -104.0

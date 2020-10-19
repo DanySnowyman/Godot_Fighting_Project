@@ -8,7 +8,6 @@ var player = 1
 var state: String
 var facing_right = true
 var waiting_for_flip = false
-var flipped = false
 var last_position = Vector2()
 var pre_jump = false
 var startup_frames = false
@@ -19,6 +18,8 @@ var can_dash_cancel = false
 
 onready var tween = get_node("Tween")
 
+var WALK_FORWARD_SPEED = 200
+var WALK_BACKWARD_SPEED = 150
 const JUMP_HEIGHT = 80
 var JUMP_F_LENGHT = 120
 var JUMP_B_LENGHT = 100
@@ -28,6 +29,8 @@ var DASH_F_DIST = 80
 var DASH_B_DIST = 60
 const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
+var AIRBORNE_HIT_LENGHT = 100
+var GROUND_IMPACT_LENGHT = 20
 
 func _ready():
 	if player == 1:
@@ -40,13 +43,17 @@ func _ready():
 	$State.set_global_position(Vector2(20, 20))
 	
 func facing_direction():
-	if waiting_for_flip == true and state == "STANDING" or state == "CROUCHING":
+	if waiting_for_flip == true and (state == "STANDING" or state == "CROUCHING"):
 		waiting_for_flip = false
 		facing_right = not facing_right
+		WALK_FORWARD_SPEED = -WALK_FORWARD_SPEED
+		WALK_BACKWARD_SPEED = -WALK_BACKWARD_SPEED
 		JUMP_F_LENGHT = -JUMP_F_LENGHT
 		JUMP_B_LENGHT = -JUMP_B_LENGHT
 		DASH_F_DIST = -DASH_F_DIST
 		DASH_B_DIST = -DASH_B_DIST
+		AIRBORNE_HIT_LENGHT = -AIRBORNE_HIT_LENGHT
+		GROUND_IMPACT_LENGHT = -GROUND_IMPACT_LENGHT
 		self.scale.x *= -1
 	
 func player_control(delta):
@@ -59,13 +66,13 @@ func player_control(delta):
 			if Input.is_action_pressed("ui_right"):
 				if facing_right == true:
 					walk_forward(delta)
-				else: walk_backwards(delta)
+				else: walk_backward(delta)
 			if Input.is_action_just_released("ui_right"):
 				$AnimationPlayer.play("Stand")
 	# Walk backwards ---------------------------------------------------------
 			if Input.is_action_pressed("ui_left"):
 				if facing_right == true:
-					walk_backwards(delta)
+					walk_backward(delta)
 				else: walk_forward(delta)
 			if Input.is_action_just_released("ui_left"):
 				$AnimationPlayer.play("Stand")
@@ -144,15 +151,11 @@ func stand():
 
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
-	if facing_right == true:
-		self.position.x += 200 * delta
-	else: self.position.x -= 200 * delta
+	self.position.x += WALK_FORWARD_SPEED * delta
 
-func walk_backwards(delta):
-	$AnimationPlayer.play("Walk backwards")
-	if facing_right == true:
-		self.position.x -= 100 * delta
-	else: self.position.x += 100 * delta
+func walk_backward(delta):
+	$AnimationPlayer.play("Walk backward")
+	self.position.x -= WALK_BACKWARD_SPEED * delta
 
 func crouch():
 	$AnimationPlayer.play("Crouch")
@@ -294,7 +297,7 @@ func ground_impact():
 		state = "GROUND_IMPACT"
 		$AnimationPlayer.play("Ground impact")
 		tween.interpolate_property(self, "position:x", self.position.x,
-				self.position.x - 20, 0.5,
+				self.position.x - GROUND_IMPACT_LENGHT, 0.5,
 				Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 		yield($AnimationPlayer, "animation_finished")
@@ -308,7 +311,6 @@ func wake_up():
 		stand()
 
 func on_hit():
-#	tween.remove_all()
 	if state == "STANDING" or state == "PRE_JUMP" or state == "ATTACKING":
 		state = "HIT_STUNNED"
 		disable_hit_boxes()
@@ -323,7 +325,7 @@ func on_hit():
 		$AnimationPlayer.play("Hit stun air")
 		#Arco ascendente --------------------------------
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x - 50,
+			self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
 			0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 		tween.interpolate_property(self, "position:y",
 			self.position.y, self.position.y - 50,
@@ -332,7 +334,7 @@ func on_hit():
 		yield(tween, "tween_all_completed")
 		#Arco descendente -------------------------------
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x - 50,
+			self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
 			0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
 		tween.interpolate_property(self, "position:y",
 			self.position.y, self.position.y + 500,
@@ -340,7 +342,9 @@ func on_hit():
 		tween.start()
 		yield(tween, "tween_all_completed")
 		state = "FALLING"
-	else: print("simultaneo!")
+	elif state == "BLOCKING_HIGH":
+			pass
+			
 
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
