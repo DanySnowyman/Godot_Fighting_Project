@@ -1,7 +1,9 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://gfx/Mr Palo.png" type="Texture" id=1]
 [ext_resource path="res://MrPalo.gd" type="Script" id=2]
+[ext_resource path="res://TestingAreas.gd" type="Script" id=3]
+[ext_resource path="res://TestProxBoxArea.gd" type="Script" id=4]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Attack jumping HK"
@@ -399,6 +401,7 @@ tracks/15/keys = {
 
 [sub_resource type="Animation" id=3]
 resource_name = "Block high"
+length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -406,13 +409,29 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5 ),
+"times": PoolRealArray( 0, 0.1 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 98, 99 ]
 }
 
 [sub_resource type="Animation" id=4]
+resource_name = "Block low"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 97, 99 ]
+}
+
+[sub_resource type="Animation" id=5]
 length = 0.05
 step = 0.0166667
 tracks/0/type = "value"
@@ -422,7 +441,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05 ),
+"times": PoolRealArray( 0.017, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 49, 50 ]
@@ -434,7 +453,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 15, 20 ) ]
@@ -446,7 +465,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 0, -20 ) ]
@@ -458,7 +477,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 22, 11 ) ]
@@ -470,7 +489,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 3, -13 ) ]
@@ -482,7 +501,7 @@ tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 22.5, 16.3636 ) ]
@@ -494,7 +513,7 @@ tracks/6/loop_wrap = true
 tracks/6/imported = false
 tracks/6/enabled = true
 tracks/6/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 2, 16 ) ]
@@ -506,7 +525,7 @@ tracks/7/loop_wrap = true
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 37, 10 ) ]
@@ -518,13 +537,13 @@ tracks/8/loop_wrap = true
 tracks/8/imported = false
 tracks/8/enabled = true
 tracks/8/keys = {
-"times": PoolRealArray( 0.0500001 ),
+"times": PoolRealArray( 0.05 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( -4, 44 ) ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.4
 step = 0.05
 tracks/0/type = "value"
@@ -540,7 +559,7 @@ tracks/0/keys = {
 "values": [ 28, 29, 30 ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=7]
 length = 0.4
 step = 0.0166667
 tracks/0/type = "value"
@@ -567,7 +586,7 @@ tracks/1/keys = {
 "values": [  ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=8]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -583,7 +602,7 @@ tracks/0/keys = {
 "values": [ 121, 122, 115, 121, 122, 123 ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 length = 0.666667
 step = 0.0166667
 tracks/0/type = "value"
@@ -599,7 +618,7 @@ tracks/0/keys = {
 "values": [ 112, 113, 114, 115, 116 ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=10]
 length = 0.5
 step = 0.0166667
 tracks/0/type = "value"
@@ -615,7 +634,7 @@ tracks/0/keys = {
 "values": [ 105, 106, 107, 106, 105 ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=11]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -631,7 +650,7 @@ tracks/0/keys = {
 "values": [ 48, 47, 46, 45, 44, 43, 42, 49 ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=12]
 length = 0.9
 step = 0.05
 tracks/0/type = "value"
@@ -647,7 +666,7 @@ tracks/0/keys = {
 "values": [ 42, 43, 44, 45, 46, 47, 48, 49 ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=13]
 length = 0.9
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -782,7 +801,23 @@ tracks/10/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=14]
+length = 0.833333
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0666667, 0.233333, 0.35, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 119, 120, 121, 122, 123 ]
+}
+
+[sub_resource type="Animation" id=15]
 length = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -797,7 +832,7 @@ tracks/0/keys = {
 "values": [ 35 ]
 }
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=16]
 length = 0.833333
 loop = true
 step = 0.0166667
@@ -910,7 +945,7 @@ tracks/8/keys = {
 "values": [ Vector2( -1, 39 ) ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=17]
 length = 0.7
 step = 0.05
 tracks/0/type = "value"
@@ -926,8 +961,7 @@ tracks/0/keys = {
 "values": [ 126, 127, 128, 129, 130 ]
 }
 
-[sub_resource type="Animation" id=16]
-resource_name = "Walk backward"
+[sub_resource type="Animation" id=18]
 length = 0.4
 loop = true
 step = 0.0166667
@@ -944,7 +978,7 @@ tracks/0/keys = {
 "values": [ 14, 15, 16, 17 ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=19]
 length = 0.4
 loop = true
 step = 0.0166667
@@ -961,29 +995,33 @@ tracks/0/keys = {
 "values": [ 7, 8, 9, 10 ]
 }
 
-[sub_resource type="RectangleShape2D" id=18]
+[sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 15, 20 )
 
-[sub_resource type="RectangleShape2D" id=19]
+[sub_resource type="RectangleShape2D" id=21]
 extents = Vector2( 0, 0 )
 
-[sub_resource type="RectangleShape2D" id=20]
-extents = Vector2( 37, 17 )
-
-[sub_resource type="RectangleShape2D" id=21]
-extents = Vector2( 24, 21 )
-
 [sub_resource type="RectangleShape2D" id=22]
-extents = Vector2( 9, 12 )
+extents = Vector2( 40, 16 )
 
 [sub_resource type="RectangleShape2D" id=23]
-extents = Vector2( 21, 10 )
+extents = Vector2( 29, 15 )
 
 [sub_resource type="RectangleShape2D" id=24]
+extents = Vector2( 15, 6 )
+
+[sub_resource type="RectangleShape2D" id=25]
+extents = Vector2( 21, 10 )
+
+[sub_resource type="RectangleShape2D" id=26]
 extents = Vector2( 54, 10 )
 
-[node name="MrPalo" type="KinematicBody2D"]
+[sub_resource type="RectangleShape2D" id=27]
+extents = Vector2( 68, 10 )
+
+[node name="MrPalo" type="Area2D"]
 position = Vector2( 120, 195 )
+collision_mask = 9216
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
@@ -995,71 +1033,30 @@ texture = ExtResource( 1 )
 offset = Vector2( 9.16904, -5.20171 )
 vframes = 19
 hframes = 7
-frame = 14
+frame = 77
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack jumping HK" = SubResource( 1 )
 "anims/Attack standing MP" = SubResource( 2 )
 "anims/Block high" = SubResource( 3 )
-anims/Crouch = SubResource( 4 )
-"anims/Dash backward" = SubResource( 5 )
-"anims/Dash forward" = SubResource( 6 )
-"anims/Ground impact" = SubResource( 7 )
-"anims/Hit stun air" = SubResource( 8 )
-"anims/Hit stun high hard" = SubResource( 9 )
-"anims/Jump backward" = SubResource( 10 )
-"anims/Jump forward" = SubResource( 11 )
-"anims/Jump vertical" = SubResource( 12 )
-"anims/Pre jump" = SubResource( 13 )
-anims/Stand = SubResource( 14 )
-"anims/Wake up" = SubResource( 15 )
-"anims/Walk backward" = SubResource( 16 )
-"anims/Walk forward" = SubResource( 17 )
-
-[node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -20 )
-shape = SubResource( 18 )
+"anims/Block low" = SubResource( 4 )
+anims/Crouch = SubResource( 5 )
+"anims/Dash backward" = SubResource( 6 )
+"anims/Dash forward" = SubResource( 7 )
+"anims/Ground impact" = SubResource( 8 )
+"anims/Hit stun air" = SubResource( 9 )
+"anims/Hit stun high hard" = SubResource( 10 )
+"anims/Jump backward" = SubResource( 11 )
+"anims/Jump forward" = SubResource( 12 )
+"anims/Jump vertical" = SubResource( 13 )
+anims/Knockdown = SubResource( 14 )
+"anims/Pre jump" = SubResource( 15 )
+anims/Stand = SubResource( 16 )
+"anims/Wake up" = SubResource( 17 )
+"anims/Walk backward" = SubResource( 18 )
+"anims/Walk forward" = SubResource( 19 )
 
 [node name="Tween" type="Tween" parent="."]
-
-[node name="HitBoxes" type="Area2D" parent="."]
-position = Vector2( -1, -54 )
-
-[node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
-modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-shape = SubResource( 19 )
-disabled = true
-
-[node name="HurtBoxes" type="Area2D" parent="."]
-position = Vector2( -1, -54 )
-
-[node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
-modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -8, -34 )
-shape = SubResource( 20 )
-
-[node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
-modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -2, 4 )
-shape = SubResource( 21 )
-
-[node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
-modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -14, 37 )
-shape = SubResource( 22 )
-
-[node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
-visible = false
-modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 38, -14 )
-shape = SubResource( 23 )
-
-[node name="ProximityBox" type="Area2D" parent="."]
-position = Vector2( -1, -54 )
-
-[node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
-position = Vector2( 56, 44 )
-shape = SubResource( 24 )
 
 [node name="State" type="Label" parent="."]
 margin_left = -104.0
@@ -1070,3 +1067,68 @@ text = "State: "
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="SpecialTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PushBox" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -20 )
+shape = SubResource( 20 )
+
+[node name="HitBoxes" type="Area2D" parent="."]
+position = Vector2( -1, -54 )
+collision_layer = 4
+collision_mask = 2048
+
+[node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
+modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
+shape = SubResource( 21 )
+disabled = true
+
+[node name="HurtBoxes" type="Area2D" parent="."]
+position = Vector2( -1, -54 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
+modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
+position = Vector2( -3, -26 )
+shape = SubResource( 22 )
+
+[node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
+modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
+position = Vector2( -11, 5 )
+shape = SubResource( 23 )
+
+[node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
+modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
+position = Vector2( -14, 26 )
+shape = SubResource( 24 )
+
+[node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
+visible = false
+modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
+position = Vector2( 38, -14 )
+shape = SubResource( 25 )
+
+[node name="ProximityBox" type="Area2D" parent="."]
+position = Vector2( -1, -54 )
+collision_layer = 8
+collision_mask = 0
+
+[node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
+position = Vector2( 56, 44 )
+shape = SubResource( 26 )
+
+[node name="TestProxBox" type="Area2D" parent="."]
+position = Vector2( 159, -34 )
+collision_layer = 8192
+collision_mask = 0
+script = ExtResource( 3 )
+
+[node name="TestProxBoxArea" type="CollisionShape2D" parent="TestProxBox"]
+shape = SubResource( 27 )
+script = ExtResource( 4 )
+[connection signal="area_entered" from="." to="." method="_on_proximity_box_entered"]
+[connection signal="area_exited" from="." to="." method="_on_proximity_box_exited"]
+[connection signal="timeout" from="SpecialTimer" to="." method="_on_SpecialTimer_timeout"]
