@@ -2,11 +2,11 @@ extends Area2D
 
 
 var char_name = "MrPalo"
-var player
+var player = 1
 var Px
 
-enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACKING, BLOCKING,
-	HIT_STUNNED, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
+enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACKING, BLOCKING_H,
+	BLOCKING_L, HIT_STUNNED, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 var state
 var facing_right = true
 var waiting_for_flip = false
@@ -36,7 +36,6 @@ var AIRBORNE_HIT_LENGHT = 100
 var GROUND_IMPACT_LENGHT = 20
 
 var can_guard = false
-var is_blocking = false
 
 func _ready():
 	if player == 1:
@@ -77,26 +76,69 @@ func player_control(delta):
 		if Input.is_action_pressed("%s_LEFT" % Px) and Input.is_action_pressed("%s_RIGHT" % Px):
 			stand()
 		else:
-	# Walk right -----------------------------------------------------------
+	# Walk right & standing block --------------------------------------------
 			if Input.is_action_pressed("%s_RIGHT" % Px):
 				if facing_right == true:
 					walk_forward(delta)
 				else:
 					if can_guard == true:
-						block()
+						block_high()
 					else: walk_backward(delta)
 			if Input.is_action_just_released("%s_RIGHT" % Px):
 				stand()
-	# Walk left -------------------------------------------------------------
+	# Walk left & standing block -------------------------------------------
 			if Input.is_action_pressed("%s_LEFT" % Px):
 				if facing_right == false:
 					walk_forward(delta)
 				else:
 					if can_guard == false:
 						walk_backward(delta)
-					else: block()
+					else: block_high()
 			if Input.is_action_just_released("%s_LEFT" % Px):
 				stand()
+	# Crouching block --------------------------------------------------------
+	if state == is_.STANDING or state == is_.CROUCHING:
+		if Input.is_action_pressed("%s_LEFT" % Px) and Input.is_action_pressed("%s_DOWN" % Px):
+			if can_guard == true and facing_right == true:
+				block_low()
+		if Input.is_action_pressed("%s_RIGHT" % Px) and Input.is_action_pressed("%s_DOWN" % Px):
+			if can_guard == true and facing_right == false:
+				block_low()
+	# Exit from blocking -----------------------------------------------------
+	if state == is_.BLOCKING_H:
+		if facing_right == true:
+			if Input.is_action_just_released("%s_LEFT" % Px):
+				stand()
+			elif Input.is_action_just_pressed("%s_DOWN" % Px):
+				$Sprite.frame = 83
+				state = is_.BLOCKING_L
+		else:
+			if Input.is_action_just_released("%s_RIGHT" % Px):
+				stand()
+			elif Input.is_action_just_pressed("%s_DOWN" % Px):
+				$Sprite.frame = 83
+				state = is_.BLOCKING_L
+	if state == is_.BLOCKING_L:
+		if facing_right == true:
+			if Input.is_action_pressed("%s_LEFT" % Px) and\
+						Input.is_action_just_released("%s_DOWN" % Px):
+					$Sprite.frame = 81
+					state = is_.BLOCKING_H
+			elif Input.is_action_just_released("%s_DOWN" % Px):
+				stand()
+			if Input.is_action_just_released("%s_LEFT" % Px):
+				$Sprite.frame = 65
+				state = is_.CROUCHING
+		else:
+			if Input.is_action_pressed("%s_RIGHT" % Px) and\
+						Input.is_action_just_released("%s_DOWN" % Px):
+					$Sprite.frame = 81
+					state = is_.BLOCKING_H
+			elif Input.is_action_just_released("%s_DOWN" % Px):
+				stand()
+			if Input.is_action_just_released("%s_RIGHT" % Px):
+				$Sprite.frame = 65
+				state = is_.CROUCHING
 	# Crouch -----------------------------------------------------------------
 	if state == is_.STANDING:
 		if Input.is_action_pressed("%s_DOWN" % Px):
@@ -128,7 +170,7 @@ func player_control(delta):
 		dash_l_ready = false
 		yield(get_tree().create_timer(0.2), "timeout")
 		dash_r_ready = false
-	if state == is_.STANDING:
+	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_just_pressed("%s_RIGHT" % Px) and dash_r_ready == true:
 			if facing_right == true:
 				dash_forward()
@@ -139,7 +181,7 @@ func player_control(delta):
 		dash_r_ready = false
 		yield(get_tree().create_timer(0.2), "timeout")
 		dash_l_ready = false
-	if state == is_.STANDING:
+	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_just_pressed("%s_LEFT" % Px) and dash_l_ready == true:
 			if facing_right == true:
 				dash_backward()
@@ -150,6 +192,12 @@ func player_control(delta):
 			startup_frames = true
 			state = is_.ATTACKING
 			standing_MP()
+	# Normal HK ---------------------------------------------------------------
+	if state == is_.STANDING:
+		if Input.is_action_just_pressed("%s_HK" % Px):
+			startup_frames = true
+			state = is_.ATTACKING
+			standing_HK()
 	# Jumping HK --------------------------------------------------------------
 	if state == is_.JUMPING:
 		if Input.is_action_just_pressed("%s_HK" % Px):
@@ -189,11 +237,9 @@ func manual_hitting():
 func manual_flipping():
 	if Input.is_action_just_pressed("TEST_FLIP"):
 		waiting_for_flip = true
-		is_blocking = false
 
 func stand():
 	state = is_.STANDING
-	is_blocking = false
 	$AnimationPlayer.play("Stand")
 
 func walk_forward(delta):
@@ -207,8 +253,6 @@ func walk_backward(delta):
 func crouch():
 	state = is_.CROUCHING
 	$AnimationPlayer.play("Crouch")
-	yield($AnimationPlayer, "animation_finished")
-	$AnimationPlayer.stop()
 
 func jump_vertical():
 	$AnimationPlayer.play("Pre jump")
@@ -325,6 +369,12 @@ func standing_MP():
 	stand()
 	$ProximityBox/ProxBox1.disabled = true
 
+func standing_HK():
+	$AnimationPlayer.play("Attack standing HK")
+	yield($AnimationPlayer, "animation_finished")
+	stand()
+	$ProximityBox/ProxBox1.disabled = true
+
 func jumping_HK():
 	$AnimationPlayer.play("Attack jumping HK")
 	yield($AnimationPlayer, "animation_finished")
@@ -355,20 +405,31 @@ func wake_up():
 		yield($AnimationPlayer, "animation_finished")
 		stand()
 
-func block():
-	if is_blocking == false:
-		is_blocking = true
-#		$AnimationPlayer.play("Block high")
-#		yield($AnimationPlayer, "animation_finished")
-		$AnimationPlayer.stop()
-		$Sprite.frame = 98
+func block_high():
+	state = is_.BLOCKING_H
+	$AnimationPlayer.play("Block high")
+		
+func block_low():
+	state = is_.BLOCKING_L
+	$AnimationPlayer.play("Block low")
+	
+func bloc_transition():
+	pass
 
 func on_hit():
-	if is_blocking == true:
-		$AnimationPlayer.play("Block high")
-		yield($AnimationPlayer, "animation_finished")
-		stand()
-	elif state == is_.STANDING or state == is_.PRE_JUMP or state == is_.ATTACKING:
+#	if is_blocking == true:
+#		if state == is_.STANDING:
+#			$AnimationPlayer.play("Block high")
+#			yield($AnimationPlayer, "animation_finished")
+#			$AnimationPlayer.stop()
+#			$Sprite.frame = 81
+#			stand()
+#		elif state == is_.CROUCHING:
+#			$AnimationPlayer.play("Block low")
+#			yield($AnimationPlayer, "animation_finished")
+#			$AnimationPlayer.stop()
+#			stand()
+	if state == is_.STANDING or state == is_.PRE_JUMP or state == is_.ATTACKING:
 		state = is_.HIT_STUNNED
 		disable_hit_boxes()
 		$AnimationPlayer.play("Hit stun high hard")
@@ -464,7 +525,12 @@ func _on_proximity_box_entered(area):
 func _on_proximity_box_exited(area):
 	if area.has_method("proximity_box"):
 		can_guard = false
-		is_blocking = false
-
+		if state == is_.BLOCKING_H:
+			stand()
+		if state == is_.BLOCKING_L:
+			state = is_.CROUCHING
+			$Sprite.frame = 65
+			
+			
 func _on_SpecialTimer_timeout():
 	sp_input_count = 0
