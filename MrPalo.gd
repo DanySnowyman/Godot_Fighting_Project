@@ -10,6 +10,7 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACK
 var state
 var facing_right = true
 var waiting_for_flip = false
+var already_crouched = false
 var last_position = Vector2()
 var pre_jump = false
 var startup_frames = false
@@ -54,6 +55,8 @@ func _ready():
 		
 	state = is_.STANDING
 	$AnimationPlayer.play("Stand")
+	$ProximityBox/
+	$HitBoxes/HitBox1.disabled = true
 
 
 func facing_direction():
@@ -144,12 +147,11 @@ func player_control(delta):
 		if Input.is_action_pressed("%s_DOWN" % Px):
 			crouch()
 	if state == is_.CROUCHING:
-		if Input.is_action_just_released("%s_DOWN" % Px):
-			$AnimationPlayer.play_backwards("Crouch")
-			yield($AnimationPlayer, "animation_finished")
+		if Input.is_action_pressed("%s_DOWN" % Px) == false:
 			stand()
+
 	# Jump -------------------------------------------------------------------
-	if state == is_.STANDING:
+	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_pressed("%s_UP" % Px):
 			state = is_.PRE_JUMP
 			yield(get_tree().create_timer(0.05), "timeout")
@@ -186,24 +188,48 @@ func player_control(delta):
 			if facing_right == true:
 				dash_backward()
 			else: dash_forward()
-	# Normal MP ---------------------------------------------------------------
-	if state == is_.STANDING:
+	# Standing Normals --------------------------------------------------------
+	if state == is_.STANDING or state == is_.BLOCKING_H:
+		if Input.is_action_just_pressed("%s_LP" % Px):
+			standing_normal("LP")
 		if Input.is_action_just_pressed("%s_MP" % Px):
-			startup_frames = true
-			state = is_.ATTACKING
-			standing_MP()
-	# Normal HK ---------------------------------------------------------------
-	if state == is_.STANDING:
+			standing_normal("MP")
+		if Input.is_action_just_pressed("%s_HP" % Px):
+			standing_normal("HP")
+		if Input.is_action_just_pressed("%s_LK" % Px):
+			standing_normal("LK")
+		if Input.is_action_just_pressed("%s_MK" % Px):
+			standing_normal("MK")
 		if Input.is_action_just_pressed("%s_HK" % Px):
-			startup_frames = true
-			state = is_.ATTACKING
-			standing_HK()
-	# Jumping HK --------------------------------------------------------------
+			standing_normal("HK")
+	# Crouching Normals ---------------------------------------------------------
+	if state == is_.CROUCHING or state == is_.BLOCKING_L:
+		if Input.is_action_just_pressed("%s_LP" % Px):
+			crouching_normal("LP")
+		if Input.is_action_just_pressed("%s_MP" % Px):
+			crouching_normal("MP")
+		if Input.is_action_just_pressed("%s_HP" % Px):
+			crouching_normal("HP")
+		if Input.is_action_just_pressed("%s_LK" % Px):
+			crouching_normal("LK")
+		if Input.is_action_just_pressed("%s_MK" % Px):
+			crouching_normal("MK")
+		if Input.is_action_just_pressed("%s_HK" % Px):
+			crouching_normal("HK")
+	# Jumping Normals -----------------------------------------------------------
 	if state == is_.JUMPING:
+		if Input.is_action_just_pressed("%s_LP" % Px):
+			jumping_normal("LP")
+		if Input.is_action_just_pressed("%s_MP" % Px):
+			jumping_normal("MP")
+		if Input.is_action_just_pressed("%s_HP" % Px):
+			jumping_normal("HP")
+		if Input.is_action_just_pressed("%s_LK" % Px):
+			jumping_normal("LK")
+		if Input.is_action_just_pressed("%s_MK" % Px):
+			jumping_normal("MK")
 		if Input.is_action_just_pressed("%s_HK" % Px):
-			startup_frames = true
-			state = is_.AIR_ATTACKING
-			jumping_HK()
+			jumping_normal("HK")
 
 func trigger_special_1():
 	if Input.is_action_just_pressed("%s_DOWN" % Px):
@@ -222,9 +248,13 @@ func trigger_special_1():
 			print("THREE!")
 			
 	if sp_input_count == 3:
-		if Input.is_action_pressed("%s_HP" % Px):
-			sp_input_count = 0
-			print("HADOOOOOOKEEEEN!!!")
+		if state == is_.ATTACKING:
+			if Input.is_action_pressed("%s_HP" % Px):
+				sp_input_count = 0
+				state = is_.ATTACKING
+				$AnimationPlayer.play("Special 1")
+				yield($AnimationPlayer, "animation_finished")
+				stand()
 
 func manual_hitting():
 	if Input.is_action_just_pressed("TEST_HIGH_HIT"):
@@ -240,6 +270,10 @@ func manual_flipping():
 
 func stand():
 	state = is_.STANDING
+	if already_crouched == true:
+		already_crouched = false
+		$AnimationPlayer.play_backwards("Crouch")
+		yield($AnimationPlayer, "animation_finished")
 	$AnimationPlayer.play("Stand")
 
 func walk_forward(delta):
@@ -252,7 +286,11 @@ func walk_backward(delta):
 
 func crouch():
 	state = is_.CROUCHING
-	$AnimationPlayer.play("Crouch")
+	if already_crouched == false:
+		already_crouched = true
+		$AnimationPlayer.play("Crouch")
+		yield($AnimationPlayer, "animation_finished")
+	else: $AnimationPlayer.play("Crouch already")
 
 func jump_vertical():
 	$AnimationPlayer.play("Pre jump")
@@ -363,22 +401,74 @@ func dash_backward():
 	if state != is_.AIR_STUNNED:
 		stand()
 
-func standing_MP():
-	$AnimationPlayer.play("Attack standing MP")
-	yield($AnimationPlayer, "animation_finished")
+func standing_normal(button_pressed):
+	startup_frames = true # Para el sistema de counters
+	state = is_.ATTACKING
+	if button_pressed == "LP":
+		$AnimationPlayer.play("Attack standing LP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MP":
+		$AnimationPlayer.play("Attack standing MP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HP":
+		$AnimationPlayer.play("Attack standing HP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "LK":
+		$AnimationPlayer.play("Attack standing LK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MK":
+		$AnimationPlayer.play("Attack standing MK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HK":
+		$AnimationPlayer.play("Attack standing HK")
+		yield($AnimationPlayer, "animation_finished")
 	stand()
-	$ProximityBox/ProxBox1.disabled = true
 
-func standing_HK():
-	$AnimationPlayer.play("Attack standing HK")
-	yield($AnimationPlayer, "animation_finished")
-	stand()
-	$ProximityBox/ProxBox1.disabled = true
-
-func jumping_HK():
-	$AnimationPlayer.play("Attack jumping HK")
-	yield($AnimationPlayer, "animation_finished")
-	$ProximityBox/ProxBox1.disabled = true
+func crouching_normal(button_pressed):
+	startup_frames = true # Para el sistema de counters
+	state = is_.ATTACKING
+	already_crouched == true
+	if button_pressed == "LP":
+		$AnimationPlayer.play("Attack crouching LP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MP":
+		$AnimationPlayer.play("Attack crouching MP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HP":
+		$AnimationPlayer.play("Attack crouching HP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "LK":
+		$AnimationPlayer.play("Attack crouching LK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MK":
+		$AnimationPlayer.play("Attack crouching MK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HK":
+		$AnimationPlayer.play("Attack crouching HK")
+		yield($AnimationPlayer, "animation_finished")
+	crouch()
+	
+func jumping_normal(button_pressed):
+	startup_frames = true # Para el sistema de counters
+	state = is_.ATTACKING
+	if button_pressed == "LP":
+		$AnimationPlayer.play("Attack jumping LP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MP":
+		$AnimationPlayer.play("Attack jumping MP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HP":
+		$AnimationPlayer.play("Attack jumping HP")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "LK":
+		$AnimationPlayer.play("Attack jumping LK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "MK":
+		$AnimationPlayer.play("Attack jumping MK")
+		yield($AnimationPlayer, "animation_finished")
+	if button_pressed == "HK":
+		$AnimationPlayer.play("Attack jumping HK")
+		yield($AnimationPlayer, "animation_finished")
 
 func fall():
 	if state == is_.FALLING:
@@ -412,9 +502,6 @@ func block_high():
 func block_low():
 	state = is_.BLOCKING_L
 	$AnimationPlayer.play("Block low")
-	
-func bloc_transition():
-	pass
 
 func on_hit():
 #	if is_blocking == true:
@@ -530,7 +617,6 @@ func _on_proximity_box_exited(area):
 		if state == is_.BLOCKING_L:
 			state = is_.CROUCHING
 			$Sprite.frame = 65
-			
-			
+
 func _on_SpecialTimer_timeout():
 	sp_input_count = 0
