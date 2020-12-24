@@ -9,6 +9,7 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACK
 	BLOCKING_L, HIT_STUNNED, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 var state
 var facing_right = true
+var must_face_right
 var waiting_for_flip = false
 var already_crouched = false
 var last_position = Vector2()
@@ -42,13 +43,11 @@ func _ready():
 	if player == 1:
 		self.position = Vector2(120, 195)
 		Px = "P1"
-		facing_right = true
 		$State.set_as_toplevel(true)
 		$State.set_global_position(Vector2(20, 20))
 	else:
 		self.position = Vector2(264, 195)
 		Px = "P2"
-		facing_right = false
 		$State.set_as_toplevel(true)
 		$State.ALIGN_RIGHT
 		$State.set_global_position(Vector2(300, 20))
@@ -58,6 +57,10 @@ func _ready():
 	$ProximityBox/
 	$HitBoxes/HitBox1.disabled = true
 
+
+func change_facing_direction():
+	if facing_right != must_face_right:
+		waiting_for_flip = true
 
 func facing_direction():
 	if waiting_for_flip == true and (state == is_.STANDING or state == is_.CROUCHING):
@@ -591,13 +594,14 @@ func _process(delta):
 	var motion = Vector2() #Posiblemente esto de motion no haga falta
 	
 	player_control(delta)
+	change_facing_direction()
 	facing_direction()
 	trigger_special_1()
 	manual_hitting()
 	manual_flipping()
 	fall()
 	boxes_auto_visibility()
-	
+
 	motion = position - last_position
 	last_position = position
 	
