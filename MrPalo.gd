@@ -3,6 +3,7 @@ extends Area2D
 
 var char_name = "MrPalo"
 var player = 1
+var rival
 var Px
 
 enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACKING, BLOCKING_H,
@@ -10,6 +11,7 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING, AIR_ATTACK
 var state
 var facing_right = true
 var must_face_right
+var can_guard = false
 var waiting_for_flip = false
 var already_crouched = false
 var last_position = Vector2()
@@ -17,46 +19,68 @@ var pre_jump = false
 var startup_frames = false
 var dash_r_ready = false
 var dash_l_ready = false
+var can_dash_cancel = false
 var sp_input_count = 0
 
-var can_dash_cancel = false
 
 onready var tween = get_node("Tween")
 
 var WALK_FORWARD_SPEED = 200
 var WALK_BACKWARD_SPEED = 150
-const JUMP_HEIGHT = 80
+
 var JUMP_F_LENGHT = 120
 var JUMP_B_LENGHT = 100
+const JUMP_HEIGHT = 80
 const JUMP_ASC_TIME = 0.4
 const JUMP_DES_TIME = 0.4
+
 var DASH_F_DIST = 80
 var DASH_B_DIST = 60
 const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
+
 var AIRBORNE_HIT_LENGHT = 100
 var GROUND_IMPACT_LENGHT = 20
 
-var can_guard = false
+
+var hit_damage
+var hit_stun
+var hit_type
+var hit_juggle
 
 func _ready():
 	if player == 1:
 		self.position = Vector2(120, 195)
 		Px = "P1"
+		rival = "P2"
 		$State.set_as_toplevel(true)
 		$State.set_global_position(Vector2(20, 20))
+		self.set_collision_layer(0)
+		self.set_collision_mask(9216)
+		$HitBoxes.set_collision_layer(4)
+		$HitBoxes.set_collision_mask(2048)
+		$HurtBoxes.set_collision_layer(2)
+		$ProximityBox.set_collision_layer(8)
+		add_to_group("Player_1")
 	else:
 		self.position = Vector2(264, 195)
 		Px = "P2"
+		rival = "P1"
 		$State.set_as_toplevel(true)
-		$State.ALIGN_RIGHT
 		$State.set_global_position(Vector2(300, 20))
-		
+		set_collision_layer(1024)
+		set_collision_mask(9)
+		$HitBoxes.set_collision_layer(4096)
+		$HitBoxes.set_collision_mask(2)
+		$HurtBoxes.set_collision_layer(2048)
+		$ProximityBox.set_collision_layer(8192)
+		add_to_group("Player_2")
+	
 	state = is_.STANDING
 	$AnimationPlayer.play("Stand")
-	$ProximityBox/
+	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
-
+	connect("hit_rival", self, "on_hit()")
 
 func change_facing_direction():
 	if facing_right != must_face_right:
@@ -259,13 +283,13 @@ func trigger_special_1():
 				yield($AnimationPlayer, "animation_finished")
 				stand()
 
-func manual_hitting():
-	if Input.is_action_just_pressed("TEST_HIGH_HIT"):
-		on_hit()
-	elif Input.is_action_just_pressed("TEST_KNOCKDOWN") and \
-		(state == is_.STANDING or state == is_.CROUCHING or state == is_.PRE_JUMP):
-		state = is_.KNOCKED_DOWN
-		on_hit()
+#func manual_hitting():
+#	if Input.is_action_just_pressed("TEST_HIGH_HIT"):
+#		on_hit()
+#	elif Input.is_action_just_pressed("TEST_KNOCKDOWN") and \
+#		(state == is_.STANDING or state == is_.CROUCHING or state == is_.PRE_JUMP):
+#		state = is_.KNOCKED_DOWN
+#		on_hit()
 
 func manual_flipping():
 	if Input.is_action_just_pressed("TEST_FLIP"):
@@ -408,6 +432,10 @@ func standing_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.ATTACKING
 	if button_pressed == "LP":
+		hit_damage = 20
+		hit_stun = 10
+		hit_type = "HIGH"
+		hit_juggle = false
 		$AnimationPlayer.play("Attack standing LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
@@ -430,7 +458,7 @@ func standing_normal(button_pressed):
 func crouching_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.ATTACKING
-	already_crouched == true
+	already_crouched = true
 	if button_pressed == "LP":
 		$AnimationPlayer.play("Attack crouching LP")
 		yield($AnimationPlayer, "animation_finished")
@@ -506,7 +534,7 @@ func block_low():
 	state = is_.BLOCKING_L
 	$AnimationPlayer.play("Block low")
 
-func on_hit():
+func on_hit(hit_damage, hit_stun, hit_type, hit_juggle):
 #	if is_blocking == true:
 #		if state == is_.STANDING:
 #			$AnimationPlayer.play("Block high")
@@ -597,7 +625,7 @@ func _process(delta):
 	change_facing_direction()
 	facing_direction()
 	trigger_special_1()
-	manual_hitting()
+#	manual_hitting()
 	manual_flipping()
 	fall()
 	boxes_auto_visibility()
@@ -622,5 +650,16 @@ func _on_proximity_box_exited(area):
 			state = is_.CROUCHING
 			$Sprite.frame = 65
 
+func _on_hit_connects(area):
+	if area.has_method("hurt_box"):
+		if player == 1:
+			get_tree().call_group("Player_2", "on_hit", hit_damage, hit_stun, hit_type, hit_juggle)
+			print("Player 1 strikes!")
+		else:
+			get_tree().call_group("Player_1", "on_hit", hit_damage, hit_stun, hit_type, hit_juggle)
+			print("Player 2 strikes!")
+
 func _on_SpecialTimer_timeout():
 	sp_input_count = 0
+
+
