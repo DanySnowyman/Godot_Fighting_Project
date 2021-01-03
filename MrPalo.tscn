@@ -1244,7 +1244,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0.0666668 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 21, 18 ) ]
+"values": [ Vector2( 20, 15 ) ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("HitBoxes/HitBox1:position")
@@ -1256,7 +1256,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0.0666668 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, -40 ) ]
+"values": [ Vector2( 21, -48 ) ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("ProximityBox/ProxBox1:disabled")
@@ -2092,7 +2092,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.2 ),
+"times": PoolRealArray( 0, 0.316667 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
@@ -5710,7 +5710,7 @@ tracks/6/keys = {
 
 [sub_resource type="RectangleShape2D" id=55]
 resource_local_to_scene = true
-extents = Vector2( 21, 45 )
+extents = Vector2( 15, 20 )
 
 [sub_resource type="RectangleShape2D" id=56]
 resource_local_to_scene = true
@@ -5832,8 +5832,10 @@ __meta__ = {
 [node name="SpecialTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="HitSpacerTimer" type="Timer" parent="."]
+
 [node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 1, -47 )
+position = Vector2( 0, -20 )
 shape = SubResource( 55 )
 
 [node name="HitBoxes" type="Area2D" parent="."]
@@ -5900,4 +5902,6 @@ disabled = true
 [connection signal="area_entered" from="." to="." method="_on_proximity_box_entered"]
 [connection signal="area_exited" from="." to="." method="_on_proximity_box_exited"]
 [connection signal="timeout" from="SpecialTimer" to="." method="_on_SpecialTimer_timeout"]
+[connection signal="timeout" from="HitSpacerTimer" to="." method="_on_HitSpacerTimer_timeout"]
 [connection signal="area_entered" from="HitBoxes" to="." method="_on_hit_connects"]
+[connection signal="area_shape_entered" from="HurtBoxes" to="." method="_on_HurtBoxes_area_shape_entered"]

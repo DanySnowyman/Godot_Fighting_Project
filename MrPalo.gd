@@ -14,6 +14,7 @@ var state = is_.STANDING
 var facing_right = true
 var must_face_right
 var can_guard = false
+var just_hitted = false
 var waiting_for_flip = false
 var already_crouched = false
 var last_position = Vector2()
@@ -24,23 +25,15 @@ var dash_l_ready = false
 var can_dash_cancel = false
 var sp_input_count = 0
 
-var hit_out_damage
-var hit_out_stun
-var hit_out_strenght # Light, Medium or Heavy
-var hit_out_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
-var hit_out_trigger # Head, Upper or Lower (Animación de respuesta en el rival)
-var hit_out_chip
-var hit_out_lock
-var hit_out_juggle
-
-var hit_in_damage
-var hit_in_stun
-var hit_in_strenght # Light, Medium or Heavy
-var hit_in_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
-var hit_in_trigger # Head, Upper or Lower (Animación de respuesta en el rival)
-var hit_in_chip
-var hit_in_lock
-var hit_in_juggle
+var hit_damg
+var hit_stun
+var hit_strg # Light, Medium, Heavy, Sweep
+var hit_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
+var hit_type
+var hit_trig # Head, Torso or Legs (Animación de respuesta en el rival)
+var hit_chip
+var hit_lock
+var hit_jugg
 
 var WALK_FORWARD_SPEED = 200
 var WALK_BACKWARD_SPEED = 150
@@ -71,8 +64,9 @@ func _ready():
 		self.set_collision_layer(0)
 		self.set_collision_mask(9216)
 		$HitBoxes.set_collision_layer(4)
-		$HitBoxes.set_collision_mask(2048)
+#		$HitBoxes.set_collision_mask(2048)
 		$HurtBoxes.set_collision_layer(2)
+		$HurtBoxes.set_collision_mask(4096)
 		$ProximityBox.set_collision_layer(8)
 		add_to_group("Player_1")
 	else:
@@ -83,8 +77,9 @@ func _ready():
 		set_collision_layer(1024)
 		set_collision_mask(9)
 		$HitBoxes.set_collision_layer(4096)
-		$HitBoxes.set_collision_mask(2)
+#		$HitBoxes.set_collision_mask(2)
 		$HurtBoxes.set_collision_layer(2048)
+		$HurtBoxes.set_collision_mask(4)
 		$ProximityBox.set_collision_layer(8192)
 		add_to_group("Player_2")
 	
@@ -194,6 +189,7 @@ func player_control(delta):
 	if state == is_.CROUCHING:
 		if Input.is_action_pressed("%s_DOWN" % Px) == false:
 			stand()
+		else: crouch()
 
 	# Jump -------------------------------------------------------------------
 	if state == is_.STANDING or state == is_.BLOCKING_H:
@@ -301,18 +297,6 @@ func trigger_special_1():
 			yield($AnimationPlayer, "animation_finished")
 			stand()
 
-#func manual_hitting():
-#	if Input.is_action_just_pressed("TEST_HIGH_HIT"):
-#		on_hit()
-#	elif Input.is_action_just_pressed("TEST_KNOCKDOWN") and \
-#		(state == is_.STANDING or state == is_.CROUCHING or state == is_.PRE_JUMP):
-#		state = is_.KNOCKED_DOWN
-#		on_hit()
-
-#func manual_flipping():
-#	if Input.is_action_just_pressed("TEST_FLIP"):
-#		waiting_for_flip = true
-
 func stand():
 	state = is_.STANDING
 	if already_crouched == true:
@@ -321,6 +305,14 @@ func stand():
 		yield($AnimationPlayer, "animation_finished")
 	$AnimationPlayer.play("Stand")
 
+func crouch():
+	state = is_.CROUCHING
+	if already_crouched == false:
+		already_crouched = true
+		$AnimationPlayer.play("Crouch")
+		yield($AnimationPlayer, "animation_finished")
+	$AnimationPlayer.play("Crouch already")
+	
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
 	self.position.x += WALK_FORWARD_SPEED * delta
@@ -328,14 +320,6 @@ func walk_forward(delta):
 func walk_backward(delta):
 	$AnimationPlayer.play("Walk backward")
 	self.position.x -= WALK_BACKWARD_SPEED * delta
-
-func crouch():
-	state = is_.CROUCHING
-	if already_crouched == false:
-		already_crouched = true
-		$AnimationPlayer.play("Crouch")
-		yield($AnimationPlayer, "animation_finished")
-	else: $AnimationPlayer.play("Crouch already")
 
 func jump_vertical():
 	$AnimationPlayer.play("Pre jump")
@@ -450,27 +434,27 @@ func standing_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.ATTACKING_ST
 	if button_pressed == "LP":
-		strike_out_data(100, 90, "Light", "Mid", "Head", false, false, false)
+		strike_data(100, 90, "Light", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
-		strike_out_data(150, 140, "Medium", "Mid", "Head", false, false, false)
+		strike_data(150, 140, "Medium", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
-		strike_out_data(200, 190, "Heavy", "Mid", "Head", false, false, false)
+		strike_data(200, 190, "Heavy", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
-		strike_out_data(110, 100, "Light", "Mid", "Lower", false, false, false)
+		strike_data(110, 100, "Light", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
-		strike_out_data(170, 150, "Medium", "Mid", "Upper", false, false, false)
+		strike_data(170, 150, "Medium", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
-		strike_out_data(220, 210, "Heavy", "Mid", "Upper", false, false, false)
+		strike_data(220, 210, "Heavy", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack standing HK")
 		yield($AnimationPlayer, "animation_finished")
 	stand()
@@ -480,21 +464,27 @@ func crouching_normal(button_pressed):
 	state = is_.ATTACKING_CR
 	already_crouched = true
 	if button_pressed == "LP":
+		strike_data(100, 90, "Light", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
+		strike_data(150, 140, "Medium", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
+		strike_data(200, 190, "Heavy", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
+		strike_data(110, 100, "Light", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
+		strike_data(170, 150, "Medium", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
+		strike_data(220, 210, "Sweep", "Mid", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching HK")
 		yield($AnimationPlayer, "animation_finished")
 	crouch()
@@ -521,29 +511,15 @@ func jumping_normal(button_pressed):
 		$AnimationPlayer.play("Attack jumping HK")
 		yield($AnimationPlayer, "animation_finished")
 
-func strike_out_data(dmg, stun, strg, area, trig, chip, lock, jug):
-	hit_out_damage = dmg
-	hit_out_stun = stun
-	hit_out_strenght = strg
-	hit_out_area = area
-	hit_out_trigger = trig
-	hit_out_chip = chip
-	hit_out_lock = lock
-	hit_out_juggle = jug
-	
-func strike_in_data(dmg, stun, strg, area, trig, chip, lock, jug):
-	hit_in_damage = dmg
-	hit_in_stun = stun
-	hit_in_strenght = strg
-	hit_in_area = area
-	hit_in_trigger = trig
-	hit_in_chip = chip
-	hit_in_lock = lock
-	hit_in_juggle = jug
-	print("%s Data received" % Px)
-	print("Player 2 damage data", hit_in_damage, hit_in_stun, hit_in_strenght, hit_in_area,
-					hit_in_trigger, hit_in_chip, hit_in_lock, hit_in_juggle)
-	on_hit()
+func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
+	hit_damg = damg
+	hit_stun = stun
+	hit_strg = strg
+	hit_area = area
+	hit_type = type
+	hit_chip = chip
+	hit_lock = lock
+	hit_jugg = jugg
 	
 func fall():
 	if state == is_.FALLING:
@@ -581,11 +557,11 @@ func block_low():
 func on_hit():
 	print("%s on_hit func" % Px)
 	if state == is_.BLOCKING_H:
-		if hit_in_area == "High" or hit_in_area == "Mid":
+		if rival.hit_area == "High" or rival.hit_area == "Mid":
 			blocked_hit()
 			
 	elif state == is_.BLOCKING_L:
-		if hit_in_area == "Mid" or hit_in_area == "Low":
+		if rival.hit_area == "Mid" or rival.hit_area == "Low":
 			blocked_hit()
 
 	elif state == is_.JUMPING or state == is_.DASHING or state == is_.AIR_ATTACKING:
@@ -598,21 +574,21 @@ func blocked_hit():
 	print("%s blocked_hit func" % Px)
 	if state == is_.BLOCKING_H:
 		state = is_.BLOCK_STUNNED_H
-		if hit_in_trigger == "Head" or "Upper":
-			if hit_in_strenght == "Light":
+		if rival.hit_trig == "Head" or "Torso":
+			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun high light")
 				knockback(10, 0.167)
-			elif hit_in_strenght == "Medium":
+			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Block stun high medium")
 				knockback(20, 0.267)
 			else:
 				$AnimationPlayer.play("Block stun high heavy")
 				knockback(100, 0.4)
-		elif hit_in_trigger == "Lower":
-			if hit_in_strenght == "Light":
+		elif rival.hit_trig == "Legs":
+			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun low light")
 				knockback(10, 0.167)
-			elif hit_in_strenght == "Medium":
+			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Block stun low medium")
 				knockback(20, 0.267)
 			else:
@@ -620,10 +596,10 @@ func blocked_hit():
 				knockback(30, 0.4)
 	elif state == is_.BLOCKING_L:
 		state = is_.BLOCK_STUNNED_L
-		if hit_in_strenght == "Light":
+		if rival.hit_strg == "Light":
 			$AnimationPlayer.play("Block stun crouching light")
 			knockback(10, 0.167)
-		elif hit_in_strenght == "Medium":
+		elif rival.hit_strg == "Medium":
 			$AnimationPlayer.play("Block stun crouching medium")
 			knockback(20, 0.267)
 		else:
@@ -636,40 +612,50 @@ func received_hit():
 	print("%s received_hit func" % Px)
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR:
 		state = is_.HIT_STUNNED_CR
-		if hit_in_strenght == "Light":
+		already_crouched = true
+		if rival.hit_strg == "Light":
 			$AnimationPlayer.play("Hit stun crouching light")
 			knockback(20, 0.2)
-		elif hit_in_strenght == "Medium":
+		elif rival.hit_strg == "Medium":
 			$AnimationPlayer.play("Hit stun crouching medium")
 			knockback(30, 0.3)
-		else:
+		elif rival.hit_strg == "Heavy":
 			$AnimationPlayer.play("Hit stun crouching heavy")
 			knockback(40, 0.433)
-	
-	elif state == is_.STANDING:
+		elif rival.hit_strg == "Sweep":
+			knocked_down()
+		yield($Tween, "tween_completed")
+		crouch()
+		
+	if state == is_.STANDING:
 		state = is_.HIT_STUNNED_ST
-		if hit_in_trigger == "Head" or "Upper":
-			if hit_in_strenght == "Light":
+		if hit_trig == "Head" or "Torso":
+			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun high light")
 				knockback(20, 0.2)
-			elif hit_in_strenght == "Medium":
+			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun high medium")
 				knockback(30, 0.3)
-			else:
+			elif rival.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun high heavy")
 				knockback(40, 0.433)
-		elif hit_in_trigger == "Lower":
-			if hit_in_strenght == "Light":
+			elif rival.hit_strg == "Sweep":
+				knocked_down()
+		elif hit_trig == "Legs":
+			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun low light")
 				knockback(20, 0.2)
-			elif hit_in_strenght == "Medium":
+			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun low medium")
 				knockback(30, 0.3)
-			else:
+			elif rival.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun low heavy")
 				knockback(40, 0.433)
-	yield($Tween, "tween_completed")
-	stand()
+			elif rival.hit_strg == "Sweep":
+				knocked_down()
+			yield($Tween, "tween_completed")
+			stand()
+				
 
 func air_received_hit():
 	print("%s air_received_hit func" % Px)
@@ -699,10 +685,19 @@ func air_received_hit():
 		yield($AnimationPlayer, "animation_finished")
 		wake_up()
 
+func knocked_down():
+		state = is_.KNOCKED_DOWN
+		$AnimationPlayer.play("Knockdown")
+		knockback(30, 0.3)
+		yield($AnimationPlayer, "animation_finished")
+		wake_up()
+		
 func knockback(distance, time):
-	if hit_in_lock == false: 
+	if facing_right == false:
+		distance = -distance
+	if rival.hit_lock == false: 
 		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x + distance, time,
+			self.position.x - distance, time,
 			Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 		yield(tween, "tween_completed")
@@ -751,8 +746,6 @@ func _process(delta):
 	change_facing_direction()
 	facing_direction()
 	trigger_special_1()
-#	manual_hitting()
-#	manual_flipping()
 	fall()
 	boxes_auto_visibility()
 
@@ -778,16 +771,25 @@ func _on_proximity_box_exited(area):
 
 func _on_hit_connects(area):
 	if area.has_method("hurt_box"):
-		if player == 1:
-			emit_signal("hitted", hit_out_damage, hit_out_stun, hit_out_strenght, hit_out_area,
-							hit_out_trigger, hit_out_chip, hit_out_lock, hit_out_juggle)
-			print("Player 1 strikes!", hit_out_damage, hit_out_stun, hit_out_strenght, hit_out_area, hit_out_trigger,
-				hit_out_chip, hit_out_lock, hit_out_juggle)
-		else:
-			emit_signal("hitted", hit_out_damage, hit_out_stun, hit_out_strenght, hit_out_area,
-							hit_out_trigger, hit_out_chip, hit_out_lock, hit_out_juggle)
-			print("Player 2 strikes!", hit_out_damage, hit_out_stun, hit_out_strenght, hit_out_area, hit_out_trigger,
-				hit_out_chip, hit_out_lock, hit_out_juggle)
+		$HitBoxes/HitBox1.disabled
 
 func _on_SpecialTimer_timeout():
 	sp_input_count = 0
+	
+func _on_HitSpacerTimer_timeout():
+	just_hitted = false
+	
+func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
+	if just_hitted == false:
+		just_hitted = true
+		$HitSpacerTimer.start(0.1)
+		if self_shape == 0:
+			print("cabeza!")
+			rival.hit_trig == "Head"
+		elif self_shape == 1 or self_shape == 3:
+			print("torso!")
+			rival.hit_trig == "Torso"
+		elif self_shape == 2:
+			print("piernas!")
+			rival.hit_trig == "Legs"
+		on_hit()

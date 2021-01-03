@@ -19,6 +19,10 @@ config/name="R Fighting Project"
 run/main_scene="res://FightScene.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+StrikeData="*res://StrikeData.gd"
+
 [debug]
 
 gdscript/warnings/unused_class_variable=true
