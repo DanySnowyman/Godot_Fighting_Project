@@ -25,15 +25,15 @@ var dash_l_ready = false
 var can_dash_cancel = false
 var sp_input_count = 0
 
-var hit_damg
-var hit_stun
+var hit_damg # Daño producido
+var hit_stun # Aturdimiento producido
 var hit_strg # Light, Medium, Heavy, Sweep
 var hit_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
-var hit_type
+var hit_type # Normal < Special < Powered < Ultimate
 var hit_trig # Head, Torso or Legs (Animación de respuesta en el rival)
-var hit_chip
-var hit_lock
-var hit_jugg
+var hit_chip # Si es "true" causa un porcentaje de daño aún bloqueándolo
+var hit_lock # Si es "true no produce empuje hacia atrás
+var hit_jugg # Si es "true" puede golpearnos en estado "AIR_STUNNED"
 
 var WALK_FORWARD_SPEED = 200
 var WALK_BACKWARD_SPEED = 150
@@ -64,7 +64,6 @@ func _ready():
 		self.set_collision_layer(0)
 		self.set_collision_mask(9216)
 		$HitBoxes.set_collision_layer(4)
-#		$HitBoxes.set_collision_mask(2048)
 		$HurtBoxes.set_collision_layer(2)
 		$HurtBoxes.set_collision_mask(4096)
 		$ProximityBox.set_collision_layer(8)
@@ -72,12 +71,13 @@ func _ready():
 	else:
 		self.position = Vector2(264, 195)
 		Px = "P2"
+		$Sprite.modulate = Color(1, 0.494118, 0.494118)
 		$State.set_as_toplevel(true)
-		$State.set_global_position(Vector2(300, 20))
+		$State.set_global_position(Vector2(320, 20))
+		$State.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 		set_collision_layer(1024)
 		set_collision_mask(9)
 		$HitBoxes.set_collision_layer(4096)
-#		$HitBoxes.set_collision_mask(2)
 		$HurtBoxes.set_collision_layer(2048)
 		$HurtBoxes.set_collision_mask(4)
 		$ProximityBox.set_collision_layer(8192)
@@ -93,7 +93,7 @@ func connect_to_signals():
 		rival = get_parent().get_node("Player2")
 	else: 	rival = get_parent().get_node("Player1")
 	
-	rival.connect("hitted", self, "strike_in_data")
+#	rival.connect("hitted", self, "strike_in_data")
 		
 func change_facing_direction():
 	if facing_right != must_face_right:
@@ -125,7 +125,9 @@ func player_control(delta):
 					walk_forward(delta)
 				else:
 					if can_guard == true:
-						block_high()
+						if rival.hit_trig == "Head" or rival.hit_trig == "Torso":
+							block_high()
+						else: block_low()
 					else: walk_backward(delta)
 			if Input.is_action_just_released("%s_RIGHT" % Px):
 				stand()
@@ -143,23 +145,23 @@ func player_control(delta):
 	if state == is_.STANDING or state == is_.CROUCHING:
 		if Input.is_action_pressed("%s_LEFT" % Px) and Input.is_action_pressed("%s_DOWN" % Px):
 			if can_guard == true and facing_right == true:
-				block_low()
+				block_crouching()
 		if Input.is_action_pressed("%s_RIGHT" % Px) and Input.is_action_pressed("%s_DOWN" % Px):
 			if can_guard == true and facing_right == false:
-				block_low()
+				block_crouching()
 	# Exit from blocking -----------------------------------------------------
 	if state == is_.BLOCKING_H:
 		if facing_right == true:
 			if Input.is_action_just_released("%s_LEFT" % Px):
 				stand()
 			elif Input.is_action_just_pressed("%s_DOWN" % Px):
-				$Sprite.frame = 83
+				$Sprite.frame = 85
 				state = is_.BLOCKING_L
 		else:
 			if Input.is_action_just_released("%s_RIGHT" % Px):
 				stand()
 			elif Input.is_action_just_pressed("%s_DOWN" % Px):
-				$Sprite.frame = 83
+				$Sprite.frame = 85
 				state = is_.BLOCKING_L
 	if state == is_.BLOCKING_L:
 		if facing_right == true:
@@ -476,15 +478,15 @@ func crouching_normal(button_pressed):
 		$AnimationPlayer.play("Attack crouching HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
-		strike_data(110, 100, "Light", "Mid", "Normal", false, false, false)
+		strike_data(110, 100, "Light", "Low", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
-		strike_data(170, 150, "Medium", "Mid", "Normal", false, false, false)
+		strike_data(170, 150, "Medium", "Low", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
-		strike_data(220, 210, "Sweep", "Mid", "Normal", false, false, false)
+		strike_data(220, 210, "Sweep", "Low", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack crouching HK")
 		yield($AnimationPlayer, "animation_finished")
 	crouch()
@@ -493,21 +495,27 @@ func jumping_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.AIR_ATTACKING
 	if button_pressed == "LP":
+		strike_data(100, 90, "Light", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
+		strike_data(120, 110, "Medium", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
+		strike_data(140, 130, "Heavy", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
+		strike_data(110, 100, "Light", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
+		strike_data(130, 120, "Medium", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
+		strike_data(140, 110, "Heavy", "High", "Normal", false, false, false)
 		$AnimationPlayer.play("Attack jumping HK")
 		yield($AnimationPlayer, "animation_finished")
 
@@ -520,49 +528,30 @@ func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
 	hit_chip = chip
 	hit_lock = lock
 	hit_jugg = jugg
-	
-func fall():
-	if state == is_.FALLING:
-		if self.position.y == 195:
-			tween.remove_all()
-			ground_impact()
-			pre_jump = false
-
-func ground_impact():
-	if state == is_.FALLING:
-		state = is_.GROUND_IMPACT
-		$AnimationPlayer.play("Ground impact")
-		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - GROUND_IMPACT_LENGHT, 0.5,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
-		tween.start()
-		yield($AnimationPlayer, "animation_finished")
-		wake_up()
-
-func wake_up():
-	if state == is_.GROUND_IMPACT or state == is_.KNOCKED_DOWN:
-		state = is_.WAKING_UP
-		$AnimationPlayer.play("Wake up")
-		yield($AnimationPlayer, "animation_finished")
-		stand()
 
 func block_high():
 	state = is_.BLOCKING_H
 	$AnimationPlayer.play("Block high")
 		
 func block_low():
-	state = is_.BLOCKING_L
+	state = is_.BLOCKING_H
 	$AnimationPlayer.play("Block low")
 
+func block_crouching():
+	state = is_.BLOCKING_L
+	$AnimationPlayer.play("Block crouching")
+	
 func on_hit():
 	print("%s on_hit func" % Px)
 	if state == is_.BLOCKING_H:
 		if rival.hit_area == "High" or rival.hit_area == "Mid":
 			blocked_hit()
+		else: received_hit()
 			
 	elif state == is_.BLOCKING_L:
 		if rival.hit_area == "Mid" or rival.hit_area == "Low":
 			blocked_hit()
+		else: received_hit()
 
 	elif state == is_.JUMPING or state == is_.DASHING or state == is_.AIR_ATTACKING:
 		air_received_hit()
@@ -583,7 +572,7 @@ func blocked_hit():
 				knockback(20, 0.267)
 			else:
 				$AnimationPlayer.play("Block stun high heavy")
-				knockback(100, 0.4)
+				knockback(30, 0.4)
 		elif rival.hit_trig == "Legs":
 			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun low light")
@@ -610,52 +599,53 @@ func blocked_hit():
 
 func received_hit():
 	print("%s received_hit func" % Px)
-	if state == is_.CROUCHING or state == is_.ATTACKING_CR:
+	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L:
 		state = is_.HIT_STUNNED_CR
 		already_crouched = true
 		if rival.hit_strg == "Light":
 			$AnimationPlayer.play("Hit stun crouching light")
-			knockback(20, 0.2)
+			knockback(10, 0.2)
 		elif rival.hit_strg == "Medium":
 			$AnimationPlayer.play("Hit stun crouching medium")
-			knockback(30, 0.3)
+			knockback(20, 0.3)
 		elif rival.hit_strg == "Heavy":
 			$AnimationPlayer.play("Hit stun crouching heavy")
-			knockback(40, 0.433)
+			knockback(30, 0.433)
 		elif rival.hit_strg == "Sweep":
 			knocked_down()
 		yield($Tween, "tween_completed")
-		crouch()
+		if state != is_.KNOCKED_DOWN:
+			crouch()
 		
-	if state == is_.STANDING:
+	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H:
 		state = is_.HIT_STUNNED_ST
 		if hit_trig == "Head" or "Torso":
 			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun high light")
-				knockback(20, 0.2)
+				knockback(10, 0.2)
 			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun high medium")
-				knockback(30, 0.3)
+				knockback(20, 0.3)
 			elif rival.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun high heavy")
-				knockback(40, 0.433)
+				knockback(30, 0.433)
 			elif rival.hit_strg == "Sweep":
 				knocked_down()
 		elif hit_trig == "Legs":
 			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun low light")
-				knockback(20, 0.2)
+				knockback(10, 0.2)
 			elif rival.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun low medium")
-				knockback(30, 0.3)
+				knockback(20, 0.3)
 			elif rival.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun low heavy")
-				knockback(40, 0.433)
+				knockback(30, 0.433)
 			elif rival.hit_strg == "Sweep":
 				knocked_down()
-			yield($Tween, "tween_completed")
+		yield($Tween, "tween_completed")
+		if state != is_.KNOCKED_DOWN:
 			stand()
-				
 
 func air_received_hit():
 	print("%s air_received_hit func" % Px)
@@ -686,11 +676,11 @@ func air_received_hit():
 		wake_up()
 
 func knocked_down():
-		state = is_.KNOCKED_DOWN
-		$AnimationPlayer.play("Knockdown")
-		knockback(30, 0.3)
-		yield($AnimationPlayer, "animation_finished")
-		wake_up()
+	state = is_.KNOCKED_DOWN
+	$AnimationPlayer.play("Knockdown")
+	knockback(30, 0.3)
+	yield($AnimationPlayer, "animation_finished")
+	wake_up()
 		
 func knockback(distance, time):
 	if facing_right == false:
@@ -700,9 +690,31 @@ func knockback(distance, time):
 			self.position.x - distance, time,
 			Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
-		yield(tween, "tween_completed")
-		stand()
 
+func fall():
+	if state == is_.FALLING:
+		if self.position.y == 195:
+			tween.remove_all()
+			ground_impact()
+			pre_jump = false
+
+func ground_impact():
+	if state == is_.FALLING:
+		state = is_.GROUND_IMPACT
+		$AnimationPlayer.play("Ground impact")
+		tween.interpolate_property(self, "position:x", self.position.x,
+			self.position.x - GROUND_IMPACT_LENGHT, 0.5,
+			Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween.start()
+		yield($AnimationPlayer, "animation_finished")
+		wake_up()
+
+func wake_up():
+	if state == is_.GROUND_IMPACT or state == is_.KNOCKED_DOWN:
+		state = is_.WAKING_UP
+		$AnimationPlayer.play("Wake up")
+		yield($AnimationPlayer, "animation_finished")
+		stand()
 
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
@@ -753,6 +765,7 @@ func _process(delta):
 	last_position = position
 	
 	self.position.y = clamp(self.position.y, -100, 195)
+	self.position.x = clamp(self.position.x, 0, 384)
 	
 	$State.text = is_.keys()[state]
 
