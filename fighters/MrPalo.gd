@@ -13,6 +13,10 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKI
 var state = is_.STANDING
 var facing_right = true
 var must_face_right
+var is_stuck
+var is_walking_forward = false
+var is_dashing_forward = false
+var players_collide = false
 var can_guard = false
 var just_hitted = false
 var waiting_for_flip = false
@@ -50,51 +54,54 @@ const JUMP_DES_TIME = 0.4
 const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
 
-onready var tween = get_node("Tween")
+var camera_pos := Vector2()
+var stage_size := Rect2()
+var screen_size := Rect2()
 
-signal hitted(hit_out_damage, hit_out_stun, hit_out_strenght, hit_out_area, hit_out_trigger,
-				hit_out_chip, hit_out_lock, hit_out_juggle)
+onready var tween = get_node("Tween")
+onready var pushray = get_node("PushingRay")
 
 func _ready():
 	if player == 1:
-		self.position = Vector2(120, 195)
 		Px = "P1"
-		$State.set_as_toplevel(true)
-		$State.set_global_position(Vector2(20, 20))
-		self.set_collision_layer(0)
+		$HUD/State.set_global_position(Vector2(10, 20))
+		self.set_collision_layer(1)
 		self.set_collision_mask(9216)
 		$HitBoxes.set_collision_layer(4)
 		$HurtBoxes.set_collision_layer(2)
 		$HurtBoxes.set_collision_mask(4096)
 		$ProximityBox.set_collision_layer(8)
+		$PushingRay.set_collision_mask(1024)
 		add_to_group("Player_1")
 	else:
-		self.position = Vector2(264, 195)
 		Px = "P2"
-		$Sprite.modulate = Color(1, 0.494118, 0.494118)
-		$State.set_as_toplevel(true)
-		$State.set_global_position(Vector2(320, 20))
-		$State.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-		set_collision_layer(1024)
-		set_collision_mask(9)
+		$Sprite.modulate = Color(1, 0.494118, 0.494118) #Esto es temporal también <---------
+		$HUD/State.set_global_position(Vector2(280, 20))
+		$HUD/State.ALIGN_RIGHT
+		self.set_collision_layer(1024)
+		self.set_collision_mask(9)
 		$HitBoxes.set_collision_layer(4096)
 		$HurtBoxes.set_collision_layer(2048)
 		$HurtBoxes.set_collision_mask(4)
 		$ProximityBox.set_collision_layer(8192)
+		$PushingRay.set_collision_mask(1)
 		add_to_group("Player_2")
+		WALK_FORWARD_SPEED = 180 # Esto hay que quitarlo al final <----------------
 	
 	state = is_.STANDING
 	$AnimationPlayer.play("Stand")
 	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
+	screen_size = get_viewport_rect()
 
-func connect_to_signals():
+func find_nodes():
 	if player == 1:
 		rival = get_parent().get_node("Player2")
-	else: 	rival = get_parent().get_node("Player1")
-	
-#	rival.connect("hitted", self, "strike_in_data")
-		
+		self.position = Vector2((stage_size.end.x / 2) - 80, (stage_size.end.y - 20))
+	else:
+		rival = get_parent().get_node("Player1")
+		self.position = Vector2((stage_size.end.x / 2) + 80, (stage_size.end.y - 20))
+
 func change_facing_direction():
 	if facing_right != must_face_right:
 		waiting_for_flip = true
@@ -125,9 +132,7 @@ func player_control(delta):
 					walk_forward(delta)
 				else:
 					if can_guard == true:
-						if rival.hit_trig == "Head" or rival.hit_trig == "Torso":
-							block_high()
-						else: block_low()
+						block_standing()
 					else: walk_backward(delta)
 			if Input.is_action_just_released("%s_RIGHT" % Px):
 				stand()
@@ -138,7 +143,7 @@ func player_control(delta):
 				else:
 					if can_guard == false:
 						walk_backward(delta)
-					else: block_high()
+					else: block_standing()
 			if Input.is_action_just_released("%s_LEFT" % Px):
 				stand()
 	# Crouching block --------------------------------------------------------
@@ -301,6 +306,8 @@ func trigger_special_1():
 
 func stand():
 	state = is_.STANDING
+	is_walking_forward = false
+	is_dashing_forward = false
 	if already_crouched == true:
 		already_crouched = false
 		$AnimationPlayer.play_backwards("Crouch")
@@ -317,7 +324,13 @@ func crouch():
 	
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
-	self.position.x += WALK_FORWARD_SPEED * delta
+	is_walking_forward = true
+	if pushray.is_colliding() == false:
+		self.position.x += WALK_FORWARD_SPEED * delta
+	else:
+		if rival.is_stuck == false:
+			self.position.x += WALK_FORWARD_SPEED / 2 * delta
+		else: pass
 
 func walk_backward(delta):
 	$AnimationPlayer.play("Walk backward")
@@ -412,12 +425,14 @@ func jump_backward():
 
 func dash_forward():
 	$AnimationPlayer.play("Dash forward")
+	is_walking_forward = false
+	is_dashing_forward = true
 	tween.interpolate_property(self, "position:x", self.position.x,
 		self.position.x + DASH_F_DIST, DASH_F_TIME,
 		Tween.TRANS_QUART, Tween.EASE_OUT)
 	tween.start()
 	state = is_.DASHING
-	yield(tween, "tween_completed")
+	yield(get_tree().create_timer(DASH_F_TIME), "timeout")
 	if state != is_.AIR_STUNNED:
 		stand()
 
@@ -529,20 +544,17 @@ func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
 	hit_lock = lock
 	hit_jugg = jugg
 
-func block_high():
+func block_standing():
 	state = is_.BLOCKING_H
-	$AnimationPlayer.play("Block high")
-		
-func block_low():
-	state = is_.BLOCKING_H
-	$AnimationPlayer.play("Block low")
+	$AnimationPlayer.play("Block standing")
 
 func block_crouching():
 	state = is_.BLOCKING_L
 	$AnimationPlayer.play("Block crouching")
 	
 func on_hit():
-	print("%s on_hit func" % Px)
+	is_walking_forward = false
+	is_dashing_forward = false
 	if state == is_.BLOCKING_H:
 		if rival.hit_area == "High" or rival.hit_area == "Mid":
 			blocked_hit()
@@ -563,7 +575,7 @@ func blocked_hit():
 	print("%s blocked_hit func" % Px)
 	if state == is_.BLOCKING_H:
 		state = is_.BLOCK_STUNNED_H
-		if rival.hit_trig == "Head" or "Torso":
+		if hit_trig == "Head":
 			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun high light")
 				knockback(10, 0.167)
@@ -573,7 +585,7 @@ func blocked_hit():
 			else:
 				$AnimationPlayer.play("Block stun high heavy")
 				knockback(30, 0.4)
-		elif rival.hit_trig == "Legs":
+		else:
 			if rival.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun low light")
 				knockback(10, 0.167)
@@ -599,6 +611,7 @@ func blocked_hit():
 
 func received_hit():
 	print("%s received_hit func" % Px)
+	disable_hit_boxes()
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L:
 		state = is_.HIT_STUNNED_CR
 		already_crouched = true
@@ -619,27 +632,39 @@ func received_hit():
 		
 	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H:
 		state = is_.HIT_STUNNED_ST
-		if hit_trig == "Head" or "Torso":
+		if hit_trig == "Head":
 			if rival.hit_strg == "Light":
-				$AnimationPlayer.play("Hit stun high light")
+				$AnimationPlayer.play("Hit stun head light")
 				knockback(10, 0.2)
 			elif rival.hit_strg == "Medium":
-				$AnimationPlayer.play("Hit stun high medium")
+				$AnimationPlayer.play("Hit stun head medium")
 				knockback(20, 0.3)
 			elif rival.hit_strg == "Heavy":
-				$AnimationPlayer.play("Hit stun high heavy")
+				$AnimationPlayer.play("Hit stun head heavy")
+				knockback(30, 0.433)
+			elif rival.hit_strg == "Sweep":
+				knocked_down()
+		elif hit_trig == "Torso":
+			if rival.hit_strg == "Light":
+				$AnimationPlayer.play("Hit stun torso light")
+				knockback(10, 0.2)
+			elif rival.hit_strg == "Medium":
+				$AnimationPlayer.play("Hit stun torso medium")
+				knockback(20, 0.3)
+			elif rival.hit_strg == "Heavy":
+				$AnimationPlayer.play("Hit stun torso heavy")
 				knockback(30, 0.433)
 			elif rival.hit_strg == "Sweep":
 				knocked_down()
 		elif hit_trig == "Legs":
 			if rival.hit_strg == "Light":
-				$AnimationPlayer.play("Hit stun low light")
+				$AnimationPlayer.play("Hit stun legs light")
 				knockback(10, 0.2)
 			elif rival.hit_strg == "Medium":
-				$AnimationPlayer.play("Hit stun low medium")
+				$AnimationPlayer.play("Hit stun legs medium")
 				knockback(20, 0.3)
 			elif rival.hit_strg == "Heavy":
-				$AnimationPlayer.play("Hit stun low heavy")
+				$AnimationPlayer.play("Hit stun legs heavy")
 				knockback(30, 0.433)
 			elif rival.hit_strg == "Sweep":
 				knocked_down()
@@ -654,19 +679,19 @@ func air_received_hit():
 	#Arco ascendente --------------------------------
 	tween.interpolate_property(self, "position:x",
 		self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
-		0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		0.4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.interpolate_property(self, "position:y",
 		self.position.y, self.position.y - 50,
-		0.5, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	yield(tween, "tween_all_completed")
 	#Arco descendente -------------------------------
 	tween.interpolate_property(self, "position:x",
 		self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
-		0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	tween.interpolate_property(self, "position:y",
 		self.position.y, self.position.y + 500,
-		0.5, Tween.TRANS_QUINT, Tween.EASE_IN)
+		0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
 	yield(tween, "tween_all_completed")
 	state = is_.FALLING
@@ -693,7 +718,7 @@ func knockback(distance, time):
 
 func fall():
 	if state == is_.FALLING:
-		if self.position.y == 195:
+		if self.position.y == stage_size.end.y - 20:
 			tween.remove_all()
 			ground_impact()
 			pre_jump = false
@@ -755,8 +780,11 @@ func _process(delta):
 	var motion = Vector2() #Posiblemente esto de motion no haga falta
 	
 	player_control(delta)
+	repulse_players(delta)
+	pushing_player(delta)
 	change_facing_direction()
 	facing_direction()
+	detect_stuck()
 	trigger_special_1()
 	fall()
 	boxes_auto_visibility()
@@ -764,16 +792,20 @@ func _process(delta):
 	motion = position - last_position
 	last_position = position
 	
-	self.position.y = clamp(self.position.y, -100, 195)
-	self.position.x = clamp(self.position.x, 0, 384)
+	camera_pos = get_parent().get_node("Camera2D").position
+	self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
+	self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
 	
-	$State.text = is_.keys()[state]
+	$HUD/State.text = is_.keys()[state]
 
-func _on_proximity_box_entered(area):
+
+func _on_area_entered(area):
 	if area.has_method("proximity_box"):
 		can_guard = true
-
-func _on_proximity_box_exited(area):
+	if area.has_method("_on_area_entered"):
+		players_collide = true
+		
+func _on_area_exited(area):
 	if area.has_method("proximity_box"):
 		can_guard = false
 		if state == is_.BLOCKING_H:
@@ -781,7 +813,41 @@ func _on_proximity_box_exited(area):
 		if state == is_.BLOCKING_L:
 			state = is_.CROUCHING
 			$Sprite.frame = 65
+	if area.has_method("_on_area_entered"):
+		players_collide = false
 
+func repulse_players(delta):
+	if is_dashing_forward == false:
+		if players_collide == true:
+			if must_face_right == true:
+				self.position.x -= 500 * delta
+			else: self.position.x += 500 * delta
+
+func pushing_player(delta):
+	var push_speed = (WALK_FORWARD_SPEED / 2) * delta
+	if pushray.is_colliding() == true:
+		if is_walking_forward == true:
+			rival.pushed_player(push_speed)
+		if is_dashing_forward == true and rival.is_dashing_forward:
+			tween.remove_all()
+			if facing_right == true:
+				self.position.x -= 10
+			else: self.position.x += 10
+		if is_dashing_forward == true and rival.is_stuck:
+			tween.remove_all()
+			if facing_right == true:
+				self.position.x -= 10
+			else: self.position.x += 10
+
+func pushed_player(push_speed):
+	self.position.x += push_speed
+
+func detect_stuck():
+	if self.position.x < camera_pos.x - 192 + 25 or self.position.x > camera_pos.x + 192 - 25:
+		is_stuck = true
+	else: is_stuck = false
+	print(is_stuck)
+	
 func _on_hit_connects(area):
 	if area.has_method("hurt_box"):
 		$HitBoxes/HitBox1.disabled
@@ -798,11 +864,12 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 		$HitSpacerTimer.start(0.1)
 		if self_shape == 0:
 			print("cabeza!")
-			rival.hit_trig == "Head"
+			hit_trig = "Head"
 		elif self_shape == 1 or self_shape == 3:
 			print("torso!")
-			rival.hit_trig == "Torso"
+			hit_trig = "Torso"
 		elif self_shape == 2:
 			print("piernas!")
-			rival.hit_trig == "Legs"
+			hit_trig = "Legs"
 		on_hit()
+		print(hit_trig)

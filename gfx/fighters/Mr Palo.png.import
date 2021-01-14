@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Mr Palo.png-b76e5fdfbaa65fd199ba748763726bcf.stex"
+path="res://.import/Mr Palo.png-245a652b841d71891deb9d612a84990c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/Mr Palo.png"
-dest_files=[ "res://.import/Mr Palo.png-b76e5fdfbaa65fd199ba748763726bcf.stex" ]
+source_file="res://gfx/fighters/Mr Palo.png"
+dest_files=[ "res://.import/Mr Palo.png-245a652b841d71891deb9d612a84990c.stex" ]
 
 [params]
 

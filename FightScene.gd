@@ -1,29 +1,41 @@
 extends Node2D
 
-var MrPalo = preload("res://MrPalo.tscn")
+var MrPalo = preload("res://fighters/MrPalo.tscn")
+var Training_stage = preload("res://stages//TrainingStage.tscn")
 
-var Player1
-var Player2
-var Player1_on_left
+var player1
+var player2
+var stage
+var player1_on_left
+var stage_size
 
 func _ready():
-	Player1 = MrPalo.instance()
-	Player1.player = 1
-	Player1.name = "Player1"
-	add_child(Player1)
-	Player2 = MrPalo.instance()
-	Player2.player = 2
-	Player2.name = "Player2"
-	add_child(Player2)
-	Player1.connect_to_signals()
-	Player2.connect_to_signals()
-	
+	stage = Training_stage.instance()
+	stage.name = "Stage"
+	add_child(stage)
+	stage_size = $Stage.get_node("Background").get_rect()
+	player1 = MrPalo.instance()
+	player1.player = 1
+	player1.name = "Player1"
+	add_child(player1)
+	player2 = MrPalo.instance()
+	player2.player = 2
+	player2.name = "Player2"
+	add_child(player2)
+	player1.stage_size = stage_size
+	player2.stage_size = stage_size
+	$Camera2D.stage_size = stage_size
+	player1.find_nodes()
+	player2.find_nodes()
+	$Camera2D.find_nodes()
+#	$Canvaicon.set_as_toplevel(true)
+
 func _process(delta):
-	if Player1.position.x < Player2.position.x:
-		Player1_on_left = true
-		Player1.must_face_right = true
-		Player2.must_face_right = false
+	if player1.position.x < player2.position.x:
+		player1_on_left = true
+		player1.must_face_right = true
+		player2.must_face_right = false
 	else:
-		Player1_on_left = false
-		Player1.must_face_right = false
-		Player2.must_face_right = true
+		player1_on_left = false
+		player1.must_face_right = false
+		player2.must_face_right = true
