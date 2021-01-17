@@ -10,12 +10,17 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKI
 		ATTACKING_SP, AIR_ATTACKING, BLOCKING_H, BLOCKING_L, BLOCK_STUNNED_H, BLOCK_STUNNED_L,
 		HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 
-var state = is_.STANDING
+var doing_something
+var state
 var facing_right = true
 var must_face_right
 var is_stuck
 var is_walking_forward = false
+var is_walking_backward = false
 var is_dashing_forward = false
+var is_dashing_backward = false
+var is_jumping_forward = false
+var is_jumping_backward = false
 var players_collide = false
 var can_guard = false
 var just_hitted = false
@@ -54,9 +59,9 @@ const JUMP_DES_TIME = 0.4
 const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
 
+var motion := Vector2()
 var camera_pos := Vector2()
 var stage_size := Rect2()
-var screen_size := Rect2()
 
 onready var tween = get_node("Tween")
 onready var pushray = get_node("PushingRay")
@@ -64,7 +69,8 @@ onready var pushray = get_node("PushingRay")
 func _ready():
 	if player == 1:
 		Px = "P1"
-		$HUD/State.set_global_position(Vector2(10, 20))
+		$HUD/State.set_global_position(Vector2(20, 20))
+		$HUD/State.align = HALIGN_LEFT
 		self.set_collision_layer(1)
 		self.set_collision_mask(9216)
 		$HitBoxes.set_collision_layer(4)
@@ -76,8 +82,9 @@ func _ready():
 	else:
 		Px = "P2"
 		$Sprite.modulate = Color(1, 0.494118, 0.494118) #Esto es temporal también <---------
-		$HUD/State.set_global_position(Vector2(280, 20))
-		$HUD/State.ALIGN_RIGHT
+		$HUD/State.set_global_position(Vector2(364, 20))
+		$HUD/State.align = HALIGN_RIGHT
+		$HUD/State.grow_horizontal = 0
 		self.set_collision_layer(1024)
 		self.set_collision_mask(9)
 		$HitBoxes.set_collision_layer(4096)
@@ -92,7 +99,6 @@ func _ready():
 	$AnimationPlayer.play("Stand")
 	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
-	screen_size = get_viewport_rect()
 
 func find_nodes():
 	if player == 1:
@@ -282,21 +288,20 @@ func player_control(delta):
 func trigger_special_1():
 	if Input.is_action_just_pressed("%s_DOWN" % Px):
 		sp_input_count = 1
-		print("ONE!")
+#		print("ONE!")
 		
 	if sp_input_count == 1:
 		if Input.is_action_pressed("%s_RIGHT" % Px) and Input.is_action_pressed("%s_DOWN" % Px):
 			$SpecialTimer.start()
 			sp_input_count = 2
-			print("TWO!")
+#			print("TWO!")
 			
 	if sp_input_count == 2:
 		if Input.is_action_pressed("%s_RIGHT" % Px) and Input.is_action_just_released("%s_DOWN" % Px):
 			sp_input_count = 3
-			print("THREE!")
+#			print("THREE!")
 			
 	if sp_input_count == 3:
-#		if state == is_.ATTACKING_ST:
 		if Input.is_action_pressed("%s_HP" % Px):
 			sp_input_count = 0
 			state = is_.ATTACKING_SP
@@ -307,7 +312,7 @@ func trigger_special_1():
 func stand():
 	state = is_.STANDING
 	is_walking_forward = false
-	is_dashing_forward = false
+	is_walking_backward = false
 	if already_crouched == true:
 		already_crouched = false
 		$AnimationPlayer.play_backwards("Crouch")
@@ -334,8 +339,9 @@ func walk_forward(delta):
 
 func walk_backward(delta):
 	$AnimationPlayer.play("Walk backward")
+	is_walking_backward = true
 	self.position.x -= WALK_BACKWARD_SPEED * delta
-
+	
 func jump_vertical():
 	$AnimationPlayer.play("Pre jump")
 	yield($AnimationPlayer, "animation_finished")
@@ -375,7 +381,9 @@ func jump_forward():
 			JUMP_ASC_TIME, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 		state = is_.JUMPING
-		yield(tween, "tween_all_completed")
+		is_jumping_forward = true
+		is_walking_forward = false
+		yield(get_tree().create_timer(JUMP_ASC_TIME), "timeout")
 		#Arco descendente -------------------------------
 		if state != is_.AIR_STUNNED:
 			tween.interpolate_property(self, "position:x",
@@ -385,7 +393,7 @@ func jump_forward():
 				self.position.y, self.position.y + JUMP_HEIGHT,
 				JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
-			yield(tween, "tween_all_completed")
+			yield(get_tree().create_timer(JUMP_DES_TIME), "timeout")
 			if state != is_.AIR_STUNNED:
 				disable_hit_boxes()
 				state = is_.STANDING
@@ -406,7 +414,9 @@ func jump_backward():
 			JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 		state = is_.JUMPING
-		yield(tween, "tween_all_completed")
+		is_jumping_backward = true
+		is_walking_backward = false
+		yield(get_tree().create_timer(JUMP_ASC_TIME), "timeout")
 		#Arco descendente -------------------------------
 		if state != is_.AIR_STUNNED:
 			tween.interpolate_property(self, "position:x",
@@ -416,7 +426,7 @@ func jump_backward():
 				self.position.y, self.position.y + JUMP_HEIGHT,
 				JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
-			yield(tween, "tween_all_completed")
+			yield(get_tree().create_timer(JUMP_DES_TIME), "timeout")
 			if state != is_.AIR_STUNNED:
 				disable_hit_boxes()
 				state = is_.STANDING
@@ -427,26 +437,41 @@ func dash_forward():
 	$AnimationPlayer.play("Dash forward")
 	is_walking_forward = false
 	is_dashing_forward = true
-	tween.interpolate_property(self, "position:x", self.position.x,
-		self.position.x + DASH_F_DIST, DASH_F_TIME,
-		Tween.TRANS_QUART, Tween.EASE_OUT)
-	tween.start()
-	state = is_.DASHING
-	yield(get_tree().create_timer(DASH_F_TIME), "timeout")
+	if pushray.is_colliding() == false:
+		tween.interpolate_property(self, "position:x", self.position.x,
+			self.position.x + DASH_F_DIST, DASH_F_TIME,
+			Tween.TRANS_QUART, Tween.EASE_OUT)
+		tween.start()
+		state = is_.DASHING
+		yield(get_tree().create_timer(DASH_F_TIME), "timeout")
+	else:
+		tween.interpolate_property(self, "position:x", self.position.x,
+			self.position.x + DASH_F_DIST / 2, DASH_F_TIME,
+			Tween.TRANS_QUART, Tween.EASE_OUT)
+		tween.start()
+		state = is_.DASHING
+		yield(get_tree().create_timer(DASH_F_TIME), "timeout")
 	if state != is_.AIR_STUNNED:
+		tween.stop_all()
 		stand()
 
 func dash_backward():
 	$AnimationPlayer.play("Dash backward")
+	is_walking_backward = false
+	is_dashing_backward = true
 	tween.interpolate_property(self, "position:x", self.position.x,
 		self.position.x - DASH_B_DIST, DASH_B_TIME,
 		Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	state = is_.DASHING
-	yield(tween, "tween_completed")
+	yield(get_tree().create_timer(DASH_B_TIME), "timeout")
 	if state != is_.AIR_STUNNED:
+		tween.stop_all()
 		stand()
 
+func set_false_to_dash_forward():
+	is_dashing_forward = false # Probar restar un tween al colisionar dashes
+	
 func standing_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.ATTACKING_ST
@@ -612,7 +637,8 @@ func blocked_hit():
 func received_hit():
 	print("%s received_hit func" % Px)
 	disable_hit_boxes()
-	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L:
+	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or\
+					state == is_.HIT_STUNNED_CR:
 		state = is_.HIT_STUNNED_CR
 		already_crouched = true
 		if rival.hit_strg == "Light":
@@ -630,7 +656,8 @@ func received_hit():
 		if state != is_.KNOCKED_DOWN:
 			crouch()
 		
-	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H:
+	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H or\
+					state == is_.HIT_STUNNED_ST:
 		state = is_.HIT_STUNNED_ST
 		if hit_trig == "Head":
 			if rival.hit_strg == "Light":
@@ -673,7 +700,7 @@ func received_hit():
 			stand()
 
 func air_received_hit():
-	print("%s air_received_hit func" % Px)
+	tween.remove_all()
 	state = is_.AIR_STUNNED
 	$AnimationPlayer.play("Hit stun air")
 	#Arco ascendente --------------------------------
@@ -708,6 +735,7 @@ func knocked_down():
 	wake_up()
 		
 func knockback(distance, time):
+	tween.stop_all()
 	if facing_right == false:
 		distance = -distance
 	if rival.hit_lock == false: 
@@ -775,16 +803,27 @@ func disable_hurt_boxes():
 func disable_hit_boxes():
 	$HitBoxes/HitBox1.disabled = true
 	$ProximityBox/ProxBox1.disabled = true
+	
+func re_check_states():
+	if state != is_.STANDING:
+		is_walking_forward = false
+		is_walking_backward = false
+	if state != is_.JUMPING:
+		is_jumping_forward = false
+		is_jumping_backward = false
+	if state != is_.DASHING:
+		is_dashing_forward = false
+		is_dashing_backward = false
 
 func _process(delta):
-	var motion = Vector2() #Posiblemente esto de motion no haga falta
-	
 	player_control(delta)
 	repulse_players(delta)
 	pushing_player(delta)
+	stop_tweens_on_push()
 	change_facing_direction()
 	facing_direction()
 	detect_stuck()
+	re_check_states()
 	trigger_special_1()
 	fall()
 	boxes_auto_visibility()
@@ -792,13 +831,13 @@ func _process(delta):
 	motion = position - last_position
 	last_position = position
 	
-	camera_pos = get_parent().get_node("Camera2D").position
+	camera_pos = get_parent().get_node("Camera2D").get_camera_screen_center()
+	
 	self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
 	self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
-	
+
 	$HUD/State.text = is_.keys()[state]
-
-
+	
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
 		can_guard = true
@@ -817,36 +856,37 @@ func _on_area_exited(area):
 		players_collide = false
 
 func repulse_players(delta):
-	if is_dashing_forward == false:
-		if players_collide == true:
-			if must_face_right == true:
-				self.position.x -= 500 * delta
-			else: self.position.x += 500 * delta
+	if players_collide == true:
+		if must_face_right == true:
+			self.position.x -= 8
+		else: self.position.x += 8
 
 func pushing_player(delta):
-	var push_speed = (WALK_FORWARD_SPEED / 2) * delta
 	if pushray.is_colliding() == true:
-		if is_walking_forward == true:
-			rival.pushed_player(push_speed)
-		if is_dashing_forward == true and rival.is_dashing_forward:
-			tween.remove_all()
+		if is_walking_forward == true and rival.is_walking_backward == false:
+			rival.position.x += WALK_FORWARD_SPEED / 2 * delta
+		if is_dashing_forward == true or is_jumping_forward == true:
+			rival.position.x += self.motion.x
 			if facing_right == true:
-				self.position.x -= 10
-			else: self.position.x += 10
-		if is_dashing_forward == true and rival.is_stuck:
-			tween.remove_all()
-			if facing_right == true:
-				self.position.x -= 10
-			else: self.position.x += 10
+				rival.position.x = self.position.x + 45
+			else: rival.position.x = self.position.x - 45
 
-func pushed_player(push_speed):
-	self.position.x += push_speed
-
+func stop_tweens_on_push():
+	if pushray.is_colliding()== true:
+		if is_dashing_forward == true and rival.is_dashing_forward == true or\
+					is_dashing_forward == true and rival.is_stuck == true:
+			tween.stop(self, "position:x")
+		elif is_jumping_forward == true and rival.is_jumping_forward == true or\
+					is_jumping_forward == true and rival.is_stuck == true:
+			tween.stop(self, "position:x")
+	if is_stuck == true:
+		if is_dashing_backward == true or is_jumping_backward == true:
+			tween.stop(self, "position:x")
+	
 func detect_stuck():
 	if self.position.x < camera_pos.x - 192 + 25 or self.position.x > camera_pos.x + 192 - 25:
 		is_stuck = true
 	else: is_stuck = false
-	print(is_stuck)
 	
 func _on_hit_connects(area):
 	if area.has_method("hurt_box"):
@@ -861,15 +901,11 @@ func _on_HitSpacerTimer_timeout():
 func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 	if just_hitted == false:
 		just_hitted = true
-		$HitSpacerTimer.start(0.1)
+		$HitSpacerTimer.start(0.000001)
 		if self_shape == 0:
-			print("cabeza!")
 			hit_trig = "Head"
 		elif self_shape == 1 or self_shape == 3:
-			print("torso!")
 			hit_trig = "Torso"
 		elif self_shape == 2:
-			print("piernas!")
 			hit_trig = "Legs"
 		on_hit()
-		print(hit_trig)
