@@ -44,6 +44,14 @@ var hit_chip # Si es "true" causa un porcentaje de daño aún bloqueándolo
 var hit_lock # Si es "true no produce empuje hacia atrás
 var hit_jugg # Si es "true" puede golpearnos en estado "AIR_STUNNED"
 
+var hit_area_pos:= Vector2()
+var hit_area_size:= Vector2()
+var hurt_area_pos:= Vector2()
+var hurt_area_size:= Vector2()
+var hit_area_rect:= Rect2() # Eliminar tras video
+var hurt_area_rect:= Rect2() # Eliminar tras video
+var hitfx_area_rect:= Rect2()
+
 var WALK_FORWARD_SPEED = 200
 var WALK_BACKWARD_SPEED = 150
 var JUMP_F_LENGHT = 120
@@ -827,6 +835,7 @@ func _process(delta):
 	trigger_special_1()
 	fall()
 	boxes_auto_visibility()
+	update()
 
 	motion = position - last_position
 	last_position = position
@@ -901,11 +910,78 @@ func _on_HitSpacerTimer_timeout():
 func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 	if just_hitted == false:
 		just_hitted = true
-		$HitSpacerTimer.start(0.000001)
+		$HitSpacerTimer.start(0.01)
 		if self_shape == 0:
 			hit_trig = "Head"
 		elif self_shape == 1 or self_shape == 3:
 			hit_trig = "Torso"
 		elif self_shape == 2:
 			hit_trig = "Legs"
+			
+		rival.get_hitbox_rect()
+		get_hurtbox_rectangle(self_shape)
+		calculate_hitfx_drawing_area()
 		on_hit()
+
+func get_hitbox_rect():
+	var hit_area_center = $HitBoxes/HitBox1.position
+	var hit_area_extents = $HitBoxes/HitBox1.shape.extents
+
+	hit_area_pos = to_global(hit_area_center) - hit_area_extents
+	hit_area_size = hit_area_extents * 2
+		
+	hit_area_rect = Rect2(hit_area_pos, hit_area_size) # Eliminar tras video
+	
+	if player == 1:
+		print("P1_",hit_area_pos, hit_area_size)
+	else: print("P2_",hit_area_pos, hit_area_size)
+	
+func get_hurtbox_rectangle(hurt_box):
+	var hurt_area_center:= Vector2()
+	var hurt_area_extents:= Vector2()
+	
+	if hurt_box == 0:
+		hurt_area_center = $HurtBoxes/HurtBox1.position
+		hurt_area_extents = $HurtBoxes/HurtBox1.shape.extents
+	elif hurt_box == 1:
+		hurt_area_center = $HurtBoxes/HurtBox2.position
+		hurt_area_extents = $HurtBoxes/HurtBox2.shape.extents
+	elif hurt_box == 2:
+		hurt_area_center = $HurtBoxes/HurtBox3.position
+		hurt_area_extents = $HurtBoxes/HurtBox3.shape.extents
+	elif hurt_box == 3:
+		hurt_area_center = $HurtBoxes/HurtBox4.position
+		hurt_area_extents = $HurtBoxes/HurtBox4.shape.extents
+	
+	hurt_area_pos = to_global(hurt_area_center) - hurt_area_extents
+	hurt_area_size = hurt_area_extents * 2
+	hurt_area_rect = Rect2(hurt_area_pos, hurt_area_size) # Eliminar tras video
+	
+func calculate_hitfx_drawing_area():
+	var hitfx_area_pos := Vector2()
+	var hitfx_area_size := Vector2()
+	var hitfx_area_end := Vector2()
+	var rival_hit_area_pos = rival.hit_area_pos
+	var rival_hit_area_size = rival.hit_area_size
+	var rival_hit_area_end = rival.hit_area_pos + rival.hit_area_size
+	var hurt_area_end = hurt_area_pos + hurt_area_size
+	
+	hitfx_area_pos.x = max(rival_hit_area_pos.x, hurt_area_pos.x)
+	hitfx_area_pos.y = max(rival_hit_area_pos.y, hurt_area_pos.y)
+	if rival_hit_area_end.x < hurt_area_end.x:
+		hitfx_area_end.x = rival_hit_area_end.x
+	else: hitfx_area_end.x = hurt_area_end.x
+	if rival_hit_area_end.y < hurt_area_end.y:
+		hitfx_area_end.y = rival_hit_area_end.y
+	else: hitfx_area_end.y = hurt_area_end.y
+	hitfx_area_size = hitfx_area_end - hitfx_area_pos
+	hitfx_area_rect = Rect2(hitfx_area_pos, hitfx_area_size)
+	print(rival_hit_area_pos, hurt_area_pos)
+	
+func _draw():
+	var drawing_rect_pos = to_local(hitfx_area_rect.position)
+	var drawing_rect_end = to_local(hitfx_area_rect.size)
+	var drawing_rect = Rect2(drawing_rect_pos, drawing_rect_end)
+#	draw_rect(hit_area_rect, Color(1, 0, 1))
+#	draw_rect(hurt_area_rect, Color(0, 1, 1))
+#	draw_rect(hitfx_area_rect, Color(1, 1, 0))

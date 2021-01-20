@@ -1,9 +1,10 @@
-[gd_scene load_steps=71 format=2]
+[gd_scene load_steps=72 format=2]
 
 [ext_resource path="res://fighters/MrPalo.gd" type="Script" id=1]
 [ext_resource path="res://TestingAreas.gd" type="Script" id=2]
 [ext_resource path="res://ProximityBox.gd" type="Script" id=3]
 [ext_resource path="res://HurtBoxes.gd" type="Script" id=4]
+[ext_resource path="res://HitsFX.tscn" type="PackedScene" id=5]
 
 [sub_resource type="StreamTexture" id=1]
 load_path = "res://.import/Mr Palo.png-b76e5fdfbaa65fd199ba748763726bcf.stex"
@@ -6114,23 +6115,23 @@ extents = Vector2( 20, 23 )
 
 [sub_resource type="RectangleShape2D" id=60]
 resource_local_to_scene = true
-extents = Vector2( 28, 13 )
+extents = Vector2( 21, 11 )
 
 [sub_resource type="RectangleShape2D" id=61]
 resource_local_to_scene = true
-extents = Vector2( 17, 9 )
+extents = Vector2( 22, 13 )
 
 [sub_resource type="RectangleShape2D" id=62]
 resource_local_to_scene = true
-extents = Vector2( 30, 16 )
+extents = Vector2( 23, 12 )
 
 [sub_resource type="RectangleShape2D" id=63]
 resource_local_to_scene = true
-extents = Vector2( 30, 10 )
+extents = Vector2( 18, 4 )
 
 [sub_resource type="RectangleShape2D" id=64]
 resource_local_to_scene = true
-extents = Vector2( 25, 10 )
+extents = Vector2( 28, 11 )
 
 [sub_resource type="RectangleShape2D" id=65]
 resource_local_to_scene = true
@@ -6156,7 +6157,7 @@ texture = SubResource( 1 )
 offset = Vector2( 5.5, -56.5 )
 vframes = 45
 hframes = 8
-frame = 26
+frame = 336
 __meta__ = {
 "_edit_lock_": true
 }
@@ -6243,12 +6244,13 @@ shape = SubResource( 59 )
 collision_layer = 0
 collision_mask = 0
 __meta__ = {
-"_edit_lock_": true
+"_edit_lock_": true,
+"_editor_description_": ""
 }
 
 [node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
 modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-position = Vector2( 31, -26 )
+position = Vector2( 38, -44 )
 shape = SubResource( 60 )
 
 [node name="HurtBoxes" type="Area2D" parent="."]
@@ -6261,24 +6263,23 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 6.99999, -61 )
+position = Vector2( 3, -80 )
 shape = SubResource( 61 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 1.99999, -36 )
+position = Vector2( -7, -55 )
 shape = SubResource( 62 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -1.00001, -10 )
+position = Vector2( -8, -39 )
 shape = SubResource( 63 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 31, -26 )
+position = Vector2( 29, -30 )
 shape = SubResource( 64 )
-disabled = true
 
 [node name="ProximityBox" type="Area2D" parent="."]
 collision_layer = 0
@@ -6291,6 +6292,9 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 65 )
+
+[node name="HitsFX" parent="." instance=ExtResource( 5 )]
+position = Vector2( 41, -13 )
 
 [node name="TestProxBox" type="Area2D" parent="."]
 visible = false

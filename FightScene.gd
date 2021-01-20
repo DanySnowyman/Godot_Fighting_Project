@@ -28,7 +28,6 @@ func _ready():
 	player1.find_nodes()
 	player2.find_nodes()
 	$Camera2D.find_nodes()
-#	$Canvaicon.set_as_toplevel(true)
 
 func _process(delta):
 	if player1.position.x < player2.position.x:
@@ -39,3 +38,9 @@ func _process(delta):
 		player1_on_left = false
 		player1.must_face_right = false
 		player2.must_face_right = true
+	update()
+	
+func _draw():
+	draw_rect(player1.hit_area_rect, Color(1, 0, 1))
+	draw_rect(player2.hurt_area_rect, Color(0, 1, 1))
+	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
