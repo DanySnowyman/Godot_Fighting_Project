@@ -5,7 +5,7 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "Blocked"
-length = 0.133333
+length = 0.2
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -14,15 +14,14 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0333333, 0.0666667, 0.1 ),
+"times": PoolRealArray( 0, 0.05, 0.133333, 0.166667 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 4, 5, 6, 7 ]
+"values": [ 0, 1, 2, 3 ]
 }
 
 [sub_resource type="Animation" id=2]
-resource_name = "Connected"
-length = 0.133333
+length = 0.2
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -31,16 +30,17 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0666667, 0.1 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.133333, 0.166667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 0, 3 ]
+"values": [ 4, 5, 6, 7 ]
 }
 
 [node name="HitsFX" type="Node2D"]
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
+z_index = 1
 texture = ExtResource( 1 )
 hframes = 8
 frame = 4

@@ -40,7 +40,14 @@ func _process(delta):
 		player2.must_face_right = true
 	update()
 	
-func _draw():
-	draw_rect(player1.hit_area_rect, Color(1, 0, 1))
-	draw_rect(player2.hurt_area_rect, Color(0, 1, 1))
-	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
+#func _draw():
+#	draw_rect(player1.hit_area_rect, Color(1, 0, 1))
+#	draw_rect(player2.hurt_area_rect, Color(0, 1, 1))
+#	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
+
+func play_hitfx(facing_right, hitfx_area_rect, hit_type):
+	$HitsFX.position.x = rand_range(hitfx_area_rect.position.x,\
+					hitfx_area_rect.position.x + hitfx_area_rect.size.x)
+	$HitsFX.position.y = rand_range(hitfx_area_rect.position.y,\
+					hitfx_area_rect.position.y + hitfx_area_rect.size.y)
+	$HitsFX.call_animation(facing_right, hit_type)

@@ -10,7 +10,6 @@ enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKI
 		ATTACKING_SP, AIR_ATTACKING, BLOCKING_H, BLOCKING_L, BLOCK_STUNNED_H, BLOCK_STUNNED_L,
 		HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 
-var doing_something
 var state
 var facing_right = true
 var must_face_right
@@ -605,7 +604,7 @@ func on_hit():
 		received_hit()
 		
 func blocked_hit():
-	print("%s blocked_hit func" % Px)
+	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Blocked")
 	if state == is_.BLOCKING_H:
 		state = is_.BLOCK_STUNNED_H
 		if hit_trig == "Head":
@@ -643,7 +642,7 @@ func blocked_hit():
 	stand()
 
 func received_hit():
-	print("%s received_hit func" % Px)
+	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 	disable_hit_boxes()
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or\
 					state == is_.HIT_STUNNED_CR:
@@ -708,6 +707,7 @@ func received_hit():
 			stand()
 
 func air_received_hit():
+	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 	tween.remove_all()
 	state = is_.AIR_STUNNED
 	$AnimationPlayer.play("Hit stun air")
@@ -835,7 +835,6 @@ func _process(delta):
 	trigger_special_1()
 	fall()
 	boxes_auto_visibility()
-	update()
 
 	motion = position - last_position
 	last_position = position
@@ -976,12 +975,3 @@ func calculate_hitfx_drawing_area():
 	else: hitfx_area_end.y = hurt_area_end.y
 	hitfx_area_size = hitfx_area_end - hitfx_area_pos
 	hitfx_area_rect = Rect2(hitfx_area_pos, hitfx_area_size)
-	print(rival_hit_area_pos, hurt_area_pos)
-	
-func _draw():
-	var drawing_rect_pos = to_local(hitfx_area_rect.position)
-	var drawing_rect_end = to_local(hitfx_area_rect.size)
-	var drawing_rect = Rect2(drawing_rect_pos, drawing_rect_end)
-#	draw_rect(hit_area_rect, Color(1, 0, 1))
-#	draw_rect(hurt_area_rect, Color(0, 1, 1))
-#	draw_rect(hitfx_area_rect, Color(1, 1, 0))
