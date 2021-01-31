@@ -12,7 +12,6 @@ func find_nodes():
 	player1 = get_parent().get_node("Player1")
 	player2 = get_parent().get_node("Player2")
 	position.x = stage_size.end.x / 2
-	print(stage_size)
 
 func _process(delta):
 	position.x = (player1.position.x + player2.position.x) / 2

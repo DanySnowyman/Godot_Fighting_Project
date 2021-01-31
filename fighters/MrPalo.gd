@@ -7,8 +7,9 @@ var rival
 var Px
 
 enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKING_CR,
-		ATTACKING_SP, AIR_ATTACKING, BLOCKING_H, BLOCKING_L, BLOCK_STUNNED_H, BLOCK_STUNNED_L,
-		HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
+		ATTACKING_SP, AIR_ATTACKING, GRABBING, GRABBED, BLOCKING_H, BLOCKING_L, BLOCK_STUNNED_H,
+		BLOCK_STUNNED_L, HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT,
+		KNOCKED_DOWN, WAKING_UP}
 
 var state
 var facing_right = true
@@ -67,6 +68,7 @@ const DASH_F_TIME = 0.4
 const DASH_B_TIME = 0.4
 
 var motion := Vector2()
+var camera
 var camera_pos := Vector2()
 var stage_size := Rect2()
 
@@ -84,6 +86,8 @@ func _ready():
 		$HurtBoxes.set_collision_layer(2)
 		$HurtBoxes.set_collision_mask(4096)
 		$ProximityBox.set_collision_layer(8)
+		$GrabBox.set_collision_layer(16)
+		$GrabBox.set_collision_mask(1024)
 		$PushingRay.set_collision_mask(1024)
 		add_to_group("Player_1")
 	else:
@@ -98,6 +102,8 @@ func _ready():
 		$HurtBoxes.set_collision_layer(2048)
 		$HurtBoxes.set_collision_mask(4)
 		$ProximityBox.set_collision_layer(8192)
+		$GrabBox.set_collision_layer(16384)
+		$GrabBox.set_collision_mask(1)
 		$PushingRay.set_collision_mask(1)
 		add_to_group("Player_2")
 		WALK_FORWARD_SPEED = 180 # Esto hay que quitarlo al final <----------------
@@ -114,6 +120,7 @@ func find_nodes():
 	else:
 		rival = get_parent().get_node("Player1")
 		self.position = Vector2((stage_size.end.x / 2) + 80, (stage_size.end.y - 20))
+	camera = get_parent().get_node("Camera2D")
 
 func change_facing_direction():
 	if facing_right != must_face_right:
@@ -249,15 +256,21 @@ func player_control(delta):
 			if facing_right == true:
 				dash_backward()
 			else: dash_forward()
+	# Grabbing ------------------------------------------------------------------
+	if state == is_.STANDING or state == is_.BLOCKING_H:
+		if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_LK" % Px):
+			grab_attempt()
 	# Standing Normals --------------------------------------------------------
 	if state == is_.STANDING or state == is_.BLOCKING_H:
-		if Input.is_action_just_pressed("%s_LP" % Px):
+		if Input.is_action_just_pressed("%s_LP" % Px) and\
+				Input.is_action_just_pressed("%s_LK" % Px) == false:
 			standing_normal("LP")
 		if Input.is_action_just_pressed("%s_MP" % Px):
 			standing_normal("MP")
 		if Input.is_action_just_pressed("%s_HP" % Px):
 			standing_normal("HP")
-		if Input.is_action_just_pressed("%s_LK" % Px):
+		if Input.is_action_just_pressed("%s_LK" % Px) and\
+				Input.is_action_just_pressed("%s_LP" % Px) == false:
 			standing_normal("LK")
 		if Input.is_action_just_pressed("%s_MK" % Px):
 			standing_normal("MK")
@@ -265,13 +278,15 @@ func player_control(delta):
 			standing_normal("HK")
 	# Crouching Normals ---------------------------------------------------------
 	if state == is_.CROUCHING or state == is_.BLOCKING_L:
-		if Input.is_action_just_pressed("%s_LP" % Px):
+		if Input.is_action_just_pressed("%s_LP" % Px) and\
+				Input.is_action_just_pressed("%s_LK" % Px) == false:
 			crouching_normal("LP")
 		if Input.is_action_just_pressed("%s_MP" % Px):
 			crouching_normal("MP")
 		if Input.is_action_just_pressed("%s_HP" % Px):
 			crouching_normal("HP")
-		if Input.is_action_just_pressed("%s_LK" % Px):
+		if Input.is_action_just_pressed("%s_LK" % Px) and\
+				Input.is_action_just_pressed("%s_LP" % Px) == false:
 			crouching_normal("LK")
 		if Input.is_action_just_pressed("%s_MK" % Px):
 			crouching_normal("MK")
@@ -320,6 +335,7 @@ func stand():
 	state = is_.STANDING
 	is_walking_forward = false
 	is_walking_backward = false
+	self.z_index = 0
 	if already_crouched == true:
 		already_crouched = false
 		$AnimationPlayer.play_backwards("Crouch")
@@ -576,6 +592,64 @@ func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
 	hit_lock = lock
 	hit_jugg = jugg
 
+func grab_attempt():
+	$GrabBox/GrabBox1.disabled = false
+	yield(get_tree().create_timer(0.1), "timeout")
+	$GrabBox/GrabBox1.disabled = true
+	if state != is_.GRABBING:
+		grab_missed()
+
+func forward_grab():
+	var rival_sprite = rival.get_node("Sprite")
+	if state == is_.GRABBING:
+		$AnimationPlayer.stop(true)
+		yield(get_tree().create_timer(0.1), "timeout")
+		if facing_right == true:
+			self.position.x += 20
+		else: self.position.x -= 20
+		self.z_index = 1
+		$Sprite.frame = 360
+		rival_sprite.flip_h = true
+		if facing_right == true:
+			rival.position = self.position + Vector2(-35, -15)
+		else: rival.position = self.position + Vector2(35, -15)
+		rival_sprite.frame = 93
+		yield(get_tree().create_timer(0.25), "timeout")
+		$Sprite.frame = 361
+		if facing_right == true:
+			rival.position = self.position + Vector2(-5, -35)
+		else: rival.position = self.position + Vector2(5, -35)
+		rival_sprite.rotation_degrees = 270
+		yield(get_tree().create_timer(0.10), "timeout")
+		$Sprite.frame = 362
+		if facing_right == true:
+			rival.position = self.position + Vector2(30, -50)
+		else: rival.position = self.position + Vector2(-30, -50)
+		rival_sprite.rotation_degrees = 180
+		if facing_right == true:
+			rival.throwed(100, 10)
+		else: rival.throwed(-100, 10)
+		yield(get_tree().create_timer(0.15), "timeout")
+		$Sprite.frame = 363
+		rival_sprite.frame = 107
+		rival_sprite.rotation_degrees = 0
+		yield(get_tree().create_timer(0.40), "timeout")
+		stand()
+		
+func backward_grab():
+	print("BACKWARD GRAB!")
+
+func grab_missed():
+	state = is_.ATTACKING_ST
+	$AnimationPlayer.play("Grab miss")
+	yield($AnimationPlayer, "animation_finished")
+	stand()
+	
+func grabbed():
+	state = is_.GRABBED
+	$AnimationPlayer.stop(true)
+	tween.remove_all()
+
 func block_standing():
 	state = is_.BLOCKING_H
 	$AnimationPlayer.play("Block standing")
@@ -706,6 +780,23 @@ func received_hit():
 		if state != is_.KNOCKED_DOWN:
 			stand()
 
+func knockback(distance, time):
+	tween.stop_all()
+	if facing_right == false:
+		distance = -distance
+	if rival.hit_lock == false: 
+		tween.interpolate_property(self, "position:x", self.position.x,
+			self.position.x - distance, time,
+			Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween.start()
+
+func knocked_down():
+	state = is_.KNOCKED_DOWN
+	$AnimationPlayer.play("Knockdown")
+	knockback(30, 0.3)
+	yield($AnimationPlayer, "animation_finished")
+	wake_up()
+
 func air_received_hit():
 	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 	tween.remove_all()
@@ -728,39 +819,22 @@ func air_received_hit():
 		self.position.y, self.position.y + 500,
 		0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
-	yield(tween, "tween_all_completed")
-	state = is_.FALLING
-	if state == is_.KNOCKED_DOWN:
-		$AnimationPlayer.play("Knockdown")
-		yield($AnimationPlayer, "animation_finished")
-		wake_up()
-
-func knocked_down():
-	state = is_.KNOCKED_DOWN
-	$AnimationPlayer.play("Knockdown")
-	knockback(30, 0.3)
-	yield($AnimationPlayer, "animation_finished")
-	wake_up()
+#	yield(tween, "tween_all_completed")
+#	state = is_.FALLING parece que esto de FALLING es innecesario
+#	if state == is_.KNOCKED_DOWN: # Esto también parece olvidado aquí
+#		$AnimationPlayer.play("Knockdown")
+#		yield($AnimationPlayer, "animation_finished")
+#		wake_up()
 		
-func knockback(distance, time):
-	tween.stop_all()
-	if facing_right == false:
-		distance = -distance
-	if rival.hit_lock == false: 
-		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - distance, time,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
-		tween.start()
-
 func fall():
-	if state == is_.FALLING:
+	if state == is_.AIR_STUNNED:
 		if self.position.y == stage_size.end.y - 20:
 			tween.remove_all()
 			ground_impact()
 			pre_jump = false
 
 func ground_impact():
-	if state == is_.FALLING:
+	if state == is_.AIR_STUNNED:
 		state = is_.GROUND_IMPACT
 		$AnimationPlayer.play("Ground impact")
 		tween.interpolate_property(self, "position:x", self.position.x,
@@ -775,7 +849,31 @@ func wake_up():
 		state = is_.WAKING_UP
 		$AnimationPlayer.play("Wake up")
 		yield($AnimationPlayer, "animation_finished")
+		if $Sprite.flip_h == true:
+			$Sprite.flip_h = false
 		stand()
+
+func throwed(distance, height):
+	if state == is_.GRABBED:
+		state = is_.AIR_STUNNED
+		#Arco ascendente --------------------------------
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x + distance / 2,
+			0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y - height,
+			0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween.start()
+		yield(tween, "tween_all_completed")
+		#Arco descendente -------------------------------
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x + distance / 2,
+			0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + 500,
+			0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+		yield(tween, "tween_all_completed")
 
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
@@ -801,6 +899,10 @@ func boxes_auto_visibility():
 	if $ProximityBox/ProxBox1.disabled == true:
 		$ProximityBox/ProxBox1.visible = false
 	else: $ProximityBox/ProxBox1.visible = true
+	
+	if $GrabBox/GrabBox1.disabled == true:
+		$GrabBox/GrabBox1.visible = false
+	else: $GrabBox/GrabBox1.visible = true
 
 func disable_hurt_boxes():
 	$HurtBoxes/HurtBox1.disabled = true
@@ -809,8 +911,8 @@ func disable_hurt_boxes():
 	$HurtBoxes/HurtBox4.disabled = true
 
 func disable_hit_boxes():
-	$HitBoxes/HitBox1.disabled = true
-	$ProximityBox/ProxBox1.disabled = true
+	$HitBoxes/HitBox1.set_deferred("disabled", true)
+	$ProximityBox/ProxBox1.set_deferred("disabled", true)
 	
 func re_check_states():
 	if state != is_.STANDING:
@@ -822,6 +924,12 @@ func re_check_states():
 	if state != is_.DASHING:
 		is_dashing_forward = false
 		is_dashing_backward = false
+	if state == is_.GRABBING or state == is_.GRABBED:
+		$PushBox.disabled = true
+		pushray.enabled = false
+	else:
+		$PushBox.disabled = false
+		pushray.enabled = true
 
 func _process(delta):
 	player_control(delta)
@@ -839,12 +947,15 @@ func _process(delta):
 	motion = position - last_position
 	last_position = position
 	
-	camera_pos = get_parent().get_node("Camera2D").get_camera_screen_center()
+	camera_pos = camera.get_camera_screen_center()
 	
 	self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
 	self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
 
 	$HUD/State.text = is_.keys()[state]
+	
+	if player == 2:
+		print($Sprite.flip_h)
 	
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
@@ -898,7 +1009,7 @@ func detect_stuck():
 	
 func _on_hit_connects(area):
 	if area.has_method("hurt_box"):
-		$HitBoxes/HitBox1.disabled
+		$HitBoxes/HitBox1.set_deferred("disabled", true)
 
 func _on_SpecialTimer_timeout():
 	sp_input_count = 0
@@ -922,6 +1033,19 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 		calculate_hitfx_drawing_area()
 		on_hit()
 
+func _on_GrabBox_area_entered(area):
+	if rival.state == is_.STANDING or rival.state == is_.CROUCHING:
+		state = is_.GRABBING
+		rival.grabbed()
+		if facing_right == true:
+			if Input.is_action_pressed("%s_LEFT" % Px):
+				backward_grab()
+			else: forward_grab()
+		else:
+			if Input.is_action_pressed("%s_RIGHT" % Px):
+				backward_grab()
+			else: forward_grab()
+	
 func get_hitbox_rect():
 	var hit_area_center = $HitBoxes/HitBox1.position
 	var hit_area_extents = $HitBoxes/HitBox1.shape.extents
