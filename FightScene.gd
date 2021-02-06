@@ -2,10 +2,12 @@ extends Node2D
 
 var MrPalo = preload("res://fighters/MrPalo.tscn")
 var Training_stage = preload("res://stages//TrainingStage.tscn")
+var Hits_FX = preload("res://HitsFX.tscn")
 
 var player1
 var player2
 var stage
+var hitsfx
 var player1_on_left
 var stage_size
 
@@ -46,8 +48,10 @@ func _process(delta):
 #	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
 
 func play_hitfx(facing_right, hitfx_area_rect, hit_type):
-	$HitsFX.position.x = rand_range(hitfx_area_rect.position.x,\
+	hitsfx = Hits_FX.instance()
+	hitsfx.position.x = rand_range(hitfx_area_rect.position.x,\
 					hitfx_area_rect.position.x + hitfx_area_rect.size.x)
-	$HitsFX.position.y = rand_range(hitfx_area_rect.position.y,\
+	hitsfx.position.y = rand_range(hitfx_area_rect.position.y,\
 					hitfx_area_rect.position.y + hitfx_area_rect.size.y)
-	$HitsFX.call_animation(facing_right, hit_type)
+	add_child(hitsfx)
+	hitsfx.call_animation(facing_right, hit_type)

@@ -34,6 +34,10 @@ var dash_l_ready = false
 var can_dash_cancel = false
 var sp_input_count = 0
 
+var position_is_locked = false
+var initial_sprite_pos = Vector2()
+var grab_offset = Vector2()
+
 var hit_damg # Daño producido
 var hit_stun # Aturdimiento producido
 var hit_strg # Light, Medium, Heavy, Sweep
@@ -109,6 +113,7 @@ func _ready():
 		WALK_FORWARD_SPEED = 180 # Esto hay que quitarlo al final <----------------
 	
 	state = is_.STANDING
+	initial_sprite_pos = $Sprite.position
 	$AnimationPlayer.play("Stand")
 	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
@@ -637,7 +642,93 @@ func forward_grab():
 		stand()
 		
 func backward_grab():
-	print("BACKWARD GRAB!")
+	var rival_sprite = rival.get_node("Sprite")
+	if state == is_.GRABBING:
+		$AnimationPlayer.stop(true)
+		tween.remove_all()
+		yield(get_tree().create_timer(0.1), "timeout")
+		if facing_right == true:
+			self.position.x += 20
+		else: self.position.x -= 20
+		self.z_index = 1
+		$Sprite.frame = 376
+		if facing_right == true:
+			rival.position = self.position + Vector2(40, 0)
+		else: rival.position = self.position + Vector2(-40, 0)
+		rival_sprite.frame = 94
+		yield(get_tree().create_timer(0.25), "timeout")
+		$Sprite.frame = 377
+		rival_sprite.frame = 95
+		rival_sprite.rotation_degrees = 90
+		if facing_right == true:
+			rival.position = self.position + Vector2(20, 10)
+		else: rival.position = self.position + Vector2(-20, 10)
+		yield(get_tree().create_timer(0.15), "timeout")
+		$Sprite.frame = 378
+		rival_sprite.frame = 92
+		rival_sprite.rotation_degrees = 180
+		if facing_right == true:
+			rival.position = self.position + Vector2(15, -10)
+		else: rival.position = self.position + Vector2(-15, -10)
+		rival.position_is_locked = true
+		yield(get_tree().create_timer(0.10), "timeout")
+		if facing_right == true:
+			tween_parable(100, 100, 1.0)
+		else: tween_parable(-100, 100, 1.0)
+		for i in range(8):
+			if tween.is_active() == true:
+				self.z_index = 1
+				$Sprite.frame = 379
+				rival_sprite.frame = 93
+				rival_sprite.flip_h = false
+				rival_sprite.position = to_local(rival.position) + Vector2(-8, -55)
+				yield(get_tree().create_timer(0.1), "timeout")
+			else: break
+			if tween.is_active() == true:
+				$Sprite.frame = 380
+				rival_sprite.frame = 73
+				rival_sprite.position = to_local(rival.position) + Vector2(-8, -55)
+				yield(get_tree().create_timer(0.1), "timeout")
+			else: break
+			if tween.is_active() == true:
+				$Sprite.frame = 379
+				$Sprite.flip_h = true
+				rival_sprite.frame = 93
+				rival_sprite.flip_h = true
+				rival_sprite.position = to_local(rival.position) + Vector2(8, -55)
+				yield(get_tree().create_timer(0.1), "timeout")
+			else: break
+			if tween.is_active() == true:
+				self.z_index = -1
+				$Sprite.frame = 380
+				$Sprite.flip_h = false
+				rival_sprite.frame = 73
+				rival_sprite.position = to_local(rival.position) + Vector2(8, -55)
+				yield(get_tree().create_timer(0.1), "timeout")
+			else: break
+		rival.position_is_locked = false
+		$Sprite.frame = 381
+		rival_sprite.position = rival.initial_sprite_pos
+		rival_sprite.frame = 95
+		rival_sprite.flip_h = false
+		rival_sprite.rotation_degrees = 180
+		if facing_right == true:
+			rival.position = self.position + Vector2(20, 30)
+		else: rival.position = self.position + Vector2(-20, 30)
+		yield(get_tree().create_timer(0.5), "timeout")
+		rival_sprite.frame = 107
+		rival_sprite.rotation_degrees = 0
+		rival_sprite.flip_h = true
+		if facing_right == true:
+			rival.throwed(80, 50)
+			tween_parable(-50, 20, 0.5)
+		else:
+			rival.throwed(-80, 50)
+			tween_parable(50, 20, 0.5)
+		$Sprite.frame = 49
+		yield(get_tree().create_timer(0.5), "timeout")
+		stand()
+		
 
 func grab_missed():
 	state = is_.ATTACKING_ST
@@ -738,7 +829,7 @@ func received_hit():
 			crouch()
 		
 	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H or\
-					state == is_.HIT_STUNNED_ST:
+					state == is_.HIT_STUNNED_ST or state == is_.PRE_JUMP:
 		state = is_.HIT_STUNNED_ST
 		if hit_trig == "Head":
 			if rival.hit_strg == "Light":
@@ -875,6 +966,32 @@ func throwed(distance, height):
 		tween.start()
 		yield(tween, "tween_all_completed")
 
+func lock_position():
+	var grab_position = rival.position + grab_offset
+	if position_is_locked == true:
+		self.position = grab_position
+
+func tween_parable(distance, height, time):
+	#Arco ascendente --------------------------------
+	tween.interpolate_property(self, "position:x",
+		self.position.x, self.position.x + distance / 2,
+		time / 2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.interpolate_property(self, "position:y",
+		self.position.y, self.position.y - height,
+		time / 2, Tween.TRANS_QUINT, Tween.EASE_OUT)
+	tween.start()
+	yield(tween, "tween_all_completed")
+	#Arco descendente -------------------------------
+	tween.interpolate_property(self, "position:x",
+		self.position.x, self.position.x + distance / 2,
+		time / 2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+	tween.interpolate_property(self, "position:y",
+		self.position.y, self.position.y + height,
+		time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
+	tween.start()
+	yield(tween, "tween_all_completed")
+	
+
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
 		$HitBoxes/HitBox1.visible = false
@@ -939,6 +1056,7 @@ func _process(delta):
 	change_facing_direction()
 	facing_direction()
 	detect_stuck()
+	lock_position()
 	re_check_states()
 	trigger_special_1()
 	fall()
@@ -949,14 +1067,12 @@ func _process(delta):
 	
 	camera_pos = camera.get_camera_screen_center()
 	
-	self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
-	self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
+	if state != is_.GRABBED:
+		self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
+		self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
 
 	$HUD/State.text = is_.keys()[state]
-	
-	if player == 2:
-		print($Sprite.flip_h)
-	
+
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
 		can_guard = true
@@ -1054,10 +1170,6 @@ func get_hitbox_rect():
 	hit_area_size = hit_area_extents * 2
 		
 	hit_area_rect = Rect2(hit_area_pos, hit_area_size) # Eliminar tras video
-	
-	if player == 1:
-		print("P1_",hit_area_pos, hit_area_size)
-	else: print("P2_",hit_area_pos, hit_area_size)
 	
 func get_hurtbox_rectangle(hurt_box):
 	var hurt_area_center:= Vector2()

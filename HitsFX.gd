@@ -10,4 +10,4 @@ func call_animation(facing_right, animation):
 	self.visible = true
 	$AnimationPlayer.play(animation)
 	yield($AnimationPlayer, "animation_finished")
-	self.visible = false
+	queue_free()

@@ -6156,15 +6156,15 @@ extents = Vector2( 23, 10 )
 
 [sub_resource type="RectangleShape2D" id=63]
 resource_local_to_scene = true
-extents = Vector2( 23, 17 )
+extents = Vector2( 23, 11 )
 
 [sub_resource type="RectangleShape2D" id=64]
 resource_local_to_scene = true
-extents = Vector2( 23, 17 )
+extents = Vector2( 19, 6 )
 
 [sub_resource type="RectangleShape2D" id=65]
 resource_local_to_scene = true
-extents = Vector2( 23, 13 )
+extents = Vector2( 24, 10 )
 
 [sub_resource type="RectangleShape2D" id=66]
 resource_local_to_scene = true
@@ -6189,16 +6189,12 @@ __meta__ = {
 }
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 0, -45 )
+position = Vector2( 0, -50 )
 texture = ExtResource( 5 )
-centered = false
-offset = Vector2( -80, -99 )
-vframes = 47
+offset = Vector2( 0, -14 )
+vframes = 48
 hframes = 8
-frame = 90
-__meta__ = {
-"_edit_lock_": true
-}
+frame = 50
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -6282,6 +6278,7 @@ position = Vector2( 1, -45 )
 shape = SubResource( 61 )
 
 [node name="HitBoxes" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 0
 __meta__ = {
@@ -6296,6 +6293,7 @@ shape = SubResource( 62 )
 disabled = true
 
 [node name="HurtBoxes" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 4 )
@@ -6305,17 +6303,17 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -77 )
+position = Vector2( -6, -43 )
 shape = SubResource( 63 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -43 )
+position = Vector2( -11, -26 )
 shape = SubResource( 64 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -13 )
+position = Vector2( -7, -10 )
 shape = SubResource( 65 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
@@ -6325,6 +6323,7 @@ shape = SubResource( 66 )
 disabled = true
 
 [node name="ProximityBox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 3 )
