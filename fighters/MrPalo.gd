@@ -6,7 +6,7 @@ var player = 1
 var rival
 var Px
 
-enum is_ {STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKING_CR,
+enum is_ {LOCKED, STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST, ATTACKING_CR,
 		ATTACKING_SP, AIR_ATTACKING, GRABBING, GRABBED, BLOCKING_H, BLOCKING_L, BLOCK_STUNNED_H,
 		BLOCK_STUNNED_L, HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT,
 		KNOCKED_DOWN, WAKING_UP}
@@ -21,13 +21,13 @@ var is_dashing_forward = false
 var is_dashing_backward = false
 var is_jumping_forward = false
 var is_jumping_backward = false
+var nearly_grabbed = false
 var players_collide = false
 var can_guard = false
 var just_hitted = false
 var waiting_for_flip = false
 var already_crouched = false
 var last_position = Vector2()
-var pre_jump = false
 var startup_frames = false
 var dash_r_ready = false
 var dash_l_ready = false
@@ -45,7 +45,7 @@ var hit_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
 var hit_type # Normal < Special < Powered < Ultimate
 var hit_trig # Head, Torso or Legs (Animación de respuesta en el rival)
 var hit_chip # Si es "true" causa un porcentaje de daño aún bloqueándolo
-var hit_lock # Si es "true no produce empuje hacia atrás
+var hit_lock = false # Si es "true no produce empuje hacia atrás
 var hit_jugg # Si es "true" puede golpearnos en estado "AIR_STUNNED"
 
 var hit_area_pos:= Vector2()
@@ -222,7 +222,6 @@ func player_control(delta):
 		if Input.is_action_pressed("%s_DOWN" % Px) == false:
 			stand()
 		else: crouch()
-
 	# Jump -------------------------------------------------------------------
 	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_pressed("%s_UP" % Px):
@@ -262,10 +261,17 @@ func player_control(delta):
 				dash_backward()
 			else: dash_forward()
 	# Grabbing ------------------------------------------------------------------
-	if state == is_.STANDING or state == is_.BLOCKING_H:
-		if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_LK" % Px):
+	if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_LK" % Px):
+		if state == is_.STANDING or state == is_.BLOCKING_H:
 			grab_attempt()
-	# Standing Normals --------------------------------------------------------
+		elif state == is_.JUMPING:
+			air_grab_attempt()
+	# Counter grab --------------------------------------------------------------
+	if nearly_grabbed == true and state != is_.AIR_ATTACKING:
+		if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_LK" % Px):
+			grab_escape()
+			rival.grab_countered()
+	# Standing Normals ----------------------------------------------------------
 	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_just_pressed("%s_LP" % Px) and\
 				Input.is_action_just_pressed("%s_LK" % Px) == false:
@@ -383,17 +389,19 @@ func jump_vertical():
 		state = is_.JUMPING
 		yield(tween, "tween_completed")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED:
+		if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
+						and state != is_.LOCKED:
 			tween.interpolate_property(self, "position:y",
 				self.position.y, (self.position.y + JUMP_HEIGHT),
 				JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
 			yield(tween, "tween_completed")
-			if state != is_.AIR_STUNNED:
+			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
+						and state != is_.LOCKED:
 				disable_hit_boxes()
-				state = is_.STANDING
-				pre_jump = false
-				$AnimationPlayer.play("Stand")
+				stand()
+			else: pass
+		else: pass
 
 func jump_forward():
 	$AnimationPlayer.play("Pre jump")
@@ -413,7 +421,8 @@ func jump_forward():
 		is_walking_forward = false
 		yield(get_tree().create_timer(JUMP_ASC_TIME), "timeout")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED:
+		if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
+						and state != is_.LOCKED:
 			tween.interpolate_property(self, "position:x",
 				self.position.x, self.position.x + JUMP_F_LENGHT / 2,
 				JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
@@ -422,11 +431,10 @@ func jump_forward():
 				JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
 			yield(get_tree().create_timer(JUMP_DES_TIME), "timeout")
-			if state != is_.AIR_STUNNED:
+			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
+						and state != is_.LOCKED:
 				disable_hit_boxes()
-				state = is_.STANDING
-				pre_jump = false
-				$AnimationPlayer.play("Stand")
+				stand()
 
 func jump_backward():
 	$AnimationPlayer.play("Pre jump")
@@ -446,7 +454,8 @@ func jump_backward():
 		is_walking_backward = false
 		yield(get_tree().create_timer(JUMP_ASC_TIME), "timeout")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED:
+		if state != is_.AIR_STUNNED  and state != is_.GRABBING and state != is_.GRABBED\
+					and state != is_.LOCKED:
 			tween.interpolate_property(self, "position:x",
 				self.position.x, self.position.x - JUMP_B_LENGHT / 2,
 				JUMP_DES_TIME, Tween.TRANS_LINEAR, Tween.EASE_IN)
@@ -455,11 +464,12 @@ func jump_backward():
 				JUMP_DES_TIME, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
 			yield(get_tree().create_timer(JUMP_DES_TIME), "timeout")
-			if state != is_.AIR_STUNNED:
+			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
+						and state != is_.LOCKED:
 				disable_hit_boxes()
-				state = is_.STANDING
-				pre_jump = false
-				$AnimationPlayer.play("Stand")
+				stand()
+			else: pass
+		else: pass
 
 func dash_forward():
 	$AnimationPlayer.play("Dash forward")
@@ -479,7 +489,9 @@ func dash_forward():
 		tween.start()
 		state = is_.DASHING
 		yield(get_tree().create_timer(DASH_F_TIME), "timeout")
-	if state != is_.AIR_STUNNED:
+	if state == is_.AIR_STUNNED or state == is_.GRABBED:
+		pass
+	else:
 		tween.stop_all()
 		stand()
 
@@ -598,17 +610,94 @@ func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
 	hit_jugg = jugg
 
 func grab_attempt():
+	state = is_.ATTACKING_ST
+	$GrabCounterTimer.start(0.100)
+	$AnimationPlayer.play("Grab attempt")
+		
+func air_grab_attempt():
+	state = is_.AIR_ATTACKING
 	$GrabBox/GrabBox1.disabled = false
-	yield(get_tree().create_timer(0.1), "timeout")
+	yield(get_tree().create_timer(0.2), "timeout")
 	$GrabBox/GrabBox1.disabled = true
-	if state != is_.GRABBING:
-		grab_missed()
 
-func forward_grab():
+func grab():
+	if rival.state == is_.STANDING or rival.state == is_.CROUCHING or\
+				rival.state == is_.ATTACKING_ST or rival.state == is_.ATTACKING_CR or\
+				rival.state == is_.DASHING:
+		state = is_.GRABBING
+		$AnimationPlayer.stop(true)
+		$GrabBox/GrabBox1.set_deferred("disabled", true)
+		rival.grabbed()
+		if facing_right == true:
+			if Input.is_action_pressed("%s_LEFT" % Px):
+				backward_grab()
+			else: forward_grab()
+		else:
+			if Input.is_action_pressed("%s_RIGHT" % Px):
+				backward_grab()
+			else: forward_grab()
+	else: 
+		yield($AnimationPlayer, "animation_finished")
+		stand()
+
+func air_grab():
 	var rival_sprite = rival.get_node("Sprite")
+	state = is_.GRABBING
+	rival.grabbed()
+	tween.remove_all()
+	$AnimationPlayer.stop(true)
+	self.z_index = 1
+	$Sprite.frame = 306
+	rival_sprite.frame = 94
+	if facing_right == true:
+		rival.position = self.position + Vector2(20, -10)
+	else: rival.position = self.position + Vector2(-20, -10)
+	yield(get_tree().create_timer(0.3), "timeout")
+	tween.interpolate_property(self, "position:y",
+			self.position.y, (stage_size.end.y - 20),
+			0.5, Tween.TRANS_QUINT, Tween.EASE_IN)
+	tween.start()
+	$Sprite.frame = 379
+	rival_sprite.frame = 93
+	rival_sprite.flip_v = true
+	rival.position_is_locked = true
+	rival.grab_offset = Vector2(0, 15)
+	yield(tween, "tween_completed")
+	rival.position_is_locked = false
+	rival.grab_offset = Vector2(0, 0)
+	$Sprite.frame = 381
+	rival_sprite.flip_v = false
+	rival_sprite.flip_h = true
+	rival_sprite.frame = 95
+	rival_sprite.rotation_degrees = 180
+	if facing_right == true:
+		rival.position = self.position + Vector2(20, 30)
+	else: rival.position = self.position + Vector2(-20, 30)
+	yield(get_tree().create_timer(0.5), "timeout")
+	rival_sprite.frame = 107
+	rival_sprite.rotation_degrees = 0
+	rival_sprite.flip_h = true
+	rival.throwed(-80, 50)
+	tween_parable(-50, 20, 0.5)
+	$Sprite.frame = 49
+	yield(get_tree().create_timer(0.5), "timeout")
+	stand()
+	
+func grabbed():
+	state = is_.GRABBED
+	tween.remove_all()
+	$AnimationPlayer.stop(true)
+	disable_hit_boxes()
+	if state == is_.JUMPING or state == is_.AIR_ATTACKING:
+		pass
+	else:
+		$Sprite.frame = 89
+
+func forward_grab_x(): # Lanzamiento
+	var rival_sprite = rival.get_node("Sprite")
+	yield(get_tree().create_timer(0.3), "timeout")
 	if state == is_.GRABBING:
 		$AnimationPlayer.stop(true)
-		yield(get_tree().create_timer(0.1), "timeout")
 		if facing_right == true:
 			self.position.x += 20
 		else: self.position.x -= 20
@@ -631,22 +720,91 @@ func forward_grab():
 			rival.position = self.position + Vector2(30, -50)
 		else: rival.position = self.position + Vector2(-30, -50)
 		rival_sprite.rotation_degrees = 180
-		if facing_right == true:
-			rival.throwed(100, 10)
-		else: rival.throwed(-100, 10)
+		rival.throwed(-100, 10)
 		yield(get_tree().create_timer(0.15), "timeout")
 		$Sprite.frame = 363
 		rival_sprite.frame = 107
 		rival_sprite.rotation_degrees = 0
 		yield(get_tree().create_timer(0.40), "timeout")
 		stand()
+	else: pass
 		
-func backward_grab():
+func backward_grab_x(): # Suplex!
 	var rival_sprite = rival.get_node("Sprite")
+	yield(get_tree().create_timer(0.3), "timeout")
 	if state == is_.GRABBING:
 		$AnimationPlayer.stop(true)
 		tween.remove_all()
-		yield(get_tree().create_timer(0.1), "timeout")
+		self.z_index = 1
+		$Sprite.frame = 368
+		if facing_right == true:
+			rival.position = self.position + Vector2(25, -10)
+		if facing_right == false:
+			rival.position = self.position + Vector2(-25, -10)
+		rival_sprite.frame = 93
+		rival_sprite.flip_h = true
+		yield(get_tree().create_timer(0.2), "timeout")
+		$Sprite.frame = 369
+		if facing_right == true:
+			rival.position = self.position + Vector2(-10, -40)
+		if facing_right == false:
+			rival.position = self.position + Vector2(10, -40)
+		rival_sprite.rotation_degrees = 90
+		yield(get_tree().create_timer(0.3), "timeout")
+		$Sprite.frame = 370
+		if facing_right == true:
+			rival.position = self.position + Vector2(-60, 35)
+		if facing_right == false:
+			rival.position = self.position + Vector2(60, 35)
+		rival_sprite.frame = 95
+		rival_sprite.rotation_degrees = 180
+#		hitfx_area_rect = Rect2() <---------------------
+#		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
+		yield(get_tree().create_timer(0.2), "timeout")
+		$Sprite.frame = 370
+		rival_sprite.frame = 107
+		rival_sprite.rotation_degrees = 0
+		rival.throwed(80, 40)
+		$Sprite.frame = 371
+		yield(get_tree().create_timer(0.2), "timeout")
+		$Sprite.frame = 372
+		yield(get_tree().create_timer(0.2), "timeout")
+		stand()
+	else: pass
+
+func forward_grab(): # Palizón
+	var rival_sprite = rival.get_node("Sprite")
+	yield(get_tree().create_timer(0.3), "timeout")
+	if state == is_.GRABBING:
+		rival.grab_offset = Vector2(40, 0)
+		rival.position_is_locked = true
+		$AnimationPlayer.playback_speed = 1.5
+		$AnimationPlayer.play("Attack standing LP")
+		strike_data(10, 10, "Heavy", "Mid", "Normal", false, false, false)
+		for i in range (5):
+			$AnimationPlayer.queue("Attack crouching LP")
+			$AnimationPlayer.queue("Attack standing LK")
+		$AnimationPlayer.queue("Attack standing MP")
+		$AnimationPlayer.queue("Attack crouching MK")
+		$AnimationPlayer.queue("Attack standing MK")
+		$AnimationPlayer.queue("Attack crouching MP")
+		$AnimationPlayer.queue("Attack standing HK")
+		$AnimationPlayer.queue("Attack crouching HP")
+		$AnimationPlayer.playback_speed = 1
+		yield(get_tree().create_timer(4.3), "timeout")
+		rival.position_is_locked = false
+		rival.grab_offset = Vector2(0, 0)
+		rival.air_received_hit()
+		yield(get_tree().create_timer(1), "timeout")
+		stand()
+	else: pass
+
+func backward_grab(): # Zangief SPD
+	var rival_sprite = rival.get_node("Sprite")
+	yield(get_tree().create_timer(0.3), "timeout")
+	if state == is_.GRABBING:
+		$AnimationPlayer.stop(true)
+		tween.remove_all()
 		if facing_right == true:
 			self.position.x += 20
 		else: self.position.x -= 20
@@ -670,11 +828,10 @@ func backward_grab():
 		if facing_right == true:
 			rival.position = self.position + Vector2(15, -10)
 		else: rival.position = self.position + Vector2(-15, -10)
+		rival.grab_offset = Vector2(0, 0)
 		rival.position_is_locked = true
 		yield(get_tree().create_timer(0.10), "timeout")
-		if facing_right == true:
-			tween_parable(100, 100, 1.0)
-		else: tween_parable(-100, 100, 1.0)
+		tween_parable(100, 100, 1.0)
 		for i in range(8):
 			if tween.is_active() == true:
 				self.z_index = 1
@@ -719,27 +876,71 @@ func backward_grab():
 		rival_sprite.frame = 107
 		rival_sprite.rotation_degrees = 0
 		rival_sprite.flip_h = true
-		if facing_right == true:
-			rival.throwed(80, 50)
-			tween_parable(-50, 20, 0.5)
-		else:
-			rival.throwed(-80, 50)
-			tween_parable(50, 20, 0.5)
+		rival.throwed(-80, 50)
+		tween_parable(-50, 20, 0.5)
 		$Sprite.frame = 49
 		yield(get_tree().create_timer(0.5), "timeout")
 		stand()
-		
+	else: pass
 
-func grab_missed():
-	state = is_.ATTACKING_ST
-	$AnimationPlayer.play("Grab miss")
+func lock_position():
+	var grab_position
+	grab_position = rival.position + grab_offset
+	if facing_right == false:
+		grab_position.x = rival.position.x + grab_offset.x
+	else: grab_position.x = rival.position.x - grab_offset.x
+	if position_is_locked == true:
+		self.position = grab_position
+		state = is_.LOCKED
+	else:
+		pass
+
+func throwed(distance, height):
+	tween.remove_all()
+	if facing_right == false:
+		distance = -distance
+	#Arco ascendente --------------------------------
+	tween.interpolate_property(self, "position:x",
+		self.position.x, self.position.x + distance / 2,
+		0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.interpolate_property(self, "position:y",
+		self.position.y, self.position.y - height,
+		0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
+	tween.start()
+	state = is_.AIR_STUNNED
+	yield(tween, "tween_all_completed")
+	#Arco descendente -------------------------------
+	tween.interpolate_property(self, "position:x",
+		self.position.x, self.position.x + distance / 2,
+		0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+	tween.interpolate_property(self, "position:y",
+		self.position.y, self.position.y + 500,
+		0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
+	tween.start()
+	yield(tween, "tween_all_completed")
+
+func grab_countered():
+	$GrabBox/GrabBox1.set_deferred("disabled", true)
+#	$AnimationPlayer.stop(true)
+#	tween.stop_all()
+	state = is_.HIT_STUNNED_ST
+	knockback(30, 0.4)
+	$AnimationPlayer.play("Grab countered")
 	yield($AnimationPlayer, "animation_finished")
 	stand()
 	
-func grabbed():
-	state = is_.GRABBED
-	$AnimationPlayer.stop(true)
-	tween.remove_all()
+func grab_escape():
+#	$AnimationPlayer.stop()
+	state = is_.HIT_STUNNED_ST
+	tween_parable(-50, 10, 0.4)
+	$AnimationPlayer.play("Grab scape")
+	yield($AnimationPlayer, "animation_finished")
+	stand()
+
+func concurrent_grab():
+	if nearly_grabbed == true and rival.nearly_grabbed == true:
+		if state != is_.AIR_ATTACKING:
+			grab_countered()
 
 func block_standing():
 	state = is_.BLOCKING_H
@@ -750,6 +951,8 @@ func block_crouching():
 	$AnimationPlayer.play("Block crouching")
 	
 func on_hit():
+	$HitBoxes/HitBox1.set_deferred("disabled", true)
+	$ProximityBox/ProxBox1.set_deferred("disabled", true)
 	is_walking_forward = false
 	is_dashing_forward = false
 	if state == is_.BLOCKING_H:
@@ -807,10 +1010,10 @@ func blocked_hit():
 	stand()
 
 func received_hit():
-	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 	disable_hit_boxes()
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or\
 					state == is_.HIT_STUNNED_CR:
+		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 		state = is_.HIT_STUNNED_CR
 		already_crouched = true
 		if rival.hit_strg == "Light":
@@ -829,7 +1032,8 @@ func received_hit():
 			crouch()
 		
 	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H or\
-					state == is_.HIT_STUNNED_ST or state == is_.PRE_JUMP:
+					state == is_.HIT_STUNNED_ST or state == is_.LOCKED or state == is_.PRE_JUMP:
+		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 		state = is_.HIT_STUNNED_ST
 		if hit_trig == "Head":
 			if rival.hit_strg == "Light":
@@ -868,11 +1072,12 @@ func received_hit():
 			elif rival.hit_strg == "Sweep":
 				knocked_down()
 		yield($Tween, "tween_completed")
-		if state != is_.KNOCKED_DOWN:
+		if state != is_.KNOCKED_DOWN and state != is_.AIR_STUNNED:
 			stand()
+	else: pass
 
 func knockback(distance, time):
-	tween.stop_all()
+	tween.remove_all()
 	if facing_right == false:
 		distance = -distance
 	if rival.hit_lock == false: 
@@ -880,6 +1085,7 @@ func knockback(distance, time):
 			self.position.x - distance, time,
 			Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
+	else: pass
 
 func knocked_down():
 	state = is_.KNOCKED_DOWN
@@ -891,8 +1097,8 @@ func knocked_down():
 func air_received_hit():
 	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 	tween.remove_all()
-	state = is_.AIR_STUNNED
 	$AnimationPlayer.play("Hit stun air")
+	state = is_.AIR_STUNNED
 	#Arco ascendente --------------------------------
 	tween.interpolate_property(self, "position:x",
 		self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
@@ -901,7 +1107,8 @@ func air_received_hit():
 		self.position.y, self.position.y - 50,
 		0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
-	yield(tween, "tween_all_completed")
+#	yield(tween, "tween_all_completed")
+	yield(get_tree().create_timer(0.4), "timeout")
 	#Arco descendente -------------------------------
 	tween.interpolate_property(self, "position:x",
 		self.position.x, self.position.x - AIRBORNE_HIT_LENGHT / 2,
@@ -922,56 +1129,33 @@ func fall():
 		if self.position.y == stage_size.end.y - 20:
 			tween.remove_all()
 			ground_impact()
-			pre_jump = false
 
 func ground_impact():
-	if state == is_.AIR_STUNNED:
-		state = is_.GROUND_IMPACT
-		$AnimationPlayer.play("Ground impact")
+	state = is_.GROUND_IMPACT
+	$AnimationPlayer.play("Ground impact")
+	if facing_right == must_face_right:
 		tween.interpolate_property(self, "position:x", self.position.x,
 			self.position.x - GROUND_IMPACT_LENGHT, 0.5,
 			Tween.TRANS_QUINT, Tween.EASE_OUT)
-		tween.start()
-		yield($AnimationPlayer, "animation_finished")
-		wake_up()
+	else: 
+		tween.interpolate_property(self, "position:x", self.position.x,
+		self.position.x + GROUND_IMPACT_LENGHT, 0.5,
+		Tween.TRANS_QUINT, Tween.EASE_OUT)
+	tween.start()
+	yield($AnimationPlayer, "animation_finished")
+	wake_up()
 
 func wake_up():
-	if state == is_.GROUND_IMPACT or state == is_.KNOCKED_DOWN:
-		state = is_.WAKING_UP
-		$AnimationPlayer.play("Wake up")
-		yield($AnimationPlayer, "animation_finished")
-		if $Sprite.flip_h == true:
-			$Sprite.flip_h = false
-		stand()
-
-func throwed(distance, height):
-	if state == is_.GRABBED:
-		state = is_.AIR_STUNNED
-		#Arco ascendente --------------------------------
-		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + distance / 2,
-			0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-		tween.interpolate_property(self, "position:y",
-			self.position.y, self.position.y - height,
-			0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
-		tween.start()
-		yield(tween, "tween_all_completed")
-		#Arco descendente -------------------------------
-		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + distance / 2,
-			0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
-		tween.interpolate_property(self, "position:y",
-			self.position.y, self.position.y + 500,
-			0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
-		tween.start()
-		yield(tween, "tween_all_completed")
-
-func lock_position():
-	var grab_position = rival.position + grab_offset
-	if position_is_locked == true:
-		self.position = grab_position
+	state = is_.WAKING_UP
+	$AnimationPlayer.play("Wake up")
+	yield($AnimationPlayer, "animation_finished")
+	if $Sprite.flip_h == true:
+		$Sprite.flip_h = false
+	stand()
 
 func tween_parable(distance, height, time):
+	if facing_right == false:
+		distance = -distance
 	#Arco ascendente --------------------------------
 	tween.interpolate_property(self, "position:x",
 		self.position.x, self.position.x + distance / 2,
@@ -989,9 +1173,7 @@ func tween_parable(distance, height, time):
 		self.position.y, self.position.y + height,
 		time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
-	yield(tween, "tween_all_completed")
 	
-
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
 		$HitBoxes/HitBox1.visible = false
@@ -1030,6 +1212,7 @@ func disable_hurt_boxes():
 func disable_hit_boxes():
 	$HitBoxes/HitBox1.set_deferred("disabled", true)
 	$ProximityBox/ProxBox1.set_deferred("disabled", true)
+	$GrabBox/GrabBox1.set_deferred("disabled", true)
 	
 func re_check_states():
 	if state != is_.STANDING:
@@ -1049,13 +1232,16 @@ func re_check_states():
 		pushray.enabled = true
 
 func _process(delta):
-	player_control(delta)
+	if state == is_.STANDING and (facing_right != must_face_right):
+		pass
+	else: player_control(delta)
 	repulse_players(delta)
 	pushing_player(delta)
 	stop_tweens_on_push()
 	change_facing_direction()
 	facing_direction()
 	detect_stuck()
+	concurrent_grab()
 	lock_position()
 	re_check_states()
 	trigger_special_1()
@@ -1067,11 +1253,14 @@ func _process(delta):
 	
 	camera_pos = camera.get_camera_screen_center()
 	
-	if state != is_.GRABBED:
+	if state != is_.GRABBED and state != is_.LOCKED:
 		self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
 		self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
 
 	$HUD/State.text = is_.keys()[state]
+	
+	if player == 2:
+		pass
 
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
@@ -1093,8 +1282,8 @@ func _on_area_exited(area):
 func repulse_players(delta):
 	if players_collide == true:
 		if must_face_right == true:
-			self.position.x -= 8
-		else: self.position.x += 8
+			self.position.x -= 200 * delta
+		else: self.position.x += 200 * delta
 
 func pushing_player(delta):
 	if pushray.is_colliding() == true:
@@ -1150,18 +1339,22 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 		on_hit()
 
 func _on_GrabBox_area_entered(area):
-	if rival.state == is_.STANDING or rival.state == is_.CROUCHING:
-		state = is_.GRABBING
-		rival.grabbed()
-		if facing_right == true:
-			if Input.is_action_pressed("%s_LEFT" % Px):
-				backward_grab()
-			else: forward_grab()
-		else:
-			if Input.is_action_pressed("%s_RIGHT" % Px):
-				backward_grab()
-			else: forward_grab()
+	if state == is_.AIR_ATTACKING and (rival.state == is_.AIR_STUNNED or rival.state == is_.JUMPING\
+				or rival.state == is_.AIR_ATTACKING):
+		air_grab()
+	else:
+		rival.nearly_grabbed = true
 	
+func _on_GrabBox_area_exited(area):
+	rival.nearly_grabbed = false
+
+func _on_GrabCounterTimer_timeout():
+	if rival.nearly_grabbed == true and state == is_.ATTACKING_ST:
+		grab()
+	else:
+		yield($AnimationPlayer, "animation_finished")
+		stand()
+		
 func get_hitbox_rect():
 	var hit_area_center = $HitBoxes/HitBox1.position
 	var hit_area_extents = $HitBoxes/HitBox1.shape.extents

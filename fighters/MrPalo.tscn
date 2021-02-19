@@ -1040,7 +1040,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.116667, 0.216667, 0.333333 ),
+"times": PoolRealArray( 0, 0.051, 0.116667, 0.216667, 0.333333 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 312, 313, 314, 313, 312 ]
@@ -4131,39 +4131,7 @@ tracks/7/keys = {
 }
 
 [sub_resource type="Animation" id=34]
-resource_name = "Grab backward"
-length = 0.833333
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.266667, 0.416667, 0.616667, 0.716667 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 368, 369, 370, 371, 372 ]
-}
-
-[sub_resource type="Animation" id=35]
-length = 0.75
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.366667, 0.466667, 0.616667 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 360, 361, 362, 363 ]
-}
-
-[sub_resource type="Animation" id=36]
+resource_name = "Grab attempt"
 length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
@@ -4173,10 +4141,56 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0666667, 0.133333, 0.2 ),
+"times": PoolRealArray( 0, 0.05, 0.116667, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 160, 161, 162, 161 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("GrabBox/GrabBox1:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="Animation" id=35]
+resource_name = "Grab countered"
+length = 0.5
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.102 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 163, 164 ]
+}
+
+[sub_resource type="Animation" id=36]
+resource_name = "Grab scape"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 165, 166, 167 ]
 }
 
 [sub_resource type="Animation" id=37]
@@ -5363,7 +5377,7 @@ tracks/7/enabled = true
 tracks/7/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 20, 23 ) ]
 }
 tracks/8/type = "value"
@@ -5375,7 +5389,7 @@ tracks/8/enabled = true
 tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 1, -56 ) ]
 }
 tracks/9/type = "value"
@@ -5387,7 +5401,7 @@ tracks/9/enabled = true
 tracks/9/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 10, 0 ) ]
 }
 tracks/10/type = "value"
@@ -5399,8 +5413,32 @@ tracks/10/enabled = true
 tracks/10/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 16, -55 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("GrabBox/GrabBox1:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 10, -49 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("GrabBox/GrabBox1:shape:extents")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 21, 23 ) ]
 }
 
 [sub_resource type="Animation" id=52]
@@ -5499,7 +5537,7 @@ tracks/7/enabled = true
 tracks/7/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 20, 23 ) ]
 }
 tracks/8/type = "value"
@@ -5511,7 +5549,7 @@ tracks/8/enabled = true
 tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 1, -56 ) ]
 }
 tracks/9/type = "value"
@@ -5523,7 +5561,7 @@ tracks/9/enabled = true
 tracks/9/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 10, 0 ) ]
 }
 tracks/10/type = "value"
@@ -5535,8 +5573,32 @@ tracks/10/enabled = true
 tracks/10/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 16, -55 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("GrabBox/GrabBox1:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 10, -49 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("GrabBox/GrabBox1:shape:extents")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 21, 23 ) ]
 }
 
 [sub_resource type="Animation" id=53]
@@ -5646,7 +5708,7 @@ tracks/8/enabled = true
 tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 20, 23 ) ]
 }
 tracks/9/type = "value"
@@ -5658,7 +5720,7 @@ tracks/9/enabled = true
 tracks/9/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 1, -56 ) ]
 }
 tracks/10/type = "value"
@@ -5670,7 +5732,7 @@ tracks/10/enabled = true
 tracks/10/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 10, 0 ) ]
 }
 tracks/11/type = "value"
@@ -5682,8 +5744,32 @@ tracks/11/enabled = true
 tracks/11/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 0,
+"update": 1,
 "values": [ Vector2( 16, -55 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("GrabBox/GrabBox1:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 10, -49 ) ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("GrabBox/GrabBox1:shape:extents")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 21, 23 ) ]
 }
 
 [sub_resource type="Animation" id=54]
@@ -5904,6 +5990,42 @@ tracks/13/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/14/type = "value"
+tracks/14/path = NodePath("GrabBox/GrabBox1:disabled")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/15/type = "value"
+tracks/15/path = NodePath("GrabBox/GrabBox1:position")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/keys = {
+"times": PoolRealArray( 0.0666668 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 20, -49 ) ]
+}
+tracks/16/type = "value"
+tracks/16/path = NodePath("GrabBox/GrabBox1:shape:extents")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/keys = {
+"times": PoolRealArray( 0.0666668 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 25, 23 ) ]
 }
 
 [sub_resource type="Animation" id=58]
@@ -6148,23 +6270,23 @@ tracks/8/keys = {
 
 [sub_resource type="RectangleShape2D" id=61]
 resource_local_to_scene = true
-extents = Vector2( 20, 45 )
+extents = Vector2( 20, 23 )
 
 [sub_resource type="RectangleShape2D" id=62]
 resource_local_to_scene = true
-extents = Vector2( 23, 10 )
+extents = Vector2( 28, 13 )
 
 [sub_resource type="RectangleShape2D" id=63]
 resource_local_to_scene = true
-extents = Vector2( 23, 11 )
+extents = Vector2( 17, 10 )
 
 [sub_resource type="RectangleShape2D" id=64]
 resource_local_to_scene = true
-extents = Vector2( 19, 6 )
+extents = Vector2( 25, 10 )
 
 [sub_resource type="RectangleShape2D" id=65]
 resource_local_to_scene = true
-extents = Vector2( 24, 10 )
+extents = Vector2( 23, 10 )
 
 [sub_resource type="RectangleShape2D" id=66]
 resource_local_to_scene = true
@@ -6175,7 +6297,7 @@ resource_local_to_scene = true
 extents = Vector2( 60, 10 )
 
 [sub_resource type="RectangleShape2D" id=68]
-extents = Vector2( 25, 23 )
+extents = Vector2( 21, 23 )
 
 [node name="MrPalo" type="Area2D"]
 position = Vector2( 120, 195 )
@@ -6194,7 +6316,7 @@ texture = ExtResource( 5 )
 offset = Vector2( 0, -14 )
 vframes = 48
 hframes = 8
-frame = 50
+frame = 293
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -6230,9 +6352,9 @@ anims/Crouch = SubResource( 30 )
 "anims/Crouch already" = SubResource( 31 )
 "anims/Dash backward" = SubResource( 32 )
 "anims/Dash forward" = SubResource( 33 )
-"anims/Grab backward" = SubResource( 34 )
-"anims/Grab forward" = SubResource( 35 )
-"anims/Grab miss" = SubResource( 36 )
+"anims/Grab attempt" = SubResource( 34 )
+"anims/Grab countered" = SubResource( 35 )
+"anims/Grab scape" = SubResource( 36 )
 "anims/Ground impact" = SubResource( 37 )
 "anims/Hit stun air" = SubResource( 38 )
 "anims/Hit stun crouching heavy" = SubResource( 39 )
@@ -6265,6 +6387,9 @@ one_shot = true
 
 [node name="HitSpacerTimer" type="Timer" parent="."]
 
+[node name="GrabCounterTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="PushingRay" type="RayCast2D" parent="."]
 position = Vector2( 16, -55 )
 enabled = true
@@ -6274,7 +6399,7 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 1, -45 )
+position = Vector2( 1, -56 )
 shape = SubResource( 61 )
 
 [node name="HitBoxes" type="Area2D" parent="."]
@@ -6288,7 +6413,7 @@ __meta__ = {
 
 [node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
 modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-position = Vector2( 49, -71 )
+position = Vector2( 31, -26 )
 shape = SubResource( 62 )
 disabled = true
 
@@ -6303,17 +6428,17 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -6, -43 )
+position = Vector2( 6, -50 )
 shape = SubResource( 63 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -11, -26 )
+position = Vector2( 5, -30 )
 shape = SubResource( 64 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -10 )
+position = Vector2( 9, -10 )
 shape = SubResource( 65 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
@@ -6323,7 +6448,6 @@ shape = SubResource( 66 )
 disabled = true
 
 [node name="ProximityBox" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 3 )
@@ -6334,18 +6458,16 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 67 )
+disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="GrabBox1" type="CollisionShape2D" parent="GrabBox"]
 modulate = Color( 0.819608, 0.184314, 0.764706, 1 )
-position = Vector2( 10, -49 )
+position = Vector2( -1, -41 )
 shape = SubResource( 68 )
 disabled = true
 
@@ -6359,6 +6481,8 @@ __meta__ = {
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
 [connection signal="timeout" from="SpecialTimer" to="." method="_on_SpecialTimer_timeout"]
 [connection signal="timeout" from="HitSpacerTimer" to="." method="_on_HitSpacerTimer_timeout"]
+[connection signal="timeout" from="GrabCounterTimer" to="." method="_on_GrabCounterTimer_timeout"]
 [connection signal="area_entered" from="HitBoxes" to="." method="_on_hit_connects"]
 [connection signal="area_shape_entered" from="HurtBoxes" to="." method="_on_HurtBoxes_area_shape_entered"]
 [connection signal="area_entered" from="GrabBox" to="." method="_on_GrabBox_area_entered"]
+[connection signal="area_exited" from="GrabBox" to="." method="_on_GrabBox_area_exited"]
