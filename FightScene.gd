@@ -55,3 +55,6 @@ func play_hitfx(facing_right, hitfx_area_rect, hit_type):
 					hitfx_area_rect.position.y + hitfx_area_rect.size.y)
 	add_child(hitsfx)
 	hitsfx.call_animation(facing_right, hit_type)
+#	get_tree().paused = true # Hay que buscar otro método pues sino no registra inputs
+#	yield(get_tree().create_timer(0.05), "timeout")
+#	get_tree().paused = false

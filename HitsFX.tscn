@@ -37,13 +37,13 @@ tracks/0/keys = {
 }
 
 [node name="HitsFX" type="Node2D"]
+pause_mode = 2
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 z_index = 1
 texture = ExtResource( 1 )
 hframes = 8
-frame = 7
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Blocked = SubResource( 1 )
