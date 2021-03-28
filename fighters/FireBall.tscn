@@ -39,7 +39,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2 ]
 }
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 10, 9 )
 
 [sub_resource type="RectangleShape2D" id=4]
@@ -59,7 +59,7 @@ anims/Normal = SubResource( 2 )
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
 position = Vector2( 4, 1 )
-shape = SubResource( 5 )
+shape = SubResource( 3 )
 
 [node name="ProximityBox" type="Area2D" parent="."]
 script = ExtResource( 3 )
