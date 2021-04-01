@@ -30,11 +30,13 @@ var can_guard = false
 var just_hitted = false
 var waiting_for_flip = false
 var already_crouched = false
-var last_position = Vector2()
-var startup_frames = false
 var dash_r_ready = false
 var dash_l_ready = false
+var can_auto_cancel = false
+var can_cancel = false
 var can_dash_cancel = false
+var startup_frames = false
+var last_position = Vector2()
 
 var sp1_input_count = 0
 var sp2_input_count = 0
@@ -48,13 +50,12 @@ var grab_offset = Vector2()
 
 var hit_damg # Daño producido
 var hit_stun # Aturdimiento producido
+var hit_push # Cantidad de empuje hacia atrás del rival
 var hit_strg # Light, Medium, Heavy, Launch, Sweep
 var hit_area # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
 var hit_type # Normal < Special < Powered < Ultimate
-var hit_trig # Head, Torso or Legs (Animación de respuesta en el rival)
-var hit_chip # Si es "true" causa un porcentaje de daño aún bloqueándolo
-var hit_lock = false # Si es "true" no produce empuje hacia atrás
-var hit_jugg # Si es "true" puede golpearnos en estado "AIR_STUNNED"
+var hit_canc # "Auto" para autocancel y "Nombre_golpe" para cancels
+var hit_jugg # Si el golpe permite golpear al rival abatido en el aire
 
 var hit_area_pos:= Vector2()
 var hit_area_size:= Vector2()
@@ -63,6 +64,8 @@ var hurt_area_size:= Vector2()
 var hit_area_rect:= Rect2() # Eliminar tras video
 var hurt_area_rect:= Rect2() # Eliminar tras video
 var hitfx_area_rect:= Rect2()
+var hitted_area
+var combo_counter = 0
 
 var WALK_FORWARD_SPEED = 200
 var WALK_BACKWARD_SPEED = 150
@@ -329,6 +332,26 @@ func player_control(delta):
 		if Input.is_action_just_pressed("%s_HK" % Px):
 			jumping_normal("HK")
 
+func auto_cancels():
+	if state == is_.ATTACKING_ST and can_auto_cancel == true:
+		if hit_canc == "auto":
+			if Input.is_action_just_pressed("%s_MP" % Px) and\
+					Input.is_action_just_pressed("%s_LK" % Px) == false:
+				standing_normal("MP")
+			if hit_canc == "auto":
+				if Input.is_action_just_pressed("%s_LK" % Px) and\
+						Input.is_action_just_pressed("%s_LP" % Px) == false:
+					standing_normal("LK")
+	if state == is_.ATTACKING_CR and can_auto_cancel == true:
+		if hit_canc == "auto":
+			if Input.is_action_just_pressed("%s_LP" % Px) and\
+					Input.is_action_just_pressed("%s_LK" % Px) == false:
+				crouching_normal("LP")
+		if hit_canc == "auto":
+			if Input.is_action_just_pressed("%s_LK" % Px) and\
+					Input.is_action_just_pressed("%s_LP" % Px) == false:
+				crouching_normal("LK")
+
 func trigger_special_1(): # HADOKEN
 	if Input.is_action_just_pressed("%s_DOWN" % Px):
 		sp1_input_count = 1
@@ -359,7 +382,7 @@ func trigger_special_1(): # HADOKEN
 			elif Input.is_action_just_pressed("%s_LP" % Px):
 				special_1("light")
 
-func trigger_special_2(): #SHORYUKEN
+func trigger_special_2(): # SHORYUKEN
 	if must_face_right == true:
 		if Input.is_action_just_released("%s_RIGHT" % Px):
 			$SpecialTimer2.start()
@@ -389,7 +412,7 @@ func trigger_special_2(): #SHORYUKEN
 		elif Input.is_action_just_pressed("%s_LP" % Px):
 			special_2("light")
 
-func trigger_special_3(delta): #TATSU
+func trigger_special_3(delta): # TATSU
 	if Input.is_action_pressed("%s_LEFT" % Px):
 			sp3_left_charge += 1 * delta
 	if Input.is_action_pressed("%s_RIGHT" % Px):
@@ -404,21 +427,21 @@ func trigger_special_3(delta): #TATSU
 			if sp3_left_charge >= 1:
 				if Input.is_action_pressed("%s_RIGHT" % Px):
 					if Input.is_action_just_pressed("%s_HK" % Px):
-						special_3("heavy")
+						special_3("Heavy")
 					if Input.is_action_just_pressed("%s_MK" % Px):
-						special_3("medium")
+						special_3("Medium")
 					if Input.is_action_just_pressed("%s_LK" % Px):
-						special_3("light")
+						special_3("Light")
 	else:
 		if state == is_.STANDING or state == is_.CROUCHING:
 			if sp3_right_charge >= 1:
 				if Input.is_action_pressed("%s_LEFT" % Px):
 					if Input.is_action_just_pressed("%s_HK" % Px):
-						special_3("heavy")
+						special_3("Heavy")
 					if Input.is_action_just_pressed("%s_MK" % Px):
-						special_3("medium")
+						special_3("Medium")
 					if Input.is_action_just_pressed("%s_LK" % Px):
-						special_3("light")
+						special_3("Light")
 
 func trigger_special_4(delta): # ONE HUNDRED SLAPS
 	if sp4_slap_buffer > 0:
@@ -430,8 +453,6 @@ func trigger_special_4(delta): # ONE HUNDRED SLAPS
 	if sp4_slap_buffer > 50 and (state == is_.STANDING or state == is_.CROUCHING):
 		special_4()
 		sp4_slap_buffer = 0
-	
-	print(sp4_slap_buffer)
 
 func special_1(strenght):
 	var fireball = Fireball.instance()
@@ -457,9 +478,10 @@ func special_2(strenght):
 		shoryu_lenght = -shoryu_lenght
 	
 	state = is_.ATTACKING_SP
-	strike_data(220, 210, "Heavy", "Mid", "Special", false, false, true)
+	strike_data(200, 180, 30, "Heavy", "Mid", "Special", false, false)
 	$AnimationPlayer.play("Special 2")
 	yield(get_tree().create_timer(0.2), "timeout")
+	strike_data(200, 180, 30, "Launch", "Mid", "Special", false, false)
 	tween.interpolate_property(self, "position:y",
 			self.position.y, (self.position.y - shoryu_height),
 			0.35, Tween.TRANS_QUINT, Tween.EASE_OUT)
@@ -481,11 +503,11 @@ func special_3(strenght):
 	var tatsu_time
 	var kicks_number
 	
-	if strenght == "heavy":
+	if strenght == "Heavy":
 		tatsu_lenght = 200
 		tatsu_time = 1.119
 		kicks_number = 3
-	elif strenght == "medium":
+	elif strenght == "Medium":
 		tatsu_lenght = 130
 		tatsu_time = 0.786
 		kicks_number = 2
@@ -497,7 +519,7 @@ func special_3(strenght):
 		tatsu_lenght = -tatsu_lenght
 	
 	state = is_.AIR_ATTACKING
-	strike_data(220, 210, "Heavy", "Mid", "Normal", false, false, true)
+	strike_data(100, 80, 55, strenght, "Mid", "Normal", false, false)
 	$AnimationPlayer.stop(true)
 	$AnimationPlayer.play("Special 3 start")
 	yield(get_tree().create_timer(0.2), "timeout")
@@ -515,7 +537,7 @@ func special_3(strenght):
 	
 func special_4():
 	state = is_.ATTACKING_SP
-	strike_data(50, 30, "Light", "Mid", "Normal", false, false, true)
+	strike_data(30, 20, 10, "Light", "Mid", "Normal", false, false)
 	$AnimationPlayer.play("Special 4 start")
 	for i in range(3):
 		$AnimationPlayer.queue("Special 4 action")
@@ -698,27 +720,27 @@ func standing_normal(button_pressed):
 	startup_frames = true # Para el sistema de counters
 	state = is_.ATTACKING_ST
 	if button_pressed == "LP":
-		strike_data(100, 90, "Light", "Mid", "Normal", false, false, false)
+		strike_data(100, 80, 20, "Light", "Mid", "Normal", "auto", false)
 		$AnimationPlayer.play("Attack standing LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
-		strike_data(150, 140, "Medium", "Mid", "Normal", false, false, false)
+		strike_data(150, 140, 30, "Medium", "Mid", "Normal", "s_MP", false)
 		$AnimationPlayer.play("Attack standing MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
-		strike_data(200, 190, "Heavy", "Mid", "Normal", false, false, false)
+		strike_data(200, 190, 40, "Heavy", "Mid", "Normal", "s_HP", false)
 		$AnimationPlayer.play("Attack standing HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
-		strike_data(110, 100, "Light", "Mid", "Normal", false, false, false)
+		strike_data(120, 90, 20, "Light", "Mid", "Normal", "auto", false)
 		$AnimationPlayer.play("Attack standing LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
-		strike_data(170, 150, "Medium", "Mid", "Normal", false, false, false)
+		strike_data(170, 170, 30, "Medium", "Mid", "Normal", false, false)
 		$AnimationPlayer.play("Attack standing MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
-		strike_data(220, 210, "Heavy", "Mid", "Normal", false, false, false)
+		strike_data(220, 210, 20, "Heavy", "Mid", "Normal", false, false)
 		$AnimationPlayer.play("Attack standing HK")
 		yield($AnimationPlayer, "animation_finished")
 	stand()
@@ -728,67 +750,66 @@ func crouching_normal(button_pressed):
 	state = is_.ATTACKING_CR
 	already_crouched = true
 	if button_pressed == "LP":
-		strike_data(100, 90, "Light", "Mid", "Normal", false, false, false)
+		strike_data(100, 90, 15, "Light", "Low", "Normal", "auto", false)
 		$AnimationPlayer.play("Attack crouching LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
-		strike_data(150, 140, "Medium", "Mid", "Normal", false, false, false)
+		strike_data(150, 140, 30, "Medium", "Low", "Normal", "c_MP", false)
 		$AnimationPlayer.play("Attack crouching MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
-		strike_data(200, 190, "Heavy", "Mid", "Normal", false, false, false)
+		strike_data(200, 190, 40, "Launch", "Low", "Special", "c_HP", false)
 		$AnimationPlayer.play("Attack crouching HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
-		strike_data(110, 100, "Light", "Low", "Normal", false, false, false)
+		strike_data(120, 90, 15, "Light", "Low", "Normal", "auto", false)
 		$AnimationPlayer.play("Attack crouching LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
-		strike_data(170, 150, "Medium", "Low", "Normal", false, false, false)
+		strike_data(170, 170, 30, "Medium", "Low", "Normal", "C_MK", false)
 		$AnimationPlayer.play("Attack crouching MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
-		strike_data(220, 210, "Sweep", "Low", "Normal", false, false, false)
+		strike_data(220, 210, 40, "Sweep", "Low", "Normal", false, false)
 		$AnimationPlayer.play("Attack crouching HK")
 		yield($AnimationPlayer, "animation_finished")
 	crouch()
 	
 func jumping_normal(button_pressed):
-	startup_frames = true # Para el sistema de counters
 	state = is_.AIR_ATTACKING
 	if button_pressed == "LP":
-		strike_data(100, 90, "Light", "High", "Normal", false, false, false)
+		strike_data(100, 90, 10, "Light", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping LP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MP":
-		strike_data(120, 110, "Medium", "High", "Normal", false, false, false)
+		strike_data(150, 140, 20, "Medium", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping MP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HP":
-		strike_data(140, 130, "Heavy", "High", "Normal", false, false, false)
+		strike_data(200, 190, 30, "Heavy", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping HP")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "LK":
-		strike_data(110, 100, "Light", "High", "Normal", false, false, false)
+		strike_data(120, 90, 10, "Light", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping LK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "MK":
-		strike_data(130, 120, "Medium", "High", "Normal", false, false, false)
+		strike_data(170, 170, 20, "Medium", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping MK")
 		yield($AnimationPlayer, "animation_finished")
 	if button_pressed == "HK":
-		strike_data(140, 110, "Heavy", "High", "Normal", false, false, false)
+		strike_data(220, 210, 30, "Heavy", "High", "Normal", false, false)
 		$AnimationPlayer.play("Attack jumping HK")
 		yield($AnimationPlayer, "animation_finished")
 
-func strike_data(damg, stun, strg, area, type, chip, lock, jugg):
+func strike_data(damg, stun, push, strg, area, type, canc, jugg):
 	hit_damg = damg
 	hit_stun = stun
+	hit_push = push
 	hit_strg = strg
 	hit_area = area
 	hit_type = type
-	hit_chip = chip
-	hit_lock = lock
+	hit_canc = canc
 	hit_jugg = jugg
 
 func grab_attempt():
@@ -1108,7 +1129,7 @@ func grab_countered():
 #	$AnimationPlayer.stop(true)
 #	tween.stop_all()
 	state = is_.HIT_STUNNED_ST
-	knockback(30, 0.4)
+	knockback(30)
 	$AnimationPlayer.play("Grab countered")
 	yield($AnimationPlayer, "animation_finished")
 	stand()
@@ -1159,57 +1180,58 @@ func blocked_hit():
 	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Blocked")
 	if state == is_.BLOCKING_H:
 		state = is_.BLOCK_STUNNED_H
-		if hit_trig == "Head":
+		if hitted_area == "Head":
 			if damaging_area.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun high light")
-				knockback(10, 0.167)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Medium":
 				$AnimationPlayer.play("Block stun high medium")
-				knockback(20, 0.267)
+				knockback(damaging_area.hit_push)
 			else:
 				$AnimationPlayer.play("Block stun high heavy")
-				knockback(30, 0.4)
+				knockback(damaging_area.hit_push)
 		else:
 			if damaging_area.hit_strg == "Light":
 				$AnimationPlayer.play("Block stun low light")
-				knockback(10, 0.167)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Medium":
 				$AnimationPlayer.play("Block stun low medium")
-				knockback(20, 0.267)
+				knockback(damaging_area.hit_push)
 			else:
 				$AnimationPlayer.play("Block stun low heavy")
-				knockback(30, 0.4)
+				knockback(damaging_area.hit_push)
 	elif state == is_.BLOCKING_L:
 		state = is_.BLOCK_STUNNED_L
 		if rival.hit_strg == "Light":
 			$AnimationPlayer.play("Block stun crouching light")
-			knockback(10, 0.167)
+			knockback(damaging_area.hit_push)
 		elif rival.hit_strg == "Medium":
 			$AnimationPlayer.play("Block stun crouching medium")
-			knockback(20, 0.267)
+			knockback(damaging_area.hit_push)
 		else:
 			$AnimationPlayer.play("Block stun crouching heavy")
-			knockback(30, 0.4)
+			knockback(damaging_area.hit_push)
 	yield($Tween, "tween_completed")
 	stand()
 
 func received_hit():
 	disable_hit_boxes()
-	$AnimationPlayer.stop()
+	combo_counter += 1
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or\
 					state == is_.HIT_STUNNED_CR:
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 		state = is_.HIT_STUNNED_CR
+		$AnimationPlayer.stop()
 		already_crouched = true
 		if damaging_area.hit_strg == "Light":
 			$AnimationPlayer.play("Hit stun crouching light")
-			knockback(10, 0.2)
+			knockback(damaging_area.hit_push)
 		elif damaging_area.hit_strg == "Medium":
 			$AnimationPlayer.play("Hit stun crouching medium")
-			knockback(20, 0.3)
+			knockback(damaging_area.hit_push)
 		elif damaging_area.hit_strg == "Heavy":
 			$AnimationPlayer.play("Hit stun crouching heavy")
-			knockback(30, 0.433)
+			knockback(damaging_area.hit_push)
 		elif damaging_area.hit_strg == "Sweep":
 			knocked_down()
 		yield($Tween, "tween_completed")
@@ -1220,65 +1242,65 @@ func received_hit():
 					state == is_.HIT_STUNNED_ST or state == is_.LOCKED or state == is_.PRE_JUMP:
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 		state = is_.HIT_STUNNED_ST
-		if hit_trig == "Head":
+		$AnimationPlayer.stop()
+		if hitted_area == "Head":
 			if damaging_area.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun head light")
-				knockback(10, 0.2)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun head medium")
-				knockback(20, 0.3)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun head heavy")
-				knockback(30, 0.433)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Sweep":
 				knocked_down()
 			else: air_received_hit()
-		elif hit_trig == "Torso":
+		elif hitted_area == "Torso":
 			if damaging_area.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun torso light")
-				knockback(10, 0.2)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun torso medium")
-				knockback(20, 0.3)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun torso heavy")
-				knockback(30, 0.433)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Sweep":
 				knocked_down()
 			else: air_received_hit()
-		elif hit_trig == "Legs":
+		elif hitted_area == "Legs":
 			if damaging_area.hit_strg == "Light":
 				$AnimationPlayer.play("Hit stun legs light")
-				knockback(10, 0.2)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Medium":
 				$AnimationPlayer.play("Hit stun legs medium")
-				knockback(20, 0.3)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Heavy":
 				$AnimationPlayer.play("Hit stun legs heavy")
-				knockback(30, 0.433)
+				knockback(damaging_area.hit_push)
 			elif damaging_area.hit_strg == "Sweep":
 				knocked_down()
 			else: air_received_hit()
 		yield($Tween, "tween_completed")
-		if state != is_.KNOCKED_DOWN and state != is_.AIR_STUNNED:
+		if state != is_.WAKING_UP and state != is_.AIR_STUNNED:
 			stand()
 	else: pass
 
-func knockback(distance, time):
+func knockback(distance):
+	var time = $AnimationPlayer.current_animation_length
 	tween.remove_all()
 	if must_face_right == false:
 		distance = -distance
-	if damaging_area.hit_lock == false: 
-		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - distance, time,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
-		tween.start()
-	else: pass
+	tween.interpolate_property(self, "position:x", self.position.x,
+		self.position.x - distance, time,
+		Tween.TRANS_QUINT, Tween.EASE_OUT)
+	tween.start()
 
 func knocked_down():
 	state = is_.KNOCKED_DOWN
 	$AnimationPlayer.play("Knockdown")
-	knockback(30, 0.3)
+	knockback(50)
 	yield($AnimationPlayer, "animation_finished")
 	wake_up()
 
@@ -1304,7 +1326,6 @@ func air_received_hit():
 		self.position.y, self.position.y - 50,
 		0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
-#	yield(tween, "tween_all_completed")
 	yield(get_tree().create_timer(0.4, false), "timeout")
 	#Arco descendente -------------------------------
 	tween.interpolate_property(self, "position:x",
@@ -1363,6 +1384,7 @@ func wake_up():
 	yield($AnimationPlayer, "animation_finished")
 	if $Sprite.flip_h == true:
 		$Sprite.flip_h = false
+	print("Al menos llega aquí")
 	stand()
 
 func tween_parable(distance, height, time):
@@ -1442,6 +1464,18 @@ func re_check_states():
 	else:
 		$PushBox.disabled = false
 		pushray.enabled = true
+	if state != is_.AIR_STUNNED and state != is_.HIT_STUNNED_CR and state != is_.HIT_STUNNED_ST:
+		if combo_counter != 0:
+			print("Combo x ", combo_counter)
+			combo_counter = 0
+	
+func counter_and_cancelling():
+	if $HitBoxes/HitBox1.disabled == false:
+		startup_frames = false
+	if $HitBoxes/HitBox1.disabled == false and hit_canc != "none":
+		can_auto_cancel = true
+	if state == is_.STANDING:
+		hit_canc = "none"
 
 func _process(delta):
 	change_facing_direction()
@@ -1450,9 +1484,8 @@ func _process(delta):
 	trigger_special_1()
 	trigger_special_3(delta)
 	trigger_special_4(delta)
-	if state == is_.STANDING and (facing_right != must_face_right):
-		pass
-	else: player_control(delta)
+	auto_cancels()
+	player_control(delta)
 	repulse_players(delta)
 	pushing_player(delta)
 	stop_tweens_on_push()
@@ -1546,11 +1579,11 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 		just_hitted = true
 		$HitSpacerTimer.start(0.001)
 		if self_shape == 0:
-			hit_trig = "Head"
+			hitted_area = "Head"
 		elif self_shape == 1 or self_shape == 3:
-			hit_trig = "Torso"
+			hitted_area = "Torso"
 		elif self_shape == 2:
-			hit_trig = "Legs"
+			hitted_area = "Legs"
 		
 		if node_name == "HitBoxes":
 			damaging_area = rival

@@ -7328,19 +7328,19 @@ extents = Vector2( 20, 23 )
 
 [sub_resource type="RectangleShape2D" id=71]
 resource_local_to_scene = true
-extents = Vector2( 22, 23 )
+extents = Vector2( 36, 20 )
 
 [sub_resource type="RectangleShape2D" id=72]
 resource_local_to_scene = true
-extents = Vector2( 18, 11 )
+extents = Vector2( 23, 14 )
 
 [sub_resource type="RectangleShape2D" id=73]
 resource_local_to_scene = true
-extents = Vector2( 18, 19 )
+extents = Vector2( 23, 8 )
 
 [sub_resource type="RectangleShape2D" id=74]
 resource_local_to_scene = true
-extents = Vector2( 24, 10 )
+extents = Vector2( 23, 10 )
 
 [sub_resource type="RectangleShape2D" id=75]
 resource_local_to_scene = true
@@ -7370,7 +7370,7 @@ texture = ExtResource( 5 )
 offset = Vector2( 0, -14 )
 vframes = 52
 hframes = 8
-frame = 385
+frame = 100
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7481,7 +7481,7 @@ __meta__ = {
 
 [node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
 modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-position = Vector2( 17, -42 )
+position = Vector2( 31, -57 )
 shape = SubResource( 71 )
 __meta__ = {
 "_editor_description_": "Pepelui"
@@ -7497,12 +7497,12 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 6, -69 )
+position = Vector2( -7, -50 )
 shape = SubResource( 72 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -2, -39 )
+position = Vector2( -7, -28 )
 shape = SubResource( 73 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
