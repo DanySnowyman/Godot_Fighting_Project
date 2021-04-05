@@ -194,11 +194,13 @@ P2_HK={
 2d_physics/layer_3="P1 Hit Box"
 2d_physics/layer_4="P1 Proximity Box"
 2d_physics/layer_5="P1 Grab Box"
+2d_physics/layer_6="P1 Projectile"
 2d_physics/layer_11="P2 Push Box"
 2d_physics/layer_12="P2 Hurt Boxes"
 2d_physics/layer_13="P2 Hit Box"
 2d_physics/layer_14="P2 Proximity Box"
 2d_physics/layer_15="P2 Grab Box"
+2d_physics/layer_16="P2 Projectile"
 
 [rendering]
 
