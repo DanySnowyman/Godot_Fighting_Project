@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=2]
+[gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://fighters/MrPalo.gd" type="Script" id=1]
 [ext_resource path="res://TestingAreas.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://HurtBoxes.gd" type="Script" id=4]
 [ext_resource path="res://gfx/fighters/Mr Palo.png" type="Texture" id=5]
 [ext_resource path="res://fighters/HitBoxes.gd" type="Script" id=6]
+[ext_resource path="res://fighters/PushBox.gd" type="Script" id=7]
 
 [sub_resource type="Animation" id=1]
 length = 0.466668
@@ -352,7 +353,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0.0666668 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 26, 9 ) ]
+"values": [ Vector2( 31, 9 ) ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("HitBoxes/HitBox1:position")
@@ -485,10 +486,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.05 ),
+"times": PoolRealArray( 0.0500001 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, 10 ) ]
+"values": [ Vector2( 25, 10 ) ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("HitBoxes/HitBox1:position")
@@ -497,10 +498,10 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0.05 ),
+"times": PoolRealArray( 0.0500001 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 23, -39 ) ]
+"values": [ Vector2( 25, -39 ) ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("ProximityBox/ProxBox1:disabled")
@@ -796,7 +797,7 @@ tracks/5/keys = {
 "times": PoolRealArray( 0, 0.1, 0.300001 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( 20, 10 ), Vector2( 34, 10 ), Vector2( 20, 10 ) ]
+"values": [ Vector2( 20, 10 ), Vector2( 22, 10 ), Vector2( 20, 10 ) ]
 }
 tracks/6/type = "value"
 tracks/6/path = NodePath("HurtBoxes/HurtBox1:position")
@@ -808,7 +809,7 @@ tracks/6/keys = {
 "times": PoolRealArray( 0, 0.1, 0.300001 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( -7.62939e-06, -50 ), Vector2( 23, -48 ), Vector2( -7.62939e-06, -50 ) ]
+"values": [ Vector2( -7.62939e-06, -50 ), Vector2( 9, -48 ), Vector2( -7.62939e-06, -50 ) ]
 }
 tracks/7/type = "value"
 tracks/7/path = NodePath("HurtBoxes/HurtBox2:shape:extents")
@@ -857,6 +858,42 @@ tracks/10/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ Vector2( -9.00001, -10 ) ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("HurtBoxes/HurtBox4:disabled")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("HurtBoxes/HurtBox4:shape:extents")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 20, 9 ) ]
+}
+tracks/13/type = "value"
+tracks/13/path = NodePath("HurtBoxes/HurtBox4:position")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ Vector2( 32, -48 ) ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -5999,6 +6036,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 352, 353, 354, 355, 356, 357, 358 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("HurtBoxes/HurtBox4:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
 
 [sub_resource type="Animation" id=59]
 resource_name = "Special 2"
@@ -6170,6 +6219,18 @@ tracks/13/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
+}
+tracks/14/type = "value"
+tracks/14/path = NodePath("HurtBoxes/HurtBox4:disabled")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=60]
@@ -6581,10 +6642,22 @@ tracks/10/keys = {
 "update": 1,
 "values": [ false ]
 }
+tracks/11/type = "value"
+tracks/11/path = NodePath("HurtBoxes/HurtBox4:disabled")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
 
 [sub_resource type="Animation" id=63]
 resource_name = "Special 4 action"
-length = 0.35
+length = 0.333334
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -6721,7 +6794,7 @@ tracks/10/keys = {
 
 [sub_resource type="Animation" id=64]
 resource_name = "Special 4 end"
-length = 0.05
+length = 0.333334
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -6967,6 +7040,18 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("HurtBoxes/HurtBox4:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=66]
@@ -7420,34 +7505,35 @@ tracks/8/keys = {
 
 [sub_resource type="RectangleShape2D" id=70]
 resource_local_to_scene = true
-extents = Vector2( 20, 23 )
+extents = Vector2( 20, 45 )
 
 [sub_resource type="RectangleShape2D" id=71]
 resource_local_to_scene = true
-extents = Vector2( 20, 13 )
+extents = Vector2( 31, 13 )
 
 [sub_resource type="RectangleShape2D" id=72]
 resource_local_to_scene = true
-extents = Vector2( 23, 14 )
+extents = Vector2( 24, 11 )
 
 [sub_resource type="RectangleShape2D" id=73]
 resource_local_to_scene = true
-extents = Vector2( 23, 8 )
+extents = Vector2( 26, 19 )
 
 [sub_resource type="RectangleShape2D" id=74]
 resource_local_to_scene = true
-extents = Vector2( 23, 10 )
+extents = Vector2( 36, 11 )
 
 [sub_resource type="RectangleShape2D" id=75]
 resource_local_to_scene = true
-extents = Vector2( 21, 10 )
+extents = Vector2( 25, 10 )
 
 [sub_resource type="RectangleShape2D" id=76]
 resource_local_to_scene = true
 extents = Vector2( 60, 10 )
 
 [sub_resource type="RectangleShape2D" id=77]
-extents = Vector2( 21, 23 )
+resource_local_to_scene = true
+extents = Vector2( 25, 23 )
 
 [node name="MrPalo" type="Area2D"]
 position = Vector2( 120, 195 )
@@ -7465,7 +7551,7 @@ texture = ExtResource( 5 )
 offset = Vector2( 0, -14 )
 vframes = 52
 hframes = 8
-frame = 100
+frame = 409
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7540,6 +7626,11 @@ anims/Stand = SubResource( 66 )
 
 [node name="Tween" type="Tween" parent="."]
 
+[node name="StrikeTimer" type="Timer" parent="."]
+
+[node name="TweenTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="SpecialTimer1" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
@@ -7554,7 +7645,7 @@ one_shot = true
 one_shot = true
 
 [node name="PushingRay" type="RayCast2D" parent="."]
-position = Vector2( 16, -55 )
+position = Vector2( 16, -40 )
 enabled = true
 cast_to = Vector2( 10, 0 )
 collision_mask = 0
@@ -7562,8 +7653,9 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 1, -56 )
+position = Vector2( 1, -45 )
 shape = SubResource( 70 )
+script = ExtResource( 7 )
 
 [node name="HitBoxes" type="Area2D" parent="."]
 collision_layer = 0
@@ -7576,7 +7668,7 @@ __meta__ = {
 
 [node name="HitBox1" type="CollisionShape2D" parent="HitBoxes"]
 modulate = Color( 0.0971814, 0.0705882, 0.921569, 1 )
-position = Vector2( 35, -69 )
+position = Vector2( 40, -72 )
 shape = SubResource( 71 )
 __meta__ = {
 "_editor_description_": "Pepelui"
@@ -7592,27 +7684,27 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -50 )
+position = Vector2( 18, -71 )
 shape = SubResource( 72 )
 disabled = true
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -28 )
+position = Vector2( 7, -41 )
 shape = SubResource( 73 )
 disabled = true
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -7, -10 )
+position = Vector2( 1, -11 )
 shape = SubResource( 74 )
 disabled = true
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
-visible = false
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 31, -69 )
+position = Vector2( 31, -26 )
 shape = SubResource( 75 )
+disabled = true
 
 [node name="ProximityBox" type="Area2D" parent="."]
 collision_layer = 0
@@ -7625,6 +7717,7 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 76 )
+disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
 visible = false
@@ -7634,13 +7727,18 @@ script = ExtResource( 2 )
 
 [node name="GrabBox1" type="CollisionShape2D" parent="GrabBox"]
 modulate = Color( 0.819608, 0.184314, 0.764706, 1 )
-position = Vector2( -1, -41 )
+position = Vector2( 20, -49 )
 shape = SubResource( 77 )
 disabled = true
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="State" type="Label" parent="HUD"]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Info" type="Label" parent="HUD"]
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -9,7 +9,7 @@ var hit_area_rect:= Rect2()
 var hit_damg = 50 # Daño producido
 var hit_stun = 50 # Aturdimiento producido
 var hit_push = 30
-var hit_strg # Light, Medium, Heavy, Sweep
+var hit_strg # Light, Medium, Heavy, Launch, Sweep
 var hit_area = "Mid" # High, Low or Mid (Si debe bloquearse alto, bajo o ambos valen)
 var hit_type = "Special" # Normal < Special < Powered < Ultimate
 var hit_jugg = true # Si es "true" puede golpearnos en estado "AIR_STUNNED"
@@ -32,7 +32,7 @@ func fireball_data(player_owner, facing_right, strenght):
 	elif strenght == "Medium":
 		speed = 170
 	elif strenght == "Light":
-		speed = 120
+		speed = 80
 	if facing_right == false:
 		speed = -speed
 		scale.x = -scale.x
@@ -52,21 +52,19 @@ func get_hitbox_rect():
 	hit_area_rect = Rect2(hit_area_pos, hit_area_size)
 
 func disable_projectile():
+	hitted = true
 	$HitBox.set_deferred("disabled", true)
+	$ProximityBox/ProxBox1.set_deferred("disabled", true)
 	$AnimationPlayer.play("Impact")
 	yield($AnimationPlayer, "animation_finished")
 	self.visible = false
 	yield(get_tree().create_timer(1, true), "timeout")
 	queue_free()
 	
-func _on_FireBall_area_shape_entered(area_id, area, area_shape, self_shape):
-	var collision_name = area.shape_owner_get_owner(shape_find_owner(area_shape))
-	var area_name = collision_name.get_parent()
-	var node_name = area_name.get_name()
-	
-	if node_name != "HurtBoxes":
+func _on_FireBall_area_entered(area):
+	if area.has_method("disable_projectile"):
 		disable_projectile()
 	else: pass
-
+	
 func _on_VisibilityNotifier2D_screen_exited():
 	queue_free()

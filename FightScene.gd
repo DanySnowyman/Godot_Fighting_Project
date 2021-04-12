@@ -48,14 +48,6 @@ func _process(delta):
 #	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
 
 func play_hitfx(facing_right, hitfx_area_rect, hit_type, hit_strenght):
-	var time
-	
-	if hit_strenght == "Heavy":
-		time = 0.5
-	elif hit_strenght == "Medium":
-		time = 0.3
-	else: time = 0.2
-	
 	hitsfx = Hits_FX.instance()
 	hitsfx.position.x = rand_range(hitfx_area_rect.position.x,\
 					hitfx_area_rect.position.x + hitfx_area_rect.size.x)
@@ -63,5 +55,3 @@ func play_hitfx(facing_right, hitfx_area_rect, hit_type, hit_strenght):
 					hitfx_area_rect.position.y + hitfx_area_rect.size.y)
 	add_child(hitsfx)
 	hitsfx.call_animation(facing_right, hit_type)
-#	player1.hit_freeze(time)
-	player2.hit_freeze(time)
