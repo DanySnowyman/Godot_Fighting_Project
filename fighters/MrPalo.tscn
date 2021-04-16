@@ -6059,7 +6059,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.2, 0.4, 0.6, 0.8, 0.9 ),
+"times": PoolRealArray( 0, 0.05, 0.2, 0.4, 0.6, 0.75, 0.9 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 384, 385, 386, 387, 388, 389, 40 ]
@@ -7513,15 +7513,15 @@ extents = Vector2( 31, 13 )
 
 [sub_resource type="RectangleShape2D" id=72]
 resource_local_to_scene = true
-extents = Vector2( 24, 11 )
+extents = Vector2( 23, 11 )
 
 [sub_resource type="RectangleShape2D" id=73]
 resource_local_to_scene = true
-extents = Vector2( 26, 19 )
+extents = Vector2( 19, 6 )
 
 [sub_resource type="RectangleShape2D" id=74]
 resource_local_to_scene = true
-extents = Vector2( 36, 11 )
+extents = Vector2( 24, 10 )
 
 [sub_resource type="RectangleShape2D" id=75]
 resource_local_to_scene = true
@@ -7551,7 +7551,7 @@ texture = ExtResource( 5 )
 offset = Vector2( 0, -14 )
 vframes = 52
 hframes = 8
-frame = 409
+frame = 288
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7684,19 +7684,19 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 18, -71 )
+position = Vector2( -6, -43 )
 shape = SubResource( 72 )
 disabled = true
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 7, -41 )
+position = Vector2( -11, -26 )
 shape = SubResource( 73 )
 disabled = true
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 1, -11 )
+position = Vector2( -7, -10 )
 shape = SubResource( 74 )
 disabled = true
 
@@ -7717,7 +7717,6 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 76 )
-disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
 visible = false
@@ -7742,6 +7741,8 @@ __meta__ = {
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="HUDTimer" type="Timer" parent="."]
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
 [connection signal="timeout" from="SpecialTimer1" to="." method="_on_SpecialTimer1_timeout"]

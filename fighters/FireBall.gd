@@ -58,7 +58,7 @@ func disable_projectile():
 	$AnimationPlayer.play("Impact")
 	yield($AnimationPlayer, "animation_finished")
 	self.visible = false
-	yield(get_tree().create_timer(1, true), "timeout")
+	yield(get_tree().create_timer(2, true), "timeout")
 	queue_free()
 	
 func _on_FireBall_area_entered(area):
