@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://FightScene.gd" type="Script" id=1]
 [ext_resource path="res://Camera2D.gd" type="Script" id=2]
+[ext_resource path="res://gfx/HUD/health_over.png" type="Texture" id=3]
+[ext_resource path="res://gfx/HUD/health_under_hit.png" type="Texture" id=4]
+[ext_resource path="res://gfx/HUD/health_progress_full.png" type="Texture" id=5]
+[ext_resource path="res://HUD.gd" type="Script" id=6]
+[ext_resource path="res://gfx/HUD/health_back.png" type="Texture" id=7]
 
 [node name="FightScene" type="Node2D"]
 pause_mode = 2
@@ -12,3 +17,98 @@ position = Vector2( 192, 108 )
 current = true
 smoothing_enabled = true
 script = ExtResource( 2 )
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource( 6 )
+
+[node name="P1HealthSub" type="TextureProgress" parent="HUD"]
+margin_left = 18.0
+margin_top = 18.0
+margin_right = 159.0
+margin_bottom = 28.0
+max_value = 1000.0
+value = 1000.0
+texture_under = ExtResource( 7 )
+texture_progress = ExtResource( 4 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P1HealthMain" type="TextureProgress" parent="HUD"]
+margin_left = 18.0
+margin_top = 18.0
+margin_right = 159.0
+margin_bottom = 28.0
+max_value = 1000.0
+value = 1000.0
+texture_progress = ExtResource( 5 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P1HealthFrame" type="Sprite" parent="HUD"]
+position = Vector2( 16, 16 )
+texture = ExtResource( 3 )
+centered = false
+
+[node name="P2HealthSub" type="TextureProgress" parent="HUD"]
+margin_left = 366.0
+margin_top = 18.0
+margin_right = 507.0
+margin_bottom = 28.0
+rect_scale = Vector2( -1, 1 )
+max_value = 1000.0
+value = 1000.0
+texture_under = ExtResource( 7 )
+texture_progress = ExtResource( 4 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P2HealthMain" type="TextureProgress" parent="HUD"]
+margin_left = 366.0
+margin_top = 18.0
+margin_right = 507.0
+margin_bottom = 28.0
+rect_scale = Vector2( -1, 1 )
+max_value = 1000.0
+value = 1000.0
+texture_progress = ExtResource( 5 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P2HealthFrame" type="Sprite" parent="HUD"]
+position = Vector2( 368, 16 )
+rotation = -3.14159
+scale = Vector2( 1, -1 )
+texture = ExtResource( 3 )
+centered = false
+
+[node name="P1Info" type="Label" parent="HUD"]
+margin_left = 16.0
+margin_top = 40.0
+margin_right = 56.0
+margin_bottom = 54.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P2Info" type="Label" parent="HUD"]
+margin_left = 328.0
+margin_top = 40.0
+margin_right = 368.0
+margin_bottom = 54.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="HUD"]
+
+[node name="P1InfoTimer" type="Timer" parent="HUD"]
+
+[node name="P2InfoTimer" type="Timer" parent="HUD"]

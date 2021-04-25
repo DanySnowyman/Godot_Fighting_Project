@@ -1,10 +1,10 @@
 [gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://fighters/MrPalo.gd" type="Script" id=1]
-[ext_resource path="res://TestingAreas.gd" type="Script" id=2]
-[ext_resource path="res://ProximityBox.gd" type="Script" id=3]
-[ext_resource path="res://HurtBoxes.gd" type="Script" id=4]
-[ext_resource path="res://gfx/fighters/Mr Palo.png" type="Texture" id=5]
+[ext_resource path="res://fighters/GrabBox.gd" type="Script" id=2]
+[ext_resource path="res://fighters/ProximityBox.gd" type="Script" id=3]
+[ext_resource path="res://fighters/HurtBoxes.gd" type="Script" id=4]
+[ext_resource path="res://gfx/fighters/Mr_Palo.png" type="Texture" id=5]
 [ext_resource path="res://fighters/HitBoxes.gd" type="Script" id=6]
 [ext_resource path="res://fighters/PushBox.gd" type="Script" id=7]
 
@@ -3865,6 +3865,42 @@ tracks/8/keys = {
 "update": 1,
 "values": [ Vector2( -7.00001, -10 ) ]
 }
+tracks/9/type = "value"
+tracks/9/path = NodePath("HurtBoxes/HurtBox1:disabled")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 1,
+"values": [  ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("HurtBoxes/HurtBox2:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 1,
+"values": [  ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("HurtBoxes/HurtBox3:disabled")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 1,
+"values": [  ]
+}
 
 [sub_resource type="Animation" id=31]
 length = 0.001
@@ -3976,6 +4012,42 @@ tracks/8/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ Vector2( -7.00001, -10 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("HurtBoxes/HurtBox1:disabled")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("HurtBoxes/HurtBox2:disabled")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("HurtBoxes/HurtBox3:disabled")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=32]
@@ -7505,7 +7577,7 @@ tracks/8/keys = {
 
 [sub_resource type="RectangleShape2D" id=70]
 resource_local_to_scene = true
-extents = Vector2( 20, 45 )
+extents = Vector2( 20, 20 )
 
 [sub_resource type="RectangleShape2D" id=71]
 resource_local_to_scene = true
@@ -7513,15 +7585,15 @@ extents = Vector2( 31, 13 )
 
 [sub_resource type="RectangleShape2D" id=72]
 resource_local_to_scene = true
-extents = Vector2( 23, 11 )
+extents = Vector2( 23, 14 )
 
 [sub_resource type="RectangleShape2D" id=73]
 resource_local_to_scene = true
-extents = Vector2( 19, 6 )
+extents = Vector2( 23, 8 )
 
 [sub_resource type="RectangleShape2D" id=74]
 resource_local_to_scene = true
-extents = Vector2( 24, 10 )
+extents = Vector2( 23, 10 )
 
 [sub_resource type="RectangleShape2D" id=75]
 resource_local_to_scene = true
@@ -7549,9 +7621,9 @@ __meta__ = {
 position = Vector2( 0, -50 )
 texture = ExtResource( 5 )
 offset = Vector2( 0, -14 )
-vframes = 52
 hframes = 8
-frame = 288
+vframes = 52
+frame = 86
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7653,7 +7725,7 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 1, -45 )
+position = Vector2( 0, -20 )
 shape = SubResource( 70 )
 script = ExtResource( 7 )
 
@@ -7684,21 +7756,18 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -6, -43 )
+position = Vector2( -7, -50 )
 shape = SubResource( 72 )
-disabled = true
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( -11, -26 )
+position = Vector2( -7, -28 )
 shape = SubResource( 73 )
-disabled = true
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
 position = Vector2( -7, -10 )
 shape = SubResource( 74 )
-disabled = true
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
@@ -7719,7 +7788,6 @@ position = Vector2( 60, 0 )
 shape = SubResource( 76 )
 
 [node name="GrabBox" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 2 )
@@ -7737,12 +7805,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Info" type="Label" parent="HUD"]
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HUDTimer" type="Timer" parent="."]
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
 [connection signal="timeout" from="SpecialTimer1" to="." method="_on_SpecialTimer1_timeout"]

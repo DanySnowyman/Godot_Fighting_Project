@@ -7,6 +7,7 @@ var screen_size := Rect2()
 
 func _ready():
 	screen_size = get_viewport_rect()
+#	$HUD.position = (Vector2(185, 120))
 
 func find_nodes():
 	player1 = get_parent().get_node("Player1")

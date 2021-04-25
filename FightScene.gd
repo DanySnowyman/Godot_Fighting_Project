@@ -7,6 +7,7 @@ var Hits_FX = preload("res://HitsFX.tscn")
 var player1
 var player2
 var stage
+var hud
 var hitsfx
 var player1_on_left
 var stage_size

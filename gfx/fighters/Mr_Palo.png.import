@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/MrPaloFireball.png-445e78b3d09f05224295414e9ff79d4f.stex"
+path="res://.import/Mr_Palo.png-1ec5581c883a6c459b224165b090ba40.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/fighters/MrPaloFireball.png"
-dest_files=[ "res://.import/MrPaloFireball.png-445e78b3d09f05224295414e9ff79d4f.stex" ]
+source_file="res://gfx/fighters/Mr_Palo.png"
+dest_files=[ "res://.import/Mr_Palo.png-1ec5581c883a6c459b224165b090ba40.stex" ]
 
 [params]
 
