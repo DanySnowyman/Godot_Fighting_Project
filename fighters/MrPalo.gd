@@ -13,6 +13,7 @@ enum is_ {LOCKED, STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST,
 		BLOCK_STUNNED_L, HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING, GROUND_IMPACT,
 		KNOCKED_DOWN, WAKING_UP}
 var state
+var can_control = true
 var facing_right = true
 var must_face_right
 var is_stuck
@@ -28,6 +29,7 @@ var nearly_grabbed = false
 var players_collide = false
 var proxboxes_detected = 0
 var can_guard = false
+var changed_guard = false
 var just_hitted = false
 var waiting_for_flip = false
 var already_crouched = false
@@ -67,7 +69,9 @@ var hit_area_rect:= Rect2() # Eliminar tras video
 var hurt_area_rect:= Rect2() # Eliminar tras video
 var hitfx_area_rect:= Rect2()
 var hitted_area
-var health
+var health_level
+var power_level = 0
+var power_sp_inc = 20
 var combo_counter = 0
 
 var WALK_FORWARD_SPEED = 200
@@ -139,7 +143,7 @@ func _ready():
 	$AnimationPlayer.play("Stand")
 	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
-	health = INIT_HEALTH
+	health_level = INIT_HEALTH
 
 func find_nodes():
 	if player == 1:
@@ -150,7 +154,7 @@ func find_nodes():
 		self.position = Vector2((stage_size.end.x / 2) + 80, (stage_size.end.y - 20))
 	camera = get_parent().get_node("Camera2D")
 	hud = get_parent().get_node("HUD")
-	hud.initialize_health(player, health)
+	hud.initialize_health(player, health_level)
 
 func change_facing_direction():
 	if facing_right != must_face_right:
@@ -249,13 +253,33 @@ func player_control(delta):
 			stand()
 		else: crouch()
 	# Alternate blocking ------------------------------------------------------
-#	if state == is_.BLOCK_STUNNED_H:
-#		if Input.is_action_pressed("%s_DOWN" % Px):
-#			crouch()
-#	if state == is_.CROUCHING:
-#		if Input.is_action_pressed("%s_DOWN" % Px) == false:
-#			stand()
-#		else: crouch()
+	if state == is_.BLOCK_STUNNED_H:
+		if changed_guard == false:
+			if facing_right == true:
+				if Input.is_action_pressed("%s_DOWN" % Px) and Input.is_action_pressed("%s_LEFT" % Px):
+					if $AnimationPlayer.current_animation_position > 0.15:
+						changed_guard = true
+						$AnimationPlayer.stop()
+						$Sprite.frame = 85
+						already_crouched = true
+						state = is_.BLOCK_STUNNED_L
+			else:
+				if Input.is_action_pressed("%s_DOWN" % Px) and Input.is_action_pressed("%s_RIGHT" % Px):
+					if $AnimationPlayer.current_animation_position > 0.15:
+						changed_guard = true
+						$AnimationPlayer.stop()
+						$Sprite.frame = 85
+						already_crouched = true
+						state = is_.BLOCK_STUNNED_L
+	if state == is_.BLOCK_STUNNED_L:
+		if changed_guard == false:
+			if Input.is_action_pressed("%s_DOWN" % Px) == false:
+				if $AnimationPlayer.current_animation_position > 0.15:
+					changed_guard = true
+					$AnimationPlayer.stop()
+					$Sprite.frame = 81
+					already_crouched = false
+					state = is_.BLOCK_STUNNED_H
 	# Jump --------------------------------------------------------------------
 	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_pressed("%s_UP" % Px):
@@ -311,6 +335,7 @@ func player_control(delta):
 	if state == is_.STANDING or state == is_.BLOCKING_H:
 		if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_LK" % Px) == false:
 			standing_normal("LP")
+#			special_1("Light")
 		if Input.is_action_just_pressed("%s_MP" % Px):
 			standing_normal("MP")
 		if Input.is_action_just_pressed("%s_HP" % Px):
@@ -355,6 +380,7 @@ func player_control(delta):
 			Engine.time_scale = 0.5
 			Engine.iterations_per_second = 30
 		if Input.is_key_pressed(50):
+			print("2 is pressed")
 			Engine.time_scale = 1
 			Engine.iterations_per_second = 60
 		if Input.is_key_pressed(51):
@@ -403,11 +429,19 @@ func trigger_special_1(): # HADOKEN
 				sp1_input_count = 3
 			
 	if sp1_input_count == 3:
+		if Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_MP" % Px) or\
+			Input.is_action_just_pressed("%s_LP" % Px) and Input.is_action_just_pressed("%s_HP" % Px) or\
+			Input.is_action_just_pressed("%s_MP" % Px) and Input.is_action_just_pressed("%s_HP" % Px):
+				if power_level >= 100:
+					power_level -= 100
+					hud.manage_power(player, power_level)
+					special_1("Powered")
+				else: pass
 		if Input.is_action_just_pressed("%s_HP" % Px):
 			special_1("Heavy")
-		elif Input.is_action_just_pressed("%s_MP" % Px):
+		if Input.is_action_just_pressed("%s_MP" % Px):
 			special_1("Medium")
-		elif Input.is_action_just_pressed("%s_LP" % Px):
+		if Input.is_action_just_pressed("%s_LP" % Px):
 			special_1("Light")
 
 func trigger_special_2(): # SHORYUKEN
@@ -445,9 +479,11 @@ func trigger_special_3(delta): # TATSU
 			sp3_left_charge += 1 * delta
 	if Input.is_action_pressed("%s_RIGHT" % Px):
 			sp3_right_charge += 1 * delta
-	if Input.is_action_just_released("%s_LEFT" % Px) or Input.is_action_just_released("%s_RIGHT" % Px):
+	if Input.is_action_just_released("%s_LEFT" % Px):
 			yield(get_tree().create_timer(0.3, false), "timeout")
 			sp3_left_charge = 0
+	if Input.is_action_just_released("%s_RIGHT" % Px):
+			yield(get_tree().create_timer(0.3, false), "timeout")
 			sp3_right_charge = 0
 			
 	if facing_right == true:
@@ -499,6 +535,9 @@ func special_1(strenght):
 			fireball.set_as_toplevel(true)
 			fireball.fireball_data(player, facing_right, strenght)
 			add_child(fireball)
+			if strenght != "Powered":
+				power_level += power_sp_inc
+				hud.manage_power(player, power_level)
 			yield($AnimationPlayer, "animation_finished")
 			stand()
 	else: pass
@@ -528,6 +567,8 @@ func special_2(strenght):
 				self.position.x, (self.position.x + shoryu_lenght),
 				0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
+		power_level += power_sp_inc
+		hud.manage_power(player, power_level)
 		$TweenTimer.start(0.35)
 		yield($TweenTimer, "timeout")
 		if state != is_.AIR_STUNNED:
@@ -567,7 +608,7 @@ func special_3(strenght):
 			can_special_cancel = false
 			$ProximityBox/ProxBox1.disabled = true
 		state = is_.ATTACKING_SP
-		strike_data(60, 80, 60, strenght, "Mid", "Special", 0, false)
+		strike_data(60, 80, -60, strenght, "Mid", "Special", 0, false)
 		$AnimationPlayer.stop(true)
 		$AnimationPlayer.play("Special 3 start")
 		yield(get_tree().create_timer(0.2, false), "timeout")
@@ -578,6 +619,8 @@ func special_3(strenght):
 				self.position.x, (self.position.x + tatsu_lenght),
 				tatsu_time, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 		tween.start()
+		power_level += power_sp_inc
+		hud.manage_power(player, power_level)
 		$TweenTimer.start(tatsu_time)
 		yield($TweenTimer, "timeout")
 		if state != is_.AIR_STUNNED:
@@ -593,8 +636,10 @@ func special_4():
 			$ProximityBox/ProxBox1.disabled = true
 		state = is_.ATTACKING_SP
 		sp4_slap_buffer = 0
-		strike_data(50, 20, 2, "Medium", "Mid", "Special", 0, false)
+		strike_data(30, 20, 10, "Medium", "Mid", "Special", 0, false)
 		$AnimationPlayer.play("Special 4 start")
+		power_level += power_sp_inc
+		hud.manage_power(player, power_level)
 		for i in range(3):
 			$AnimationPlayer.queue("Special 4 action")
 			yield($AnimationPlayer, "animation_finished")
@@ -605,26 +650,40 @@ func special_4():
 	else: pass
 	
 func stand():
-	state = is_.STANDING
-	enable_hurt_boxes()
-	is_walking_forward = false
-	is_walking_backward = false
-	self.z_index = 0
-	if already_crouched == true:
-		already_crouched = false
-		$AnimationPlayer.play_backwards("Crouch")
-		$AnimationPlayer.queue("Stand")
-	else: $AnimationPlayer.play("Stand")
+	if health_level > 0:
+		state = is_.STANDING
+		enable_hurt_boxes()
+		is_walking_forward = false
+		is_walking_backward = false
+		self.z_index = 0
+		if already_crouched == true:
+			already_crouched = false
+			$AnimationPlayer.play_backwards("Crouch")
+			$AnimationPlayer.queue("Stand")
+		else: $AnimationPlayer.play("Stand")
+	else:
+		$AnimationPlayer.play("Exhausted")
+		yield($AnimationPlayer, "animation_finished")
+		yield(get_tree().create_timer(1), "timeout")
+		rival.player_wins()
 
 func crouch():
-	state = is_.CROUCHING
-	dash_l_ready = false
-	dash_r_ready = false
-	if already_crouched == false:
-		already_crouched = true
-		$AnimationPlayer.play("Crouch")
+	if health_level >0:
+		state = is_.CROUCHING
+		dash_l_ready = false
+		dash_r_ready = false
+		if already_crouched == false:
+			already_crouched = true
+			$AnimationPlayer.play("Crouch")
+			yield($AnimationPlayer, "animation_finished")
+		$AnimationPlayer.play("Crouch already")
+	else:
+		$AnimationPlayer.play("Exhausted")
+		$AnimationPlayer.seek(0.333)
 		yield($AnimationPlayer, "animation_finished")
-	$AnimationPlayer.play("Crouch already")
+		yield(get_tree().create_timer(1), "timeout")
+		rival.player_wins()
+		
 	
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
@@ -850,22 +909,22 @@ func air_normal(button_pressed):
 	state = is_.AIR_ATTACKING
 	startup_frames = true
 	if button_pressed == "LP":
-		strike_data(40, 90, 10, "Light", "High", "Normal", 0, false)
+		strike_data(40, 90, 20, "Light", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping LP")
 	if button_pressed == "MP":
-		strike_data(70, 140, 20, "Medium", "High", "Normal", 0, false)
+		strike_data(70, 140, 30, "Medium", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping MP")
 	if button_pressed == "HP":
-		strike_data(100, 190, 30, "Heavy", "High", "Normal", 0, false)
+		strike_data(100, 190, 40, "Heavy", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping HP")
 	if button_pressed == "LK":
-		strike_data(40, 90, 10, "Light", "High", "Normal", 0, false)
+		strike_data(40, 90, 20, "Light", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping LK")
 	if button_pressed == "MK":
-		strike_data(70, 170, 20, "Medium", "High", "Normal", 0, false)
+		strike_data(70, 170, 30, "Medium", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping MK")
 	if button_pressed == "HK":
-		strike_data(100, 210, 30, "Heavy", "High", "Normal", 0, false)
+		strike_data(100, 210, 40, "Heavy", "High", "Normal", 0, false)
 		$AnimationPlayer.play("Attack jumping HK")
 
 func strike_data(damg, stun, push, strg, area, type, canc, jugg):
@@ -1236,6 +1295,8 @@ func _on_hit_connects(area):
 			elif hit_strg == "Medium":
 				hit_freeze = FREEZE_MEDIUM
 			else: hit_freeze = FREEZE_HEAVY
+			power_level += hit_damg / 6
+			hud.manage_power(player, power_level)
 			$AnimationPlayer.stop(false)
 			$Tween.stop_all()
 			$StrikeTimer.set_paused(true)
@@ -1251,13 +1312,13 @@ func on_hit():
 	$ProximityBox/ProxBox1.set_deferred("disabled", true)
 	is_walking_forward = false
 	is_dashing_forward = false
-	if state == is_.BLOCKING_H:
+	if state == is_.BLOCKING_H or state == is_.BLOCK_STUNNED_H:
 		if damaging_area.hit_area == "High" or damaging_area.hit_area == "Mid":
 			blocked_hit()
 		else:
 			received_hit()
-			
-	elif state == is_.BLOCKING_L:
+
+	elif state == is_.BLOCKING_L or state == is_.BLOCK_STUNNED_L:
 		if damaging_area.hit_area == "Mid" or damaging_area.hit_area == "Low":
 			blocked_hit()
 		else: received_hit()
@@ -1281,7 +1342,8 @@ func on_hit_freeze():
 	elif damaging_area.hit_strg == "Medium":
 		hit_freeze = FREEZE_MEDIUM
 	else: hit_freeze = FREEZE_HEAVY
-	is_shaked = true
+	if damaging_area != rival:
+		damaging_area.on_hit_freeze(hit_freeze)
 	hit_shake()
 	$AnimationPlayer.stop(false)
 	$Tween.stop_all()
@@ -1304,9 +1366,13 @@ func hit_shake():
 	
 func blocked_hit():
 	get_parent().play_hitfx(facing_right, hitfx_area_rect, "Blocked", damaging_area.hit_strg)
+	power_level += damaging_area.hit_damg / 8
+	hud.manage_power(player, power_level)
+	if damaging_area.has_method("disable_projectile"):
+		damaging_area.disable_projectile()
 	if damaging_area.hit_type != "Normal":
 		calculate_damage(true)
-	if state == is_.BLOCKING_H:
+	if state == is_.BLOCKING_H or state == is_.BLOCK_STUNNED_H:
 		state = is_.BLOCK_STUNNED_H
 		if hitted_area == "Head":
 			if damaging_area.hit_strg == "Light":
@@ -1328,7 +1394,7 @@ func blocked_hit():
 			else:
 				$AnimationPlayer.play("Block stun low heavy")
 				knockback(damaging_area.hit_push)
-	elif state == is_.BLOCKING_L:
+	elif state == is_.BLOCKING_L or state == is_.BLOCK_STUNNED_L:
 		state = is_.BLOCK_STUNNED_L
 		if damaging_area.hit_strg == "Light":
 			$AnimationPlayer.play("Block stun crouching light")
@@ -1344,13 +1410,17 @@ func blocked_hit():
 	if state == is_.BLOCK_STUNNED_L:
 		crouch()
 	else: stand()
+	changed_guard = false
 
 func received_hit():
 	disable_hit_boxes()
 	combo_counter += 1
 	calculate_damage(false)
-	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or\
-					state == is_.HIT_STUNNED_CR:
+	power_level += damaging_area.hit_damg / 6
+	hud.manage_power(player, power_level)
+	if damaging_area.has_method("disable_projectile"):
+		damaging_area.disable_projectile()
+	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or state == is_.HIT_STUNNED_CR:
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected", damaging_area.hit_strg)
 		state = is_.HIT_STUNNED_CR
 		$AnimationPlayer.stop()
@@ -1422,12 +1492,18 @@ func received_hit():
 	else: pass
 	
 func knockback(distance):
+	var no_surplus = false
 	var time = $AnimationPlayer.current_animation_length 
 	
-	if self.position.x + distance > camera_pos.x + 172:
-		rival.knockback_surplus((self.position.x + distance) - (camera_pos.x + 172))
-	elif self.position.x - distance < camera_pos.x - 172:
-		rival.knockback_surplus((self.position.x + distance) - (camera_pos.x - 172))
+	if distance < 0:
+		no_surplus = true
+		distance = -distance
+
+	if no_surplus == false and rival == damaging_area:
+		if self.position.x + distance > camera_pos.x + 172:
+			rival.knockback_surplus((self.position.x + distance) - (camera_pos.x + 172))
+		elif self.position.x - distance < camera_pos.x - 172:
+			rival.knockback_surplus((self.position.x + distance) - (camera_pos.x - 172))
 	tween.remove_all()
 	if must_face_right == false:
 		distance = -distance
@@ -1440,7 +1516,7 @@ func knockback_surplus(distance):
 	var time = $AnimationPlayer.current_animation_length - $AnimationPlayer.current_animation_position
 	if must_face_right == false:
 		distance = -distance
-	if state == is_.ATTACKING_ST or state == is_.ATTACKING_CR:
+	if state == is_.ATTACKING_ST or state == is_.ATTACKING_CR or state == is_.ATTACKING_SP:
 		tween.remove_all()
 		tween.interpolate_property(self, "position:x", self.position.x,
 			self.position.x - distance, time,
@@ -1468,9 +1544,14 @@ func air_received_hit(from_ground):
 		combo_counter += 1
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected", damaging_area.hit_strg)
 	else: pass
+	calculate_damage(false)
+	power_level += damaging_area.hit_damg / 6
+	hud.manage_power(player, power_level)
+	if damaging_area.has_method("disable_projectile"):
+		damaging_area.disable_projectile()
 	tween.remove_all()
 	$AnimationPlayer.stop()
-	if damaging_area.hit_type == "Normal" and knockdown_level == 0:
+	if damaging_area.hit_type == "Normal" and knockdown_level == 0 and health_level > 0:
 		$AnimationPlayer.play("Hit stun air soft")
 	else:
 		$AnimationPlayer.play("Hit stun air hard")
@@ -1525,28 +1606,34 @@ func ground_impact():
 func wake_up():
 	var rolling_direction
 	rolling_direction = ROLLING_BACK_DIST
-	if waiting_for_flip == true:
-		rolling_direction = -rolling_direction
-	state = is_.WAKING_UP
-	if knockdown_level < 2:
-		if Input.is_action_pressed("%s_LEFT" % Px) and must_face_right == true or\
-						Input.is_action_pressed("%s_RIGHT" % Px) and must_face_right == false:
-			$AnimationPlayer.play("Rolling back")
-			tween.interpolate_property(self, "position:x", self.position.x,
-				self.position.x - rolling_direction, 0.3,
-				Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			tween.start()
-			yield(tween, "tween_completed")
-		elif Input.is_action_pressed("%s_DOWN" % Px):
-			yield(get_tree().create_timer(0.8, false), "timeout")
+	if health_level > 0:
+		if waiting_for_flip == true:
+			rolling_direction = -rolling_direction
+		state = is_.WAKING_UP
+		if knockdown_level < 2:
+			if Input.is_action_pressed("%s_LEFT" % Px) and must_face_right == true or\
+							Input.is_action_pressed("%s_RIGHT" % Px) and must_face_right == false:
+				$AnimationPlayer.play("Rolling back")
+				tween.interpolate_property(self, "position:x", self.position.x,
+					self.position.x - rolling_direction, 0.3,
+					Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				tween.start()
+				yield(tween, "tween_completed")
+			elif Input.is_action_pressed("%s_DOWN" % Px):
+				yield(get_tree().create_timer(0.8, false), "timeout")
+			else: pass
 		else: pass
-	else: pass
-	knockdown_level = 0
-	$AnimationPlayer.play("Wake up")
-	yield($AnimationPlayer, "animation_finished")
-	if $Sprite.flip_h == true:
-		$Sprite.flip_h = false
-	stand()
+		knockdown_level = 0
+		$AnimationPlayer.play("Wake up")
+		yield($AnimationPlayer, "animation_finished")
+		if $Sprite.flip_h == true:
+			$Sprite.flip_h = false
+		stand()
+	else:
+		state = is_.LOCKED
+		rival.state = is_.LOCKED
+		yield(get_tree().create_timer(1), "timeout")
+		rival.player_wins()
 
 func tween_parable(distance, height, time):
 	if facing_right == false:
@@ -1632,9 +1719,9 @@ func re_check_states():
 		pushray.enabled = true
 		
 func pass_info_to_hud():
-	if state == is_.STANDING or state == is_.CROUCHING or state == is_.GROUND_IMPACT:
+	if state == is_.STANDING or state == is_.CROUCHING or state == is_.GROUND_IMPACT or state == is_.LOCKED:
 		if combo_counter > 0:
-			hud.combo_ended(player, combo_counter, health, false)
+			hud.combo_ended(player, combo_counter, health_level, false)
 			combo_counter = 0
 	if state == is_.HIT_STUNNED_ST or state == is_.HIT_STUNNED_CR or state == is_.AIR_STUNNED:
 		if startup_frames == true:
@@ -1658,7 +1745,8 @@ func _process(delta):
 	trigger_special_3(delta)
 	trigger_special_4(delta)
 	counter_and_cancelling()
-	player_control(delta)
+	if can_control == true:
+		player_control(delta)
 	normal_cancels()
 	repulse_players(delta)
 	pushing_player(delta)
@@ -1679,14 +1767,17 @@ func _process(delta):
 	if state != is_.GRABBED and state != is_.LOCKED:
 		self.position.x = clamp(self.position.x, (camera_pos.x - 192) + 20, (camera_pos.x + 192) - 20)
 		self.position.y = clamp(self.position.y, stage_size.position.y, stage_size.end.y - 20)
-		
+	
+	power_level = clamp(power_level, 0, 400)
+	
 	if proxboxes_detected > 0:
 		can_guard = true
 	else: can_guard = false
 
 	$HUD/State.text = is_.keys()[state]
-#	if player == 2:
-#		print(can_guard)
+	
+	if player == 1:
+		print(power_level)
 	
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
@@ -1707,9 +1798,10 @@ func _on_area_exited(area):
 
 func repulse_players(delta):
 	if players_collide == true:
-		if must_face_right == true:
-			self.position.x -= 200 * delta
-		else: self.position.x += 200 * delta
+		if state != is_.ATTACKING_SP:
+			if must_face_right == true:
+				self.position.x -= 200 * delta
+			else: self.position.x += 200 * delta
 
 func pushing_player(delta):
 	if pushray.is_colliding() == true:
@@ -1773,8 +1865,6 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 			get_hurtbox_rectangle(self_shape)
 			calculate_hitfx_drawing_area()
 		on_hit()
-		if damaging_area.has_method("disable_projectile"):
-			damaging_area.disable_projectile()
 	
 func _on_GrabBox_area_entered(area):
 	if state == is_.AIR_ATTACKING and (rival.state == is_.AIR_STUNNED or rival.state == is_.JUMPING\
@@ -1844,31 +1934,47 @@ func calculate_hitfx_drawing_area():
 	hitfx_area_rect = Rect2(hitfx_area_pos, hitfx_area_size)
 	
 func calculate_damage(blocked):
-	var raw_damage = damaging_area.hit_damg
+	var raw_damage
 	var scaled_damage
 	
 	if blocked == false:
-		if combo_counter <= 2:
-			scaled_damage = raw_damage
-		elif combo_counter == 3:
-			scaled_damage = raw_damage * 80 / 100
-		elif combo_counter == 4:
-			scaled_damage = raw_damage * 70 / 100
-		elif combo_counter == 5:
-			scaled_damage = raw_damage * 60 / 100
-		elif combo_counter == 6:
-			scaled_damage = raw_damage * 50 / 100
-		elif combo_counter == 7:
-			scaled_damage = raw_damage * 40 / 100
-		elif combo_counter == 8:
-			scaled_damage = raw_damage * 30 / 100
-		elif combo_counter == 9:
-			scaled_damage = raw_damage * 20 / 100
-		elif combo_counter >= 10:
-			scaled_damage = raw_damage * 10 / 100
-	else:
-		scaled_damage = 10
-	health -= scaled_damage
+		raw_damage = damaging_area.hit_damg
+	else: raw_damage = damaging_area.hit_damg / 6
+		
+	if combo_counter <= 2:
+		scaled_damage = raw_damage
+	elif combo_counter == 3:
+		scaled_damage = raw_damage * 80 / 100
+	elif combo_counter == 4:
+		scaled_damage = raw_damage * 70 / 100
+	elif combo_counter == 5:
+		scaled_damage = raw_damage * 60 / 100
+	elif combo_counter == 6:
+		scaled_damage = raw_damage * 50 / 100
+	elif combo_counter == 7:
+		scaled_damage = raw_damage * 40 / 100
+	elif combo_counter == 8:
+		scaled_damage = raw_damage * 30 / 100
+	elif combo_counter == 9:
+		scaled_damage = raw_damage * 20 / 100
+	elif combo_counter >= 10:
+		scaled_damage = raw_damage * 10 / 100
+		
+	health_level -= scaled_damage
 	hud.substract_health(player, scaled_damage)
+	
 	if blocked == true:
-		hud.combo_ended(player, combo_counter, health, true)
+		hud.combo_ended(player, combo_counter, health_level, true)
+	if health_level <= 0:
+		can_control = false
+		rival.can_control = false
+		Engine.time_scale = 0.5
+		Engine.iterations_per_second = 30
+
+func player_wins():
+	var victory_animation = round(rand_range(0, 1))
+	Engine.time_scale = 1
+	Engine.iterations_per_second = 60
+	if victory_animation == 0:
+		$AnimationPlayer.play("Victory 1")
+	else: $AnimationPlayer.play("Victory 2")

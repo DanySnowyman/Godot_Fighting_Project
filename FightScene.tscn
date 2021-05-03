@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://FightScene.gd" type="Script" id=1]
 [ext_resource path="res://Camera2D.gd" type="Script" id=2]
@@ -7,6 +7,10 @@
 [ext_resource path="res://gfx/HUD/health_progress_full.png" type="Texture" id=5]
 [ext_resource path="res://HUD.gd" type="Script" id=6]
 [ext_resource path="res://gfx/HUD/health_back.png" type="Texture" id=7]
+[ext_resource path="res://gfx/HUD/power_over.png" type="Texture" id=8]
+[ext_resource path="res://gfx/HUD/power_back.png" type="Texture" id=9]
+[ext_resource path="res://gfx/HUD/power_section.png" type="Texture" id=10]
+[ext_resource path="res://gfx/HUD/power_progress.png" type="Texture" id=11]
 
 [node name="FightScene" type="Node2D"]
 pause_mode = 2
@@ -20,6 +24,11 @@ script = ExtResource( 2 )
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource( 6 )
+
+[node name="P1HealthMeter" type="Sprite" parent="HUD"]
+position = Vector2( 16, 16 )
+texture = ExtResource( 3 )
+centered = false
 
 [node name="P1HealthSub" type="TextureProgress" parent="HUD"]
 margin_left = 18.0
@@ -48,8 +57,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="P1HealthFrame" type="Sprite" parent="HUD"]
-position = Vector2( 16, 16 )
+[node name="P2HealthMeter" type="Sprite" parent="HUD"]
+position = Vector2( 368, 16 )
+rotation = -3.14159
+scale = Vector2( 1, -1 )
 texture = ExtResource( 3 )
 centered = false
 
@@ -82,12 +93,89 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="P2HealthFrame" type="Sprite" parent="HUD"]
-position = Vector2( 368, 16 )
-rotation = -3.14159
-scale = Vector2( 1, -1 )
-texture = ExtResource( 3 )
+[node name="P1PowerMeter" type="Sprite" parent="HUD"]
+position = Vector2( 16, 200 )
+texture = ExtResource( 8 )
 centered = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="P1PowerLevel" type="TextureProgress" parent="HUD/P1PowerMeter"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 77.0
+margin_bottom = 6.0
+max_value = 400.0
+texture_under = ExtResource( 9 )
+texture_progress = ExtResource( 11 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P1PowerBar1" type="Sprite" parent="HUD/P1PowerMeter/P1PowerLevel"]
+visible = false
+position = Vector2( 66, 2 )
+texture = ExtResource( 10 )
+
+[node name="P1PowerBar2" type="Sprite" parent="HUD/P1PowerMeter/P1PowerLevel"]
+visible = false
+position = Vector2( 47, 2 )
+texture = ExtResource( 10 )
+
+[node name="P1PowerBar3" type="Sprite" parent="HUD/P1PowerMeter/P1PowerLevel"]
+visible = false
+position = Vector2( 28, 2 )
+texture = ExtResource( 10 )
+
+[node name="P1PowerBar4" type="Sprite" parent="HUD/P1PowerMeter/P1PowerLevel"]
+visible = false
+position = Vector2( 9, 2 )
+texture = ExtResource( 10 )
+
+[node name="P2PowerMeter" type="Sprite" parent="HUD"]
+show_behind_parent = true
+position = Vector2( 289, 200 )
+texture = ExtResource( 8 )
+centered = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="P2PowerLevel" type="TextureProgress" parent="HUD/P2PowerMeter"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 77.0
+margin_bottom = 6.0
+max_value = 400.0
+texture_under = ExtResource( 9 )
+texture_progress = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P2PowerBar1" type="Sprite" parent="HUD/P2PowerMeter/P2PowerLevel"]
+visible = false
+position = Vector2( 9, 2 )
+texture = ExtResource( 10 )
+
+[node name="P2PowerBar2" type="Sprite" parent="HUD/P2PowerMeter/P2PowerLevel"]
+visible = false
+position = Vector2( 28, 2 )
+texture = ExtResource( 10 )
+
+[node name="P2PowerBar3" type="Sprite" parent="HUD/P2PowerMeter/P2PowerLevel"]
+visible = false
+position = Vector2( 47, 2 )
+texture = ExtResource( 10 )
+
+[node name="P2PowerBar4" type="Sprite" parent="HUD/P2PowerMeter/P2PowerLevel"]
+visible = false
+position = Vector2( 66, 2 )
+texture = ExtResource( 10 )
 
 [node name="P1Info" type="Label" parent="HUD"]
 margin_left = 16.0
@@ -107,8 +195,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tween" type="Tween" parent="HUD"]
-
 [node name="P1InfoTimer" type="Timer" parent="HUD"]
 
 [node name="P2InfoTimer" type="Timer" parent="HUD"]
+
+[node name="Tween" type="Tween" parent="HUD"]

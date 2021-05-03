@@ -10,11 +10,9 @@ func _ready():
 	$P1Info.set_global_position(Vector2(20, 60))
 	$P1Info.align = HALIGN_LEFT
 	$P1Info.grow_horizontal = 1
-	$P1Info.text = "Testing P1 Info"
 	$P2Info.set_global_position(Vector2(324, 60))
 	$P2Info.align = HALIGN_RIGHT
 	$P2Info.grow_horizontal = 0
-	$P2Info.text = "Testing P2 Info"
 	
 func initialize_health(player, health):
 	if player == 1:
@@ -29,12 +27,13 @@ func initialize_health(player, health):
 		$P2HealthSub.value = health
 
 func substract_health(player, health):
-		
 	if player == 1:
+		$P1HealthSub.texture_progress = health_under_hit
 		$P1HealthMain.value -= health
 		if $P1HealthMain.texture_progress == health_top_full:
 			$P1HealthMain.texture_progress = health_top_damaged
 	else:
+		$P2HealthSub.texture_progress = health_under_hit
 		$P2HealthMain.value -= health
 		if $P2HealthMain.texture_progress == health_top_full:
 			$P2HealthMain.texture_progress = health_top_damaged
@@ -68,7 +67,13 @@ func combo_ended(player, combo, health, blocked):
 		if $P1InfoTimer.is_stopped() == false:
 			yield($P1InfoTimer, "timeout")
 		$P1Info.hide()
-		
+
+func manage_power(player, level):
+	if player == 1:
+		$P1PowerMeter/P1PowerLevel.value = level
+	else:
+		$P2PowerMeter/P2PowerLevel.value = level
+
 func show_info(player, info):
 	if player == 1:
 		$P2InfoTimer.start(1)
@@ -82,3 +87,32 @@ func show_info(player, info):
 		$P1Info.show()
 		yield($P1InfoTimer, "timeout")
 		$P1Info.hide()
+
+func _process(delta):
+	if $P1PowerMeter/P1PowerLevel.value >= 100:
+		$P1PowerMeter/P1PowerLevel/P1PowerBar1.visible = true
+	else: $P1PowerMeter/P1PowerLevel/P1PowerBar1.visible = false
+	if $P1PowerMeter/P1PowerLevel.value >= 200:
+		$P1PowerMeter/P1PowerLevel/P1PowerBar2.visible = true
+	else: $P1PowerMeter/P1PowerLevel/P1PowerBar2.visible = false
+	if $P1PowerMeter/P1PowerLevel.value >= 300:
+		$P1PowerMeter/P1PowerLevel/P1PowerBar3.visible = true
+	else: $P1PowerMeter/P1PowerLevel/P1PowerBar3.visible = false
+	if $P1PowerMeter/P1PowerLevel.value>= 400:
+		$P1PowerMeter/P1PowerLevel/P1PowerBar4.visible = true
+	else: $P1PowerMeter/P1PowerLevel/P1PowerBar4.visible = false
+	
+	if $P2PowerMeter/P2PowerLevel.value >= 100:
+		$P2PowerMeter/P2PowerLevel/P2PowerBar1.visible = true
+	else: $P2PowerMeter/P2PowerLevel/P2PowerBar1.visible = false
+	if $P2PowerMeter/P2PowerLevel.value >= 200:
+		$P2PowerMeter/P2PowerLevel/P2PowerBar2.visible = true
+	else: $P2PowerMeter/P2PowerLevel/P2PowerBar2.visible = false
+	if $P2PowerMeter/P2PowerLevel.value >= 300:
+		$P2PowerMeter/P2PowerLevel/P2PowerBar3.visible = true
+	else: $P2PowerMeter/P2PowerLevel/P2PowerBar3.visible = false
+	if $P2PowerMeter/P2PowerLevel.value>= 400:
+		$P2PowerMeter/P2PowerLevel/P2PowerBar4.visible = true
+	else: $P2PowerMeter/P2PowerLevel/P2PowerBar4.visible = false
+		
+		
