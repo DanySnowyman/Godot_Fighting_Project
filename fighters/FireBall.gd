@@ -3,6 +3,7 @@ extends Area2D
 var speed = 0
 var armor = 0
 var hitted = false
+var destroyed = false
 var hit_area_pos:= Vector2()
 var hit_area_size:= Vector2()
 var hit_area_rect:= Rect2()
@@ -40,6 +41,8 @@ func fireball_data(player_owner, facing_right, strenght):
 		speed = 80
 	else:
 		hit_strg = "Heavy"
+		hit_type = "Powered"
+		hit_push = 30
 		speed = 240
 		armor = 1
 		$Sprite.modulate = Color(1, 0.494118, 0.494118)
@@ -51,7 +54,6 @@ func _process(delta):
 	if hitted == false:
 		position.x += speed * delta
 	else: pass
-	print(armor)
 
 func get_hitbox_rect():
 	var hit_area_center = $HitBox.position
@@ -66,12 +68,8 @@ func disable_projectile():
 	$HitBox.set_deferred("disabled", true)
 	if armor > 0:
 		armor -= 1
-		if armor == 0:
-			hit_strg = "Launch"
-		$HitBox.set_deferred("disabled", false)
 	else:
-		hitted = true
-		$HitBox.set_deferred("disabled", true)
+		destroyed = true
 		$ProximityBox/ProxBox1.set_deferred("disabled", true)
 		$AnimationPlayer.play("Impact")
 		yield($AnimationPlayer, "animation_finished")
@@ -85,6 +83,10 @@ func on_hit_freeze(freeze_time):
 	yield(get_tree().create_timer(freeze_time, true), "timeout")
 	hitted = false
 	$AnimationPlayer.play()
+	if armor == 0 and hit_type == "Powered":
+		hit_strg = "Launch"
+	if destroyed == false:
+		$HitBox.set_deferred("disabled", false)
 	
 func _on_FireBall_area_entered(area):
 	if area.has_method("disable_projectile"):

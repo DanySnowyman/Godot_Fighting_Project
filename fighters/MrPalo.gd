@@ -1776,8 +1776,8 @@ func _process(delta):
 
 	$HUD/State.text = is_.keys()[state]
 	
-	if player == 1:
-		print(power_level)
+#	if player == 1:
+#		print(power_level)
 	
 func _on_area_entered(area):
 	if area.has_method("proximity_box"):
