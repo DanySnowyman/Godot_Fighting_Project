@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/health_progress_full.png-168e503a872bf7897c4160fb274fa50c.stex"
+path="res://.import/health_progress_full.png-ea0f3b1963481cac6455fe7e9ab24e58.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/HUD/health_progress_full.png"
-dest_files=[ "res://.import/health_progress_full.png-168e503a872bf7897c4160fb274fa50c.stex" ]
+source_file="res://gfx/hud/health_progress_full.png"
+dest_files=[ "res://.import/health_progress_full.png-ea0f3b1963481cac6455fe7e9ab24e58.stex" ]
 
 [params]
 

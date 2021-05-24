@@ -15,7 +15,7 @@ _global_script_class_icons={
 [application]
 
 config/name="R Fighting Project"
-run/main_scene="res://FightScene.tscn"
+run/main_scene="res://fight_scene.tscn"
 config/icon="res://icon.png"
 
 [debug]

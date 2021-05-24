@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/health_over.png-93563a78b51bf6266949d5141f36b440.stex"
+path="res://.import/health_over.png-80218143d318635ac0b9e5945a50c7a4.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/HUD/health_over.png"
-dest_files=[ "res://.import/health_over.png-93563a78b51bf6266949d5141f36b440.stex" ]
+source_file="res://gfx/hud/health_over.png"
+dest_files=[ "res://.import/health_over.png-80218143d318635ac0b9e5945a50c7a4.stex" ]
 
 [params]
 

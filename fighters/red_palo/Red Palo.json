@@ -1,0 +1,1986 @@
+{ "frames": {
+   "Red Palo (Anims) #Stand 0.ase": {
+    "frame": { "x": 154, "y": 126, "w": 79, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 49, "w": 79, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Stand 1.ase": {
+    "frame": { "x": 894, "y": 204, "w": 79, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 53, "w": 79, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Stand 2.ase": {
+    "frame": { "x": 222, "y": 312, "w": 76, "h": 85 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 59, "w": 76, "h": 85 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 0.ase": {
+    "frame": { "x": 298, "y": 352, "w": 72, "h": 89 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 55, "w": 72, "h": 89 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 1.ase": {
+    "frame": { "x": 941, "y": 693, "w": 52, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 51, "w": 52, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 2.ase": {
+    "frame": { "x": 85, "y": 1014, "w": 32, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 50, "w": 32, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 3.ase": {
+    "frame": { "x": 712, "y": 563, "w": 57, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 51, "w": 57, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 4.ase": {
+    "frame": { "x": 0, "y": 382, "w": 68, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 53, "w": 68, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 5.ase": {
+    "frame": { "x": 373, "y": 632, "w": 54, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 51, "w": 54, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 6.ase": {
+    "frame": { "x": 215, "y": 1035, "w": 33, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 49, "w": 33, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Forward 7.ase": {
+    "frame": { "x": 452, "y": 386, "w": 68, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 53, "w": 68, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 0.ase": {
+    "frame": { "x": 263, "y": 795, "w": 48, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 50, "w": 48, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 1.ase": {
+    "frame": { "x": 582, "y": 951, "w": 40, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 52, "w": 40, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 2.ase": {
+    "frame": { "x": 800, "y": 461, "w": 61, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 51, "w": 61, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 3.ase": {
+    "frame": { "x": 366, "y": 457, "w": 61, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 49, "w": 61, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 4.ase": {
+    "frame": { "x": 956, "y": 943, "w": 38, "h": 97 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 59, "y": 47, "w": 38, "h": 97 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 5.ase": {
+    "frame": { "x": 443, "y": 871, "w": 42, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 57, "y": 50, "w": 42, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 6.ase": {
+    "frame": { "x": 144, "y": 387, "w": 67, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 44, "y": 52, "w": 67, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Backwards 7.ase": {
+    "frame": { "x": 309, "y": 259, "w": 74, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 51, "w": 74, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash F 0.ase": {
+    "frame": { "x": 0, "y": 918, "w": 52, "h": 73 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 49, "y": 71, "w": 52, "h": 73 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash F 1.ase": {
+    "frame": { "x": 715, "y": 396, "w": 85, "h": 71 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 30, "y": 70, "w": 85, "h": 71 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash F 2.ase": {
+    "frame": { "x": 987, "y": 547, "w": 80, "h": 68 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 76, "w": 80, "h": 68 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash B 0.ase": {
+    "frame": { "x": 343, "y": 1047, "w": 48, "h": 60 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 84, "w": 48, "h": 60 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash B 1.ase": {
+    "frame": { "x": 380, "y": 930, "w": 58, "h": 65 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 74, "w": 58, "h": 65 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dash B 2.ase": {
+    "frame": { "x": 52, "y": 957, "w": 65, "h": 57 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 87, "w": 65, "h": 57 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 0.ase": {
+    "frame": { "x": 269, "y": 510, "w": 72, "h": 76 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 68, "w": 72, "h": 76 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 1.ase": {
+    "frame": { "x": 572, "y": 1043, "w": 26, "h": 112 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 67, "y": 33, "w": 26, "h": 112 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 2.ase": {
+    "frame": { "x": 548, "y": 637, "w": 65, "h": 77 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 50, "w": 65, "h": 77 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 3.ase": {
+    "frame": { "x": 1091, "y": 932, "w": 64, "h": 59 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 50, "w": 64, "h": 59 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 4.ase": {
+    "frame": { "x": 73, "y": 300, "w": 71, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 41, "w": 71, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump V 5.ase": {
+    "frame": { "x": 456, "y": 91, "w": 73, "h": 108 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 33, "y": 36, "w": 73, "h": 108 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 0.ase": {
+    "frame": { "x": 861, "y": 553, "w": 47, "h": 113 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 35, "w": 47, "h": 113 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 1.ase": {
+    "frame": { "x": 825, "y": 666, "w": 55, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 53, "w": 55, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 2.ase": {
+    "frame": { "x": 1073, "y": 1077, "w": 62, "h": 38 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 73, "w": 62, "h": 38 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 3.ase": {
+    "frame": { "x": 1111, "y": 134, "w": 44, "h": 71 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 52, "w": 44, "h": 71 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 4.ase": {
+    "frame": { "x": 869, "y": 943, "w": 87, "h": 43 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 70, "w": 87, "h": 43 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 5.ase": {
+    "frame": { "x": 680, "y": 178, "w": 68, "h": 103 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 43, "w": 68, "h": 103 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump F 6.ase": {
+    "frame": { "x": 908, "y": 558, "w": 51, "h": 104 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 44, "w": 51, "h": 104 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 0.ase": {
+    "frame": { "x": 908, "y": 558, "w": 51, "h": 104 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 44, "w": 51, "h": 104 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 1.ase": {
+    "frame": { "x": 680, "y": 178, "w": 68, "h": 103 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 43, "w": 68, "h": 103 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 2.ase": {
+    "frame": { "x": 869, "y": 943, "w": 87, "h": 43 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 70, "w": 87, "h": 43 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 3.ase": {
+    "frame": { "x": 1111, "y": 134, "w": 44, "h": 71 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 52, "w": 44, "h": 71 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 4.ase": {
+    "frame": { "x": 1073, "y": 1077, "w": 62, "h": 38 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 73, "w": 62, "h": 38 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 5.ase": {
+    "frame": { "x": 825, "y": 666, "w": 55, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 53, "w": 55, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Jump B 6.ase": {
+    "frame": { "x": 861, "y": 553, "w": 47, "h": 113 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 35, "w": 47, "h": 113 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Crouch 0.ase": {
+    "frame": { "x": 304, "y": 628, "w": 69, "h": 73 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 71, "w": 69, "h": 73 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Crouch 1.ase": {
+    "frame": { "x": 438, "y": 965, "w": 66, "h": 56 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 88, "w": 66, "h": 56 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Turn around 0.ase": {
+    "frame": { "x": 312, "y": 163, "w": 77, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 31, "y": 48, "w": 77, "h": 96 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Turn around 1.ase": {
+    "frame": { "x": 468, "y": 207, "w": 73, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 48, "w": 73, "h": 96 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Turn around 2.ase": {
+    "frame": { "x": 1010, "y": 940, "w": 59, "h": 63 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 81, "w": 59, "h": 63 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Turn around 3.ase": {
+    "frame": { "x": 0, "y": 783, "w": 67, "h": 68 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 35, "y": 76, "w": 67, "h": 68 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 0.ase": {
+    "frame": { "x": 495, "y": 682, "w": 51, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 49, "w": 51, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 1.ase": {
+    "frame": { "x": 622, "y": 985, "w": 40, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 63, "y": 54, "w": 40, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 2.ase": {
+    "frame": { "x": 491, "y": 1030, "w": 37, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 56, "w": 37, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 3.ase": {
+    "frame": { "x": 1117, "y": 692, "w": 43, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 57, "y": 56, "w": 43, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 4.ase": {
+    "frame": { "x": 582, "y": 883, "w": 60, "h": 68 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 76, "w": 60, "h": 68 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 5.ase": {
+    "frame": { "x": 311, "y": 852, "w": 61, "h": 69 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 75, "w": 61, "h": 69 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Block 6.ase": {
+    "frame": { "x": 879, "y": 877, "w": 63, "h": 66 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 78, "w": 63, "h": 66 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 0.ase": {
+    "frame": { "x": 233, "y": 221, "w": 76, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 53, "w": 76, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 1.ase": {
+    "frame": { "x": 383, "y": 291, "w": 74, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 54, "w": 74, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 2.ase": {
+    "frame": { "x": 864, "y": 377, "w": 74, "h": 85 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 59, "w": 74, "h": 85 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 3.ase": {
+    "frame": { "x": 370, "y": 381, "w": 82, "h": 76 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 30, "y": 68, "w": 82, "h": 76 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 4.ase": {
+    "frame": { "x": 212, "y": 856, "w": 46, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 54, "w": 46, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 5.ase": {
+    "frame": { "x": 301, "y": 978, "w": 42, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 57, "y": 57, "w": 42, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 6.ase": {
+    "frame": { "x": 847, "y": 986, "w": 45, "h": 78 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 64, "w": 45, "h": 78 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit H & M 7.ase": {
+    "frame": { "x": 541, "y": 207, "w": 53, "h": 57 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 80, "w": 53, "h": 57 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 0.ase": {
+    "frame": { "x": 642, "y": 898, "w": 45, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 57, "w": 45, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 1.ase": {
+    "frame": { "x": 1097, "y": 991, "w": 40, "h": 86 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 58, "w": 40, "h": 86 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 2.ase": {
+    "frame": { "x": 892, "y": 986, "w": 42, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 61, "w": 42, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 3.ase": {
+    "frame": { "x": 700, "y": 831, "w": 53, "h": 80 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 64, "w": 53, "h": 80 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 4.ase": {
+    "frame": { "x": 934, "y": 1040, "w": 49, "h": 62 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 82, "w": 49, "h": 62 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 5.ase": {
+    "frame": { "x": 248, "y": 1035, "w": 50, "h": 62 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 82, "w": 50, "h": 62 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 6.ase": {
+    "frame": { "x": 724, "y": 1018, "w": 59, "h": 57 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 87, "w": 59, "h": 57 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit L & C 7.ase": {
+    "frame": { "x": 230, "y": 981, "w": 67, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 30, "y": 90, "w": 67, "h": 54 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit Air 0.ase": {
+    "frame": { "x": 336, "y": 784, "w": 67, "h": 68 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 61, "w": 67, "h": 68 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit Air 1.ase": {
+    "frame": { "x": 190, "y": 482, "w": 79, "h": 70 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 49, "w": 79, "h": 70 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit Air 2.ase": {
+    "frame": { "x": 1067, "y": 552, "w": 89, "h": 60 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 31, "y": 49, "w": 89, "h": 60 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit Air 3.ase": {
+    "frame": { "x": 0, "y": 663, "w": 74, "h": 67 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 32, "y": 49, "w": 74, "h": 67 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Hit Air 4.ase": {
+    "frame": { "x": 104, "y": 573, "w": 63, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 46, "w": 63, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Spinning 0.ase": {
+    "frame": { "x": 281, "y": 441, "w": 85, "h": 69 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 73, "w": 85, "h": 69 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Spinning 1.ase": {
+    "frame": { "x": 1067, "y": 612, "w": 64, "h": 80 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 63, "w": 64, "h": 80 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Spinning 2.ase": {
+    "frame": { "x": 923, "y": 471, "w": 64, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 61, "w": 64, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Spinning 3.ase": {
+    "frame": { "x": 536, "y": 374, "w": 92, "h": 69 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 69, "w": 92, "h": 69 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Knock down 0.ase": {
+    "frame": { "x": 341, "y": 552, "w": 71, "h": 76 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 58, "w": 71, "h": 76 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Knock down 1.ase": {
+    "frame": { "x": 753, "y": 871, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 67, "w": 65, "h": 64 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Knock down 2.ase": {
+    "frame": { "x": 403, "y": 819, "w": 82, "h": 52 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 34, "y": 94, "w": 82, "h": 52 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Knock down 3.ase": {
+    "frame": { "x": 598, "y": 1075, "w": 70, "h": 38 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 106, "w": 70, "h": 38 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Knock down 4.ase": {
+    "frame": { "x": 983, "y": 1074, "w": 90, "h": 31 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 28, "y": 115, "w": 90, "h": 31 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 0.ase": {
+    "frame": { "x": 1036, "y": 374, "w": 75, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 30, "y": 60, "w": 75, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 1.ase": {
+    "frame": { "x": 880, "y": 666, "w": 61, "h": 81 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 63, "w": 61, "h": 81 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 2.ase": {
+    "frame": { "x": 485, "y": 867, "w": 53, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 66, "w": 53, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 3.ase": {
+    "frame": { "x": 98, "y": 657, "w": 67, "h": 74 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 71, "w": 67, "h": 74 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 4.ase": {
+    "frame": { "x": 994, "y": 1003, "w": 103, "h": 34 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 110, "w": 103, "h": 34 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Exhausted 5.ase": {
+    "frame": { "x": 722, "y": 1094, "w": 116, "h": 20 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 30, "y": 131, "w": 116, "h": 20 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dizzy 0.ase": {
+    "frame": { "x": 662, "y": 459, "w": 50, "h": 114 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 31, "w": 50, "h": 114 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dizzy 1.ase": {
+    "frame": { "x": 667, "y": 692, "w": 41, "h": 118 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 27, "w": 41, "h": 118 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Dizzy 2.ase": {
+    "frame": { "x": 804, "y": 356, "w": 60, "h": 105 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 54, "y": 39, "w": 60, "h": 105 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Wake up 0.ase": {
+    "frame": { "x": 504, "y": 971, "w": 62, "h": 59 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 31, "y": 86, "w": 62, "h": 59 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Wake up 1.ase": {
+    "frame": { "x": 981, "y": 1105, "w": 49, "h": 44 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 25, "y": 101, "w": 49, "h": 44 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Wake up 2.ase": {
+    "frame": { "x": 1045, "y": 782, "w": 90, "h": 51 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 27, "y": 92, "w": 90, "h": 51 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Wake up 3.ase": {
+    "frame": { "x": 63, "y": 893, "w": 62, "h": 64 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 76, "w": 62, "h": 64 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Wake up 4.ase": {
+    "frame": { "x": 427, "y": 477, "w": 74, "h": 75 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 70, "w": 74, "h": 75 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Rolling 0.ase": {
+    "frame": { "x": 427, "y": 632, "w": 47, "h": 46 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 98, "w": 47, "h": 46 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Rolling 1.ase": {
+    "frame": { "x": 35, "y": 1103, "w": 46, "h": 47 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 97, "w": 46, "h": 47 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Rolling 2.ase": {
+    "frame": { "x": 934, "y": 1102, "w": 47, "h": 46 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 98, "w": 47, "h": 46 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Rolling 3.ase": {
+    "frame": { "x": 248, "y": 1097, "w": 46, "h": 47 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 49, "y": 97, "w": 46, "h": 47 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 0.ase": {
+    "frame": { "x": 75, "y": 110, "w": 79, "h": 97 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 47, "w": 79, "h": 97 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 1.ase": {
+    "frame": { "x": 855, "y": 82, "w": 91, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 56, "w": 91, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 2.ase": {
+    "frame": { "x": 885, "y": 295, "w": 81, "h": 82 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 62, "w": 81, "h": 82 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 3.ase": {
+    "frame": { "x": 946, "y": 113, "w": 83, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 53, "w": 83, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 4.ase": {
+    "frame": { "x": 565, "y": 0, "w": 94, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 35, "y": 51, "w": 94, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 5.ase": {
+    "frame": { "x": 993, "y": 741, "w": 52, "h": 89 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 66, "y": 55, "w": 52, "h": 89 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 6.ase": {
+    "frame": { "x": 1050, "y": 284, "w": 74, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 54, "w": 74, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Grabbing 7.ase": {
+    "frame": { "x": 1063, "y": 692, "w": 54, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 54, "w": 54, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Burla 0.ase": {
+    "frame": { "x": 1039, "y": 0, "w": 74, "h": 113 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 31, "w": 74, "h": 113 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Burla 1.ase": {
+    "frame": { "x": 280, "y": 0, "w": 75, "h": 126 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 18, "w": 75, "h": 126 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Burla 2.ase": {
+    "frame": { "x": 541, "y": 266, "w": 63, "h": 108 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 23, "w": 63, "h": 108 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Burla 3.ase": {
+    "frame": { "x": 205, "y": 0, "w": 75, "h": 126 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 18, "w": 75, "h": 126 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Burla 4.ase": {
+    "frame": { "x": 965, "y": 0, "w": 74, "h": 113 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 31, "w": 74, "h": 113 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Time out 0.ase": {
+    "frame": { "x": 529, "y": 93, "w": 68, "h": 114 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 30, "w": 68, "h": 114 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Time out 1.ase": {
+    "frame": { "x": 285, "y": 701, "w": 51, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 62, "y": 50, "w": 51, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Time out 2.ase": {
+    "frame": { "x": 818, "y": 890, "w": 51, "h": 77 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 62, "y": 67, "w": 51, "h": 77 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 1 0.ase": {
+    "frame": { "x": 667, "y": 573, "w": 42, "h": 119 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 25, "w": 42, "h": 119 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 1 1.ase": {
+    "frame": { "x": 538, "y": 878, "w": 44, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 58, "y": 51, "w": 44, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 1 2.ase": {
+    "frame": { "x": 528, "y": 1030, "w": 44, "h": 73 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 58, "y": 71, "w": 44, "h": 73 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 2 0.ase": {
+    "frame": { "x": 67, "y": 797, "w": 46, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 48, "w": 46, "h": 96 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 2 1.ase": {
+    "frame": { "x": 250, "y": 586, "w": 54, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 48, "w": 54, "h": 96 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 2 2.ase": {
+    "frame": { "x": 712, "y": 467, "w": 58, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 48, "w": 58, "h": 96 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Win 2 3.ase": {
+    "frame": { "x": 165, "y": 728, "w": 48, "h": 97 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 47, "w": 48, "h": 97 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.LP 0.ase": {
+    "frame": { "x": 389, "y": 199, "w": 79, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 52, "w": 79, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.LP 1.ase": {
+    "frame": { "x": 659, "y": 0, "w": 94, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 52, "w": 94, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MP 0.ase": {
+    "frame": { "x": 973, "y": 205, "w": 77, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 51, "w": 77, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MP 1.ase": {
+    "frame": { "x": 813, "y": 170, "w": 81, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 53, "w": 81, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MP 2.ase": {
+    "frame": { "x": 355, "y": 0, "w": 111, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 60, "w": 111, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HP 0.ase": {
+    "frame": { "x": 1029, "y": 113, "w": 82, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 52, "w": 82, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HP 1.ase": {
+    "frame": { "x": 600, "y": 459, "w": 62, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 52, "w": 62, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HP 2.ase": {
+    "frame": { "x": 0, "y": 291, "w": 73, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 53, "w": 73, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HP 3.ase": {
+    "frame": { "x": 0, "y": 0, "w": 114, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 56, "w": 114, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.LK 0.ase": {
+    "frame": { "x": 0, "y": 473, "w": 59, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 50, "w": 59, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.LK 1.ase": {
+    "frame": { "x": 966, "y": 298, "w": 70, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 50, "w": 70, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.LK 2.ase": {
+    "frame": { "x": 466, "y": 0, "w": 99, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 53, "w": 99, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MK 0.ase": {
+    "frame": { "x": 488, "y": 777, "w": 51, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 54, "w": 51, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MK 1.ase": {
+    "frame": { "x": 176, "y": 1009, "w": 39, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 57, "w": 39, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MK 2.ase": {
+    "frame": { "x": 753, "y": 935, "w": 45, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 61, "w": 45, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.MK 3.ase": {
+    "frame": { "x": 604, "y": 281, "w": 80, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 42, "y": 60, "w": 80, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 0.ase": {
+    "frame": { "x": 861, "y": 462, "w": 62, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 43, "y": 53, "w": 62, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 1.ase": {
+    "frame": { "x": 708, "y": 740, "w": 51, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 53, "w": 51, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 2.ase": {
+    "frame": { "x": 213, "y": 764, "w": 50, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 52, "w": 50, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 3.ase": {
+    "frame": { "x": 149, "y": 221, "w": 84, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 61, "w": 84, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 4.ase": {
+    "frame": { "x": 73, "y": 207, "w": 76, "h": 93 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 58, "y": 51, "w": 76, "h": 93 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #S.HK 5.ase": {
+    "frame": { "x": 1081, "y": 458, "w": 61, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 54, "y": 50, "w": 61, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.LP 0.ase": {
+    "frame": { "x": 687, "y": 911, "w": 66, "h": 59 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 85, "w": 66, "h": 59 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.LP 1.ase": {
+    "frame": { "x": 336, "y": 725, "w": 81, "h": 59 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 85, "w": 81, "h": 59 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MP 0.ase": {
+    "frame": { "x": 942, "y": 883, "w": 68, "h": 60 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 84, "w": 68, "h": 60 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MP 1.ase": {
+    "frame": { "x": 759, "y": 807, "w": 68, "h": 64 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 80, "w": 68, "h": 64 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MP 2.ase": {
+    "frame": { "x": 0, "y": 609, "w": 98, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 90, "w": 98, "h": 54 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MP 3.ase": {
+    "frame": { "x": 0, "y": 730, "w": 90, "h": 53 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 91, "w": 90, "h": 53 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HP 0.ase": {
+    "frame": { "x": 171, "y": 946, "w": 59, "h": 63 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 82, "w": 59, "h": 63 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HP 1.ase": {
+    "frame": { "x": 0, "y": 851, "w": 63, "h": 67 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 77, "w": 63, "h": 67 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HP 2.ase": {
+    "frame": { "x": 561, "y": 551, "w": 63, "h": 86 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 58, "w": 63, "h": 86 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HP 3.ase": {
+    "frame": { "x": 750, "y": 158, "w": 63, "h": 119 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 25, "w": 63, "h": 119 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.LK 0.ase": {
+    "frame": { "x": 964, "y": 830, "w": 80, "h": 53 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 33, "y": 92, "w": 80, "h": 53 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.LK 1.ase": {
+    "frame": { "x": 823, "y": 756, "w": 91, "h": 51 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 33, "y": 93, "w": 91, "h": 51 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MK 0.ase": {
+    "frame": { "x": 298, "y": 1065, "w": 42, "h": 56 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 88, "w": 42, "h": 56 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MK 1.ase": {
+    "frame": { "x": 783, "y": 1042, "w": 58, "h": 52 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 92, "w": 58, "h": 52 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.MK 2.ase": {
+    "frame": { "x": 301, "y": 930, "w": 79, "h": 48 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 97, "w": 79, "h": 48 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 0.ase": {
+    "frame": { "x": 117, "y": 1067, "w": 55, "h": 52 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 93, "w": 55, "h": 52 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 1.ase": {
+    "frame": { "x": 668, "y": 1069, "w": 54, "h": 49 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 49, "y": 95, "w": 54, "h": 49 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 2.ase": {
+    "frame": { "x": 890, "y": 1069, "w": 44, "h": 52 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 59, "y": 92, "w": 44, "h": 52 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 3.ase": {
+    "frame": { "x": 1044, "y": 833, "w": 73, "h": 58 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 63, "y": 87, "w": 73, "h": 58 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 4.ase": {
+    "frame": { "x": 372, "y": 871, "w": 71, "h": 59 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 86, "w": 71, "h": 59 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #C.HK 5.ase": {
+    "frame": { "x": 117, "y": 1009, "w": 59, "h": 58 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 87, "w": 59, "h": 58 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.LP 0.ase": {
+    "frame": { "x": 0, "y": 991, "w": 47, "h": 74 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 50, "w": 47, "h": 74 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.LP 1.ase": {
+    "frame": { "x": 827, "y": 807, "w": 52, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 43, "w": 52, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MP 0.ase": {
+    "frame": { "x": 449, "y": 1021, "w": 42, "h": 78 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 54, "y": 46, "w": 42, "h": 78 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MP 1.ase": {
+    "frame": { "x": 0, "y": 1065, "w": 35, "h": 77 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 48, "w": 35, "h": 77 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MP 2.ase": {
+    "frame": { "x": 770, "y": 554, "w": 73, "h": 73 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 48, "w": 73, "h": 73 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HP 0.ase": {
+    "frame": { "x": 748, "y": 277, "w": 56, "h": 119 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 22, "w": 56, "h": 119 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HP 1.ase": {
+    "frame": { "x": 938, "y": 392, "w": 78, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 52, "w": 78, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HP 2.ase": {
+    "frame": { "x": 163, "y": 825, "w": 49, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 37, "w": 49, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.LK 0.ase": {
+    "frame": { "x": 687, "y": 970, "w": 37, "h": 99 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 62, "y": 44, "w": 37, "h": 99 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.LK 1.ase": {
+    "frame": { "x": 0, "y": 194, "w": 73, "h": 97 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 44, "w": 73, "h": 97 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MK 0.ase": {
+    "frame": { "x": 1117, "y": 833, "w": 41, "h": 99 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 54, "y": 54, "w": 41, "h": 99 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MK 1.ase": {
+    "frame": { "x": 258, "y": 889, "w": 43, "h": 92 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 58, "y": 49, "w": 43, "h": 92 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.MK 2.ase": {
+    "frame": { "x": 479, "y": 607, "w": 69, "h": 75 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 47, "w": 69, "h": 75 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HK 0.ase": {
+    "frame": { "x": 90, "y": 731, "w": 72, "h": 66 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 53, "w": 72, "h": 66 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HK 1.ase": {
+    "frame": { "x": 427, "y": 682, "w": 68, "h": 72 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 53, "y": 53, "w": 68, "h": 72 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #J.HK 2.ase": {
+    "frame": { "x": 628, "y": 388, "w": 87, "h": 71 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 49, "y": 52, "w": 87, "h": 71 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 0.ase": {
+    "frame": { "x": 233, "y": 126, "w": 79, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 38, "y": 49, "w": 79, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 1.ase": {
+    "frame": { "x": 709, "y": 656, "w": 59, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 48, "y": 60, "w": 59, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 2.ase": {
+    "frame": { "x": 131, "y": 479, "w": 59, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 45, "w": 59, "h": 94 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 3.ase": {
+    "frame": { "x": 211, "y": 397, "w": 70, "h": 85 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 40, "w": 70, "h": 85 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 4.ase": {
+    "frame": { "x": 1050, "y": 205, "w": 90, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 43, "w": 90, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 5.ase": {
+    "frame": { "x": 167, "y": 642, "w": 58, "h": 86 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 51, "w": 58, "h": 86 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 6.ase": {
+    "frame": { "x": 597, "y": 178, "w": 83, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 39, "y": 56, "w": 83, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Overhead 7.ase": {
+    "frame": { "x": 520, "y": 443, "w": 80, "h": 73 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 71, "w": 80, "h": 73 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 0.ase": {
+    "frame": { "x": 651, "y": 810, "w": 49, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 56, "w": 49, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 1.ase": {
+    "frame": { "x": 1016, "y": 458, "w": 65, "h": 89 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 35, "y": 55, "w": 65, "h": 89 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 2.ase": {
+    "frame": { "x": 539, "y": 802, "w": 58, "h": 76 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 40, "y": 68, "w": 58, "h": 76 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 3.ase": {
+    "frame": { "x": 190, "y": 552, "w": 60, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 54, "w": 60, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 4.ase": {
+    "frame": { "x": 0, "y": 88, "w": 75, "h": 106 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 34, "y": 38, "w": 75, "h": 106 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 5.ase": {
+    "frame": { "x": 114, "y": 0, "w": 91, "h": 110 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 27, "y": 34, "w": 91, "h": 110 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 1 6.ase": {
+    "frame": { "x": 68, "y": 392, "w": 63, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 44, "y": 49, "w": 63, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Front Grab 0.ase": {
+    "frame": { "x": 769, "y": 627, "w": 56, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 54, "w": 56, "h": 90 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Front Grab 1.ase": {
+    "frame": { "x": 768, "y": 717, "w": 55, "h": 86 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 58, "w": 55, "h": 86 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Front Grab 2.ase": {
+    "frame": { "x": 417, "y": 754, "w": 71, "h": 65 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 79, "w": 71, "h": 65 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Front Grab 3.ase": {
+    "frame": { "x": 410, "y": 1021, "w": 39, "h": 85 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 49, "y": 59, "w": 39, "h": 85 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Back Grab 0.ase": {
+    "frame": { "x": 546, "y": 714, "w": 54, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 56, "w": 54, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Back Grab 1.ase": {
+    "frame": { "x": 144, "y": 304, "w": 78, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 31, "y": 61, "w": 78, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Back Grab 2.ase": {
+    "frame": { "x": 1010, "y": 891, "w": 81, "h": 49 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 29, "y": 95, "w": 81, "h": 49 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Back Grab 3.ase": {
+    "frame": { "x": 994, "y": 1037, "w": 88, "h": 37 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 36, "y": 111, "w": 88, "h": 37 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Back Grab 4.ase": {
+    "frame": { "x": 343, "y": 995, "w": 67, "h": 52 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 37, "y": 92, "w": 67, "h": 52 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 0.ase": {
+    "frame": { "x": 597, "y": 93, "w": 60, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 60, "y": 60, "w": 60, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 1.ase": {
+    "frame": { "x": 1111, "y": 374, "w": 48, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 62, "y": 61, "w": 48, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 2.ase": {
+    "frame": { "x": 125, "y": 912, "w": 46, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 60, "w": 46, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 3.ase": {
+    "frame": { "x": 47, "y": 1014, "w": 38, "h": 89 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 39, "w": 38, "h": 89 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 4.ase": {
+    "frame": { "x": 113, "y": 797, "w": 50, "h": 88 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 55, "y": 39, "w": 50, "h": 88 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #SPD 5.ase": {
+    "frame": { "x": 841, "y": 1064, "w": 49, "h": 57 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 66, "y": 88, "w": 49, "h": 57 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 0.ase": {
+    "frame": { "x": 798, "y": 967, "w": 49, "h": 75 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 51, "y": 69, "w": 49, "h": 75 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 1.ase": {
+    "frame": { "x": 412, "y": 552, "w": 67, "h": 80 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 47, "y": 64, "w": 67, "h": 80 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 2.ase": {
+    "frame": { "x": 1113, "y": 0, "w": 45, "h": 134 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 66, "y": 16, "w": 45, "h": 134 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 3.ase": {
+    "frame": { "x": 1024, "y": 615, "w": 39, "h": 126 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 64, "y": 25, "w": 39, "h": 126 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 4.ase": {
+    "frame": { "x": 624, "y": 573, "w": 43, "h": 123 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 59, "y": 29, "w": 43, "h": 123 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 2 5.ase": {
+    "frame": { "x": 613, "y": 696, "w": 48, "h": 100 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 50, "w": 48, "h": 100 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 0.ase": {
+    "frame": { "x": 225, "y": 682, "w": 60, "h": 82 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 46, "y": 62, "w": 60, "h": 82 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 1.ase": {
+    "frame": { "x": 959, "y": 615, "w": 65, "h": 78 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 66, "w": 65, "h": 78 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 2.ase": {
+    "frame": { "x": 914, "y": 786, "w": 50, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 54, "y": 49, "w": 50, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 3.ase": {
+    "frame": { "x": 659, "y": 92, "w": 91, "h": 86 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 52, "y": 41, "w": 91, "h": 86 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 4.ase": {
+    "frame": { "x": 1124, "y": 284, "w": 36, "h": 84 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 61, "y": 39, "w": 36, "h": 84 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 5.ase": {
+    "frame": { "x": 600, "y": 796, "w": 51, "h": 87 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 36, "w": 51, "h": 87 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 6.ase": {
+    "frame": { "x": 501, "y": 516, "w": 60, "h": 91 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 41, "y": 33, "w": 60, "h": 91 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 7.ase": {
+    "frame": { "x": 684, "y": 281, "w": 62, "h": 107 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 57, "y": 31, "w": 62, "h": 107 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 3 8.ase": {
+    "frame": { "x": 59, "y": 487, "w": 45, "h": 122 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 57, "y": 23, "w": 45, "h": 122 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 0.ase": {
+    "frame": { "x": 813, "y": 261, "w": 72, "h": 95 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 49, "w": 72, "h": 95 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 1.ase": {
+    "frame": { "x": 457, "y": 303, "w": 79, "h": 83 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 61, "w": 79, "h": 83 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 2.ase": {
+    "frame": { "x": 862, "y": 0, "w": 103, "h": 82 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 62, "w": 103, "h": 82 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 3.ase": {
+    "frame": { "x": 753, "y": 79, "w": 102, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 65, "w": 102, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 4.ase": {
+    "frame": { "x": 753, "y": 0, "w": 109, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 65, "w": 109, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   },
+   "Red Palo (Anims) #Special 4 5.ase": {
+    "frame": { "x": 355, "y": 84, "w": 101, "h": 79 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 45, "y": 65, "w": 101, "h": 79 },
+    "sourceSize": { "w": 160, "h": 160 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.27-x64",
+  "image": "Red Palo.png",
+  "format": "RGBA8888",
+  "size": { "w": 1160, "h": 1155 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Movement", "from": 0, "to": 50, "direction": "forward" },
+   { "name": "Stand", "from": 0, "to": 2, "direction": "pingpong" },
+   { "name": "Forward", "from": 3, "to": 10, "direction": "forward" },
+   { "name": "Backwards", "from": 11, "to": 18, "direction": "forward" },
+   { "name": "Dash F", "from": 19, "to": 21, "direction": "forward" },
+   { "name": "Dash B", "from": 22, "to": 24, "direction": "forward" },
+   { "name": "Jump V", "from": 25, "to": 30, "direction": "forward" },
+   { "name": "Jump F", "from": 31, "to": 37, "direction": "forward" },
+   { "name": "Jump B", "from": 38, "to": 44, "direction": "forward" },
+   { "name": "Crouch", "from": 45, "to": 46, "direction": "forward" },
+   { "name": "Turn around", "from": 47, "to": 50, "direction": "forward" },
+   { "name": "Hitted", "from": 51, "to": 96, "direction": "forward" },
+   { "name": "Block", "from": 51, "to": 57, "direction": "forward" },
+   { "name": "Hit H & M", "from": 58, "to": 65, "direction": "forward" },
+   { "name": "Hit L & C", "from": 66, "to": 73, "direction": "forward" },
+   { "name": "Hit Air", "from": 74, "to": 78, "direction": "forward" },
+   { "name": "Spinning", "from": 79, "to": 82, "direction": "forward" },
+   { "name": "Knock down", "from": 83, "to": 87, "direction": "forward" },
+   { "name": "Exhausted", "from": 88, "to": 93, "direction": "pingpong" },
+   { "name": "Dizzy", "from": 94, "to": 96, "direction": "forward" },
+   { "name": "Others", "from": 97, "to": 128, "direction": "forward" },
+   { "name": "Wake up", "from": 97, "to": 101, "direction": "forward" },
+   { "name": "Rolling", "from": 102, "to": 105, "direction": "forward" },
+   { "name": "Grabbing", "from": 106, "to": 113, "direction": "forward" },
+   { "name": "Burla", "from": 114, "to": 118, "direction": "pingpong" },
+   { "name": "Time out", "from": 119, "to": 121, "direction": "pingpong" },
+   { "name": "Win 1", "from": 122, "to": 124, "direction": "forward" },
+   { "name": "Win 2", "from": 125, "to": 128, "direction": "forward" },
+   { "name": "Attacks", "from": 129, "to": 202, "direction": "forward" },
+   { "name": "S.LP", "from": 129, "to": 130, "direction": "forward" },
+   { "name": "S.MP", "from": 131, "to": 133, "direction": "forward" },
+   { "name": "S.HP", "from": 134, "to": 137, "direction": "pingpong" },
+   { "name": "S.LK", "from": 138, "to": 140, "direction": "pingpong" },
+   { "name": "S.MK", "from": 141, "to": 144, "direction": "pingpong" },
+   { "name": "S.HK", "from": 145, "to": 150, "direction": "forward" },
+   { "name": "C.LP", "from": 151, "to": 152, "direction": "forward" },
+   { "name": "C.MP", "from": 153, "to": 156, "direction": "forward" },
+   { "name": "C.HP", "from": 157, "to": 160, "direction": "pingpong" },
+   { "name": "C.LK", "from": 161, "to": 162, "direction": "forward" },
+   { "name": "C.MK", "from": 163, "to": 165, "direction": "pingpong" },
+   { "name": "C.HK", "from": 166, "to": 171, "direction": "forward" },
+   { "name": "J.LP", "from": 172, "to": 173, "direction": "forward" },
+   { "name": "J.MP", "from": 174, "to": 176, "direction": "forward" },
+   { "name": "J.HP", "from": 177, "to": 179, "direction": "forward" },
+   { "name": "J.LK", "from": 180, "to": 181, "direction": "forward" },
+   { "name": "J.MK", "from": 182, "to": 184, "direction": "forward" },
+   { "name": "J.HK", "from": 185, "to": 187, "direction": "forward" },
+   { "name": "Overhead", "from": 188, "to": 195, "direction": "forward" },
+   { "name": "Special 1", "from": 196, "to": 202, "direction": "forward" },
+   { "name": "Grabs", "from": 203, "to": 217, "direction": "forward" },
+   { "name": "Front Grab", "from": 203, "to": 206, "direction": "forward" },
+   { "name": "Back Grab", "from": 207, "to": 211, "direction": "forward" },
+   { "name": "SPD", "from": 212, "to": 217, "direction": "forward" },
+   { "name": "Special 2", "from": 218, "to": 223, "direction": "forward" },
+   { "name": "Special 3", "from": 224, "to": 232, "direction": "forward" },
+   { "name": "Special 4", "from": 233, "to": 238, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Anims", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

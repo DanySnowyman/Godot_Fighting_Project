@@ -2,10 +2,10 @@ extends CanvasLayer
 
 onready var tween = get_node("Tween")
 
-var health_top_full = preload("res://gfx/HUD/health_progress_full.png")
-var health_top_damaged = preload("res://gfx/HUD/health_progress.png")
-var health_under_hit = preload("res://gfx/HUD/health_under_hit.png")
-var health_under_block = preload("res://gfx/HUD/health_under_block.png")
+var health_top_full = preload("res://gfx/hud/health_progress_full.png")
+var health_top_damaged = preload("res://gfx/hud/health_progress.png")
+var health_under_hit = preload("res://gfx/hud/health_under_hit.png")
+var health_under_block = preload("res://gfx/hud/health_under_block.png")
 func _ready():
 	$P1Info.set_global_position(Vector2(20, 60))
 	$P1Info.align = HALIGN_LEFT

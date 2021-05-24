@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/health_under_hit.png-9ab7ddc95d8f23f7765d0e97a63bdbf7.stex"
+path="res://.import/health_under_hit.png-3628932966fc192fe2515e7ed5941fad.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/HUD/health_under_hit.png"
-dest_files=[ "res://.import/health_under_hit.png-9ab7ddc95d8f23f7765d0e97a63bdbf7.stex" ]
+source_file="res://gfx/hud/health_under_hit.png"
+dest_files=[ "res://.import/health_under_hit.png-3628932966fc192fe2515e7ed5941fad.stex" ]
 
 [params]
 
