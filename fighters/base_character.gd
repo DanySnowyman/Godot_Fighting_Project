@@ -13,7 +13,7 @@ enum is_ {LOCKED, STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST,
 		KNOCKED_DOWN, WAKING_UP}
 
 var state
-var can_control = true
+var can_control = false
 var facing_right = true
 var must_face_right
 var waiting_for_flip = false
@@ -954,15 +954,16 @@ func air_normal(button_pressed):
 		$AnimationPlayer.play("Attack jumping HK")
 
 func overhead():
-	state = is_.ATTACKING_ST
+	state = is_.AIR_ATTACKING
 	startup_frames = true
-	strike_data(50, 50, 50, "Medium", "High", "Normal", 0, false)
+	strike_data(50, 50, 50, "Heavy", "High", "Normal", 0, false)
 	$AnimationPlayer.play("Overhead")
 	$StrikeTimer.start($AnimationPlayer.current_animation_length)
 	yield(get_tree().create_timer(0.2), "timeout")
-	tween_parable(80, 20, 0.3)
+	if state == is_.AIR_ATTACKING:
+		tween_parable(80, 20, 0.3)
 	yield($StrikeTimer, "timeout")
-	if state == is_.ATTACKING_ST:
+	if state == is_.AIR_ATTACKING:
 		stand()
 
 func strike_data(damg, stun, push, strg, area, type, canc, jugg):
@@ -1508,6 +1509,7 @@ func tween_linear(distance, linear, time):
 	tween.start()
 		
 func tween_parable(distance, height, time):
+	var actual_state = state
 	if facing_right == false:
 		distance = -distance
 	#Arco ascendente --------------------------------
@@ -1520,13 +1522,15 @@ func tween_parable(distance, height, time):
 	tween.start()
 	yield(tween, "tween_all_completed")
 	#Arco descendente -------------------------------
-	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x + distance / 2,
-		time / 2, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y + height,
-		time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
-	tween.start()
+	if state == actual_state:
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x + distance / 2,
+			time / 2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + height,
+			time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+	else: pass
 	
 func boxes_auto_visibility():
 	if $HitBoxes/HitBox1.disabled == true:
@@ -1613,12 +1617,12 @@ func counter_and_cancelling():
 func _process(delta):
 	change_facing_direction()
 	facing_direction()
-	trigger_special_2()
-	trigger_special_1()
-	trigger_special_3(delta)
-	trigger_special_4(delta)
 	counter_and_cancelling()
 	if can_control == true:
+		trigger_special_2()
+		trigger_special_1()
+		trigger_special_3(delta)
+		trigger_special_4(delta)
 		player_control(delta)
 	normal_cancels()
 	repulse_players(delta)
@@ -1848,3 +1852,5 @@ func player_wins():
 	if victory_animation == 0:
 		$AnimationPlayer.play("Victory 1")
 	else: $AnimationPlayer.play("Victory 2")
+	yield(get_tree().create_timer(5), "timeout")
+	get_parent().set_new_round()

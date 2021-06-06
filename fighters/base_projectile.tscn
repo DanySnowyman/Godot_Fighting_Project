@@ -2,7 +2,7 @@
 
 [ext_resource path="res://fighters/proximity_box.gd" type="Script" id=1]
 [ext_resource path="res://fighters/base_projectile.gd" type="Script" id=2]
-[ext_resource path="res://fighters/mr_palo/mr_palo_fireball.png" type="Texture" id=3]
+[ext_resource path="res://fighters/mr_palo_fireball.png" type="Texture" id=3]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Impact"

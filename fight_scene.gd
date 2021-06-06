@@ -32,16 +32,26 @@ func _ready():
 	player1.find_nodes()
 	player2.find_nodes()
 	$Camera2D.find_nodes()
-
+	$Camera2D.center_camera()
+	yield($Transition.fade_out(1), "completed")
+	player1.can_control = true
+	player2.can_control = true
+	
+func set_new_round():
+	yield($Transition.fade_in(1), "completed")
+	get_tree().reload_current_scene()
+	
 func _process(delta):
-	if player1.position.x < player2.position.x:
-		player1_on_left = true
-		player1.must_face_right = true
-		player2.must_face_right = false
-	else:
-		player1_on_left = false
-		player1.must_face_right = false
-		player2.must_face_right = true
+	if is_instance_valid(player1):
+		if player1.position.x < player2.position.x:
+			player1_on_left = true
+			player1.must_face_right = true
+			player2.must_face_right = false
+		else:
+			player1_on_left = false
+			player1.must_face_right = false
+			player2.must_face_right = true
+	else: pass
 	update()
 	
 #func _draw():

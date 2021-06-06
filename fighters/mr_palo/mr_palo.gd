@@ -68,8 +68,6 @@ func backward_grab(): # Suplex!
 			rival.position = self.position + Vector2(60, 35)
 		rival_sprite.frame = 95
 		rival_sprite.rotation_degrees = 180
-#		hitfx_area_rect = Rect2() <---------------------
-#		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected")
 		yield(get_tree().create_timer(0.2, false), "timeout")
 		$Sprite.frame = 370
 		rival_sprite.frame = 107

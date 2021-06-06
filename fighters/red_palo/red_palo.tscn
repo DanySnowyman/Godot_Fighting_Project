@@ -2,7 +2,7 @@
 
 [ext_resource path="res://fighters/base_character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://fighters/red_palo/red_palo.gd" type="Script" id=2]
-[ext_resource path="res://fighters/red_palo/Red Palo.png" type="Texture" id=3]
+[ext_resource path="res://fighters/red_palo/red_palo.png" type="Texture" id=3]
 
 [sub_resource type="Animation" id=1]
 length = 0.466668
@@ -7638,19 +7638,19 @@ extents = Vector2( 21, 45 )
 
 [sub_resource type="RectangleShape2D" id=76]
 resource_local_to_scene = true
-extents = Vector2( 30, 18 )
+extents = Vector2( 25, 9 )
 
 [sub_resource type="RectangleShape2D" id=77]
 resource_local_to_scene = true
-extents = Vector2( 21, 10 )
+extents = Vector2( 14, 8 )
 
 [sub_resource type="RectangleShape2D" id=78]
 resource_local_to_scene = true
-extents = Vector2( 19, 6 )
+extents = Vector2( 18, 9 )
 
 [sub_resource type="RectangleShape2D" id=79]
 resource_local_to_scene = true
-extents = Vector2( 21, 10 )
+extents = Vector2( 19, 10 )
 
 [sub_resource type="RectangleShape2D" id=80]
 resource_local_to_scene = true
@@ -7666,14 +7666,9 @@ extents = Vector2( 21, 23 )
 
 [node name="RedPalo" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
-walk_forward_speed = 250
-walk_backward_speed = 200
 
 [node name="Sprite" parent="." index="0"]
-position = Vector2( 9, -45 )
 texture = ExtResource( 3 )
-offset = Vector2( 0.5, -14.5 )
-frame = 289
 
 [node name="AnimationPlayer" parent="." index="1"]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7758,15 +7753,12 @@ shape = SubResource( 75 )
 shape = SubResource( 76 )
 
 [node name="HurtBox1" parent="HurtBoxes" index="0"]
-position = Vector2( -12, -42 )
 shape = SubResource( 77 )
 
 [node name="HurtBox2" parent="HurtBoxes" index="1"]
-position = Vector2( -11, -26 )
 shape = SubResource( 78 )
 
 [node name="HurtBox3" parent="HurtBoxes" index="2"]
-position = Vector2( -1.90735e-06, -10 )
 shape = SubResource( 79 )
 
 [node name="HurtBox4" parent="HurtBoxes" index="3"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://gfx/hud/health_under_hit.png" type="Texture" id=1]
 [ext_resource path="res://gfx/hud/health_progress_full.png" type="Texture" id=2]
@@ -11,13 +11,13 @@
 [ext_resource path="res://gfx/hud/health_back.png" type="Texture" id=9]
 [ext_resource path="res://gfx/hud/power_progress.png" type="Texture" id=10]
 [ext_resource path="res://fight_scene.gd" type="Script" id=11]
+[ext_resource path="res://Transition.gd" type="Script" id=12]
 
 [node name="FightScene" type="Node2D"]
 pause_mode = 2
 script = ExtResource( 11 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( 192, 108 )
 current = true
 smoothing_enabled = true
 script = ExtResource( 3 )
@@ -200,3 +200,16 @@ __meta__ = {
 [node name="P2InfoTimer" type="Timer" parent="HUD"]
 
 [node name="Tween" type="Tween" parent="HUD"]
+
+[node name="Transition" type="CanvasLayer" parent="."]
+script = ExtResource( 12 )
+
+[node name="TransitionRect" type="ColorRect" parent="Transition"]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 384.0
+margin_bottom = 216.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="Transition"]
