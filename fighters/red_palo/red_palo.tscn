@@ -1,8 +1,7 @@
-[gd_scene load_steps=86 format=2]
+[gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://fighters/base_character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://fighters/red_palo/red_palo.gd" type="Script" id=2]
-[ext_resource path="res://fighters/red_palo/red_palo.png" type="Texture" id=3]
 
 [sub_resource type="Animation" id=1]
 length = 0.466668
@@ -7667,9 +7666,6 @@ extents = Vector2( 21, 23 )
 [node name="RedPalo" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
-[node name="Sprite" parent="." index="0"]
-texture = ExtResource( 3 )
-
 [node name="AnimationPlayer" parent="." index="1"]
 "anims/Attack crouching HK" = SubResource( 1 )
 "anims/Attack crouching HP" = SubResource( 2 )
@@ -7746,7 +7742,7 @@ anims/Stand = SubResource( 69 )
 "anims/Walk backward" = SubResource( 73 )
 "anims/Walk forward" = SubResource( 74 )
 
-[node name="PushBox" parent="." index="10"]
+[node name="PushBox" parent="." index="12"]
 shape = SubResource( 75 )
 
 [node name="HitBox1" parent="HitBoxes" index="0"]

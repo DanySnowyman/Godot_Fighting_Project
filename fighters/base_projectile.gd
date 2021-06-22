@@ -2,6 +2,7 @@ extends Area2D
 
 var speed = 0
 var armor = 0
+var px_owner
 var hitted = false
 var destroyed = false
 var hit_area_pos:= Vector2()
@@ -22,10 +23,14 @@ func _ready():
 	
 func fireball_data(player_owner, facing_right, strenght):
 	if player_owner == 1:
+		px_owner = 1
+		add_to_group("P1_projectiles")
 		self.set_collision_layer(32)
 		self.set_collision_mask(32768)
 		$ProximityBox.set_collision_layer(8)
 	else:
+		px_owner = 2
+		add_to_group("P2_projectiles")
 		self.set_collision_layer(32768)
 		self.set_collision_mask(32)
 		$ProximityBox.set_collision_layer(8192)
@@ -51,7 +56,7 @@ func fireball_data(player_owner, facing_right, strenght):
 		scale.x = -scale.x
 		
 func _process(delta):
-	if hitted == false:
+	if hitted == false and destroyed == false:
 		position.x += speed * delta
 	else: pass
 
@@ -68,13 +73,15 @@ func disable_projectile():
 	$HitBox.set_deferred("disabled", true)
 	if armor > 0:
 		armor -= 1
+		$HitBox.set_deferred("disabled", false)
 	else:
 		destroyed = true
+		remove_from_groups()
 		$ProximityBox/ProxBox1.set_deferred("disabled", true)
 		$AnimationPlayer.play("Impact")
 		yield($AnimationPlayer, "animation_finished")
 		self.visible = false
-		yield(get_tree().create_timer(2, true), "timeout")
+		yield(get_tree().create_timer(1, true), "timeout")
 		queue_free()
 
 func on_hit_freeze(freeze_time):
@@ -87,6 +94,12 @@ func on_hit_freeze(freeze_time):
 		hit_strg = "Launch"
 	if destroyed == false:
 		$HitBox.set_deferred("disabled", false)
+		
+func remove_from_groups():
+	if px_owner == 1:
+		remove_from_group("P1_projectiles")
+	else:
+		remove_from_group("P2_projectiles")
 	
 func _on_FireBall_area_entered(area):
 	if area.has_method("disable_projectile"):

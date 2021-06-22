@@ -7533,7 +7533,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 8, 50, 10, 11, 12, 13, 14, 15 ]
+"values": [ 8, 9, 10, 11, 12, 13, 14, 15 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("HurtBoxes/HurtBox1:shape:extents")
@@ -7642,15 +7642,15 @@ extents = Vector2( 25, 9 )
 
 [sub_resource type="RectangleShape2D" id=77]
 resource_local_to_scene = true
-extents = Vector2( 14, 8 )
+extents = Vector2( 11, 11 )
 
 [sub_resource type="RectangleShape2D" id=78]
 resource_local_to_scene = true
-extents = Vector2( 18, 9 )
+extents = Vector2( 19, 26 )
 
 [sub_resource type="RectangleShape2D" id=79]
 resource_local_to_scene = true
-extents = Vector2( 19, 10 )
+extents = Vector2( 14, 10 )
 
 [sub_resource type="RectangleShape2D" id=80]
 resource_local_to_scene = true
@@ -7666,6 +7666,9 @@ extents = Vector2( 25, 23 )
 
 [node name="MrPalo" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+
+[node name="Sprite" parent="." index="0"]
+frame = 8
 
 [node name="AnimationPlayer" parent="." index="1"]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7743,19 +7746,22 @@ anims/Stand = SubResource( 69 )
 "anims/Walk backward" = SubResource( 73 )
 "anims/Walk forward" = SubResource( 74 )
 
-[node name="PushBox" parent="." index="10"]
+[node name="PushBox" parent="." index="12"]
 shape = SubResource( 75 )
 
 [node name="HitBox1" parent="HitBoxes" index="0"]
 shape = SubResource( 76 )
 
 [node name="HurtBox1" parent="HurtBoxes" index="0"]
+position = Vector2( -2.00001, -83 )
 shape = SubResource( 77 )
 
 [node name="HurtBox2" parent="HurtBoxes" index="1"]
+position = Vector2( -2.00001, -46 )
 shape = SubResource( 78 )
 
 [node name="HurtBox3" parent="HurtBoxes" index="2"]
+position = Vector2( -2.00001, -10 )
 shape = SubResource( 79 )
 
 [node name="HurtBox4" parent="HurtBoxes" index="3"]

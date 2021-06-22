@@ -11,7 +11,7 @@
 [ext_resource path="res://gfx/hud/health_back.png" type="Texture" id=9]
 [ext_resource path="res://gfx/hud/power_progress.png" type="Texture" id=10]
 [ext_resource path="res://fight_scene.gd" type="Script" id=11]
-[ext_resource path="res://Transition.gd" type="Script" id=12]
+[ext_resource path="res://transition.gd" type="Script" id=12]
 
 [node name="FightScene" type="Node2D"]
 pause_mode = 2
