@@ -89,7 +89,7 @@ func show_info(player, info):
 		yield($P1InfoTimer, "timeout")
 		$P1Info.hide()
 
-func _process(delta):
+func _process(_delta):
 	if $P1PowerMeter/P1PowerLevel.value >= 100:
 		$P1PowerMeter/P1PowerLevel/P1PowerBar1.visible = true
 	else: $P1PowerMeter/P1PowerLevel/P1PowerBar1.visible = false
@@ -115,5 +115,3 @@ func _process(delta):
 	if $P2PowerMeter/P2PowerLevel.value>= 400:
 		$P2PowerMeter/P2PowerLevel/P2PowerBar4.visible = true
 	else: $P2PowerMeter/P2PowerLevel/P2PowerBar4.visible = false
-		
-		

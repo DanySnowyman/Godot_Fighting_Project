@@ -1,7 +1,7 @@
 extends "res://fighters/base_character.gd"
 
 func _ready():
-	cpu_level = 2
+	cpu_level = 0
 	
 func forward_grab(): # Lanzamiento
 	var rival_sprite = rival.get_node("Sprite")
