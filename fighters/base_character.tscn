@@ -8005,7 +8005,6 @@ shape = SubResource( 82 )
 disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 2 )

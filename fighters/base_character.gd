@@ -330,15 +330,16 @@ func player_control(delta):
 			else: dash_forward()
 	# Grabbing ------------------------------------------------------------------
 	if Input.is_action_just_pressed("%s_LP" % px) and Input.is_action_just_pressed("%s_LK" % px):
-		if state == is_.STANDING or state == is_.BLOCKING_H:
+		if state == is_.STANDING or state == is_.BLOCKING_H and nearly_grabbed == false:
 			grab_attempt()
 		elif state == is_.JUMPING:
 			air_grab_attempt()
 	# Counter grab --------------------------------------------------------------
-	if nearly_grabbed == true and state != is_.AIR_ATTACKING:
-		if Input.is_action_just_pressed("%s_LP" % px) and \
-				Input.is_action_just_pressed("%s_LK" % px):
-			grab_escape()
+	if Input.is_action_just_pressed("%s_LP" % px) and Input.is_action_just_pressed("%s_LK" % px):
+		if state == is_.STANDING or state == is_.CROUCHING or state == is_.BLOCKING_H or \
+				state == is_.BLOCKING_L or state == is_.ATTACKING_ST:
+			if nearly_grabbed == true and rival.nearly_grabbed == false:
+				grab_escape()
 	# Overhead --------------------------------------------------------------------------------
 	if state == is_.STANDING or state == is_.CROUCHING \
 			or state == is_.BLOCKING_H or state == is_.BLOCKING_L:
@@ -998,32 +999,69 @@ func grab_attempt():
 	state = is_.ATTACKING_ST
 	$GrabCounterTimer.start(0.100)
 	$AnimationPlayer.play("Grab attempt")
-		
+
 func air_grab_attempt():
 	state = is_.AIR_ATTACKING
 	$GrabBox/GrabBox1.disabled = false
 	yield(get_tree().create_timer(0.2, false), "timeout")
 	$GrabBox/GrabBox1.disabled = true
 
+func detect_concurrent_grab():
+	if nearly_grabbed == true and rival.nearly_grabbed == true:
+		if state == is_.ATTACKING_ST and rival.state == is_.ATTACKING_ST:
+			grab_clash()
+			rival.grab_clash()
+
+func grab_clash():
+	$GrabBox/GrabBox1.set_deferred("disabled", true)
+	$AnimationPlayer.stop(true)
+	tween.stop_all()
+	state = is_.HIT_STUNNED_ST
+	knockback(30)
+	$AnimationPlayer.play("Grab countered")
+	yield($AnimationPlayer, "animation_finished")
+	stand()
+	
+func grab_escape():
+	$AnimationPlayer.stop(true)
+	tween.stop_all()
+	rival.grab_clash()
+	state = is_.HIT_STUNNED_ST
+	tween_parable(-50, 10, 0.4)
+	$AnimationPlayer.play("Grab scape")
+	yield($AnimationPlayer, "animation_finished")
+	stand()
+
 func grab():
-	if rival.state == is_.STANDING or rival.state == is_.CROUCHING or \
-				rival.state == is_.ATTACKING_ST or rival.state == is_.ATTACKING_CR or \
-				rival.state == is_.DASHING:
-		state = is_.GRABBING
-		$AnimationPlayer.stop(true)
-		$GrabBox/GrabBox1.set_deferred("disabled", true)
-		rival.grabbed()
-		if facing_right == true:
-			if Input.is_action_pressed("%s_LEFT" % px):
-				backward_grab()
-			else: forward_grab()
-		else:
-			if Input.is_action_pressed("%s_RIGHT" % px):
-				backward_grab()
-			else: forward_grab()
-	else: 
-		yield($AnimationPlayer, "animation_finished")
-		stand()
+	state = is_.GRABBING
+	$AnimationPlayer.stop(true)
+	$GrabBox/GrabBox1.set_deferred("disabled", true)
+	rival.grabbed()
+	if facing_right == true:
+		if Input.is_action_pressed("%s_LEFT" % px):
+			backward_grab()
+		else: forward_grab()
+	else:
+		if Input.is_action_pressed("%s_RIGHT" % px):
+			backward_grab()
+		else: forward_grab()
+
+func grabbed():
+	state = is_.GRABBED
+	tween.remove_all()
+	$AnimationPlayer.stop(true)
+	disable_hit_boxes()
+	knockdown_level = 2
+	if state == is_.JUMPING or state == is_.AIR_ATTACKING:
+		pass
+	else:
+		$Sprite.frame = 89
+
+func forward_grab():
+	print("No forward grab implemented")
+	
+func backward_grab():
+	print("No backward grab implemented")
 
 func air_grab():
 	var rival_sprite = rival.get_node("Sprite")
@@ -1068,23 +1106,6 @@ func air_grab():
 	yield(get_tree().create_timer(0.5, false), "timeout")
 	stand()
 	
-func grabbed():
-	state = is_.GRABBED
-	tween.remove_all()
-	$AnimationPlayer.stop(true)
-	disable_hit_boxes()
-	knockdown_level = 2
-	if state == is_.JUMPING or state == is_.AIR_ATTACKING:
-		pass
-	else:
-		$Sprite.frame = 89
-
-func forward_grab():
-	print("No forward grab implemented")
-	
-func backward_grab():
-	print("No backward grab implemented")
-
 func lock_position():
 	var grab_position
 	grab_position = rival.position + grab_offset
@@ -1120,30 +1141,6 @@ func throwed(distance, height):
 		0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
 	yield(tween, "tween_all_completed")
-
-func grab_countered():
-	$GrabBox/GrabBox1.set_deferred("disabled", true)
-#	$AnimationPlayer.stop(true)
-#	tween.stop_all()
-	state = is_.HIT_STUNNED_ST
-	knockback(30)
-	$AnimationPlayer.play("Grab countered")
-	yield($AnimationPlayer, "animation_finished")
-	stand()
-	
-func grab_escape():
-#	$AnimationPlayer.stop()
-	rival.grab_countered()
-	state = is_.HIT_STUNNED_ST
-	tween_parable(-50, 10, 0.4)
-	$AnimationPlayer.play("Grab scape")
-	yield($AnimationPlayer, "animation_finished")
-	stand()
-
-func concurrent_grab():
-	if nearly_grabbed == true and rival.nearly_grabbed == true:
-		if state != is_.AIR_ATTACKING:
-			grab_countered()
 
 func block_standing():
 	state = is_.BLOCKING_H
@@ -1662,7 +1659,7 @@ func _process(delta):
 	pushing_player(delta)
 	stop_tweens_on_push()
 	detect_stuck()
-	concurrent_grab()
+	detect_concurrent_grab()
 	lock_position()
 	re_check_states()
 	fall()
@@ -1691,7 +1688,7 @@ func _on_area_entered(area):
 		proxboxes_detected += 1
 	if area.has_method("repulse_players"):
 		players_collide = true
-		
+
 func _on_area_exited(area):
 	if area.has_method("proximity_box"):
 		proxboxes_detected -= 1
@@ -1772,16 +1769,23 @@ func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 	
 func _on_GrabBox_area_entered(area):
 	if state == is_.AIR_ATTACKING and (rival.state == is_.AIR_STUNNED \
-			or rival.state == is_.JUMPING or rival.state == is_.AIR_ATTACKING):
+			or rival.state == is_.JUMPING or rival.state == is_.AIR_ATTACKING \
+			or rival.state == is_.AIR_ATTACKING_SP):
 		air_grab()
 	else:
 		rival.nearly_grabbed = true
+		if rival.cpu_level != 0:
+			rival.cpu_grab_escape()
 
 func _on_GrabBox_area_exited(area):
 	rival.nearly_grabbed = false
 
 func _on_GrabCounterTimer_timeout():
-	if rival.nearly_grabbed == true and state == is_.ATTACKING_ST:
+	if rival.nearly_grabbed == true and state == is_.ATTACKING_ST and \
+			(rival.state == is_.STANDING or rival.state == is_.CROUCHING or \
+			rival.state == is_.ATTACKING_ST or rival.state == is_.ATTACKING_CR or \
+			rival.state == is_.ATTACKING_SP or rival.state == is_.BLOCKING_H or \
+			rival.state == is_.BLOCKING_L or rival.state == is_.DASHING):
 		grab()
 	else:
 		yield($AnimationPlayer, "animation_finished")
@@ -1924,8 +1928,8 @@ func cpu_movement():
 	if facing_right == true:
 		border_distance = -((camera_pos.x - 172) - self.position.x)
 	else: border_distance = (camera_pos.x + 172) - self.position.x
-	
-	print(rival_distance)
+
+#	print(rival_distance)
 	if state == is_.STANDING or state == is_.CROUCHING:
 		if rival_distance < 180:
 			if main_action <= 1:
@@ -1933,7 +1937,7 @@ func cpu_movement():
 			elif main_action <= 2:
 				cpu_move = do_.CROUCH
 			elif main_action <= 4:
-				if sub_action <= 6:
+				if sub_action <= 8:
 					cpu_move = do_.WALK_F
 				else: cpu_move = do_.WALK_B
 			elif main_action <= 6:
@@ -1962,16 +1966,16 @@ func cpu_movement():
 						special_1("Powered")
 					else: special_1("Heavy")
 		elif rival_distance >= 180:
-			if main_action <= 1:
+			if main_action <= 0.5:
 				cpu_move = do_.STAND
-			elif main_action <= 2:
+			elif main_action <= 1:
 				cpu_move = do_.CROUCH
-			elif main_action <= 4:
+			elif main_action <= 3:
 				cpu_move = do_.WALK_F
-			elif main_action <= 5:
+			elif main_action <= 4.5:
 				cpu_move = do_.DASH_F
-			elif main_action <= 10:
-				if sub_action <= 3:
+			elif main_action <= 6:
+				if sub_action <= 8:
 					cpu_move = do_.JUMP_F
 				else: cpu_move = do_.JUMP_V
 			elif main_action <= 7:
@@ -2003,9 +2007,9 @@ func cpu_attack():
 					special_2("heavy")
 			else:
 				if rival_distance <= 50:
-					if attack_action <= 4:
+					if attack_action <= 3.5:
 						standing_normal("LP")
-					elif attack_action <= 8:
+					elif attack_action <= 7.5:
 						crouching_normal("LK")
 					else: grab_attempt()
 				elif rival_distance <= 70:
@@ -2044,16 +2048,23 @@ func cpu_block():
 	else: pass
 
 func cpu_grab_escape():
-	var escape_probability = rand_range(0, 10)
+	var escape_probability = rand_range(0, 12)
 	
-	if escape_probability <= cpu_level and state != is_.AIR_ATTACKING:
-		grab_escape()
-	else: pass
+	if nearly_grabbed == true and (state == is_.STANDING or state == is_.CROUCHING or \
+			state == is_.BLOCKING_H or state == is_.BLOCKING_L):
+		print(escape_probability)
+		if escape_probability <= cpu_level and state != is_.AIR_ATTACKING:
+			grab_escape()
+
+func cpu_combo():
+	pass
 
 func _on_CPUMove_timeout():
+#	return
 	if can_control == true and cpu_level != 0:
 		cpu_movement()
 
 func _on_CPUAttack_timeout():
+#	return
 	if can_control == true and cpu_level != 0:
 		cpu_attack()
