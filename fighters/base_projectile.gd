@@ -4,7 +4,6 @@ var speed = 0
 var armor = 0
 var px_owner
 var hitted = false
-var destroyed = false
 var hit_area_pos:= Vector2()
 var hit_area_size:= Vector2()
 var hit_area_rect:= Rect2()
@@ -19,7 +18,6 @@ var hit_jugg = true # Si es "true" puede golpearnos en estado "AIR_STUNNED"
 
 func _ready():
 	$AnimationPlayer.play("Normal")
-	add_to_group("Projectiles")
 	
 func fireball_data(player_owner, facing_right, strenght):
 	if player_owner == 1:
@@ -47,7 +45,7 @@ func fireball_data(player_owner, facing_right, strenght):
 	else:
 		hit_strg = "Heavy"
 		hit_type = "Powered"
-		hit_push = 30
+		hit_push = 0
 		speed = 240
 		armor = 1
 		$Sprite.modulate = Color(1, 0.494118, 0.494118)
@@ -56,7 +54,7 @@ func fireball_data(player_owner, facing_right, strenght):
 		scale.x = -scale.x
 		
 func _process(delta):
-	if hitted == false and destroyed == false:
+	if hitted == false:
 		position.x += speed * delta
 	else: pass
 
@@ -70,41 +68,38 @@ func get_hitbox_rect():
 	hit_area_rect = Rect2(hit_area_pos, hit_area_size)
 
 func disable_projectile():
+	hitted = true
 	$HitBox.set_deferred("disabled", true)
-	if armor > 0:
-		armor -= 1
-		$HitBox.set_deferred("disabled", false)
-	else:
-		destroyed = true
-		remove_from_groups()
-		$ProximityBox/ProxBox1.set_deferred("disabled", true)
-		$AnimationPlayer.play("Impact")
-		yield($AnimationPlayer, "animation_finished")
-		self.visible = false
-		yield(get_tree().create_timer(1, true), "timeout")
-		queue_free()
+	armor -= 1
 
 func on_hit_freeze(freeze_time):
-	hitted = true
 	$AnimationPlayer.stop()
 	yield(get_tree().create_timer(freeze_time, true), "timeout")
-	hitted = false
-	$AnimationPlayer.play()
-	if armor == 0 and hit_type == "Powered":
-		hit_strg = "Launch"
-	if destroyed == false:
+	if armor >= 0:
+		hitted = false
 		$HitBox.set_deferred("disabled", false)
-		
-func remove_from_groups():
+		$AnimationPlayer.play()
+		if armor == 0:
+			hit_push = 30
+			if hit_type == "Powered":
+				hit_strg = "Launch"
+	else: destroy_fireball()
+	
+func destroy_fireball():
 	if px_owner == 1:
 		remove_from_group("P1_projectiles")
 	else:
 		remove_from_group("P2_projectiles")
-	
+	$ProximityBox/ProxBox1.set_deferred("disabled", true)
+	$AnimationPlayer.play("Impact")
+	yield($AnimationPlayer, "animation_finished")
+	self.visible = false
+	queue_free()
+
 func _on_FireBall_area_entered(area):
 	if area.has_method("disable_projectile"):
 		disable_projectile()
-	else: pass
+		on_hit_freeze(0)
 	
 func _on_VisibilityNotifier2D_screen_exited():
 	queue_free()

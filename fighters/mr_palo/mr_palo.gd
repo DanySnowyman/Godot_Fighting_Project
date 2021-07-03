@@ -31,6 +31,7 @@ func forward_grab(): # Lanzamiento
 		else: rival.position = self.position + Vector2(-30, -50)
 		rival_sprite.rotation_degrees = 180
 		rival.throwed(-100, 10)
+		rival.direct_damage(150)
 		yield(get_tree().create_timer(0.15, false), "timeout")
 		$Sprite.frame = 363
 		rival_sprite.frame = 107
@@ -69,6 +70,7 @@ func backward_grab(): # Suplex!
 		rival_sprite.frame = 95
 		rival_sprite.rotation_degrees = 180
 		yield(get_tree().create_timer(0.2, false), "timeout")
+		rival.direct_damage(100)
 		$Sprite.frame = 370
 		rival_sprite.frame = 107
 		rival_sprite.rotation_degrees = 0

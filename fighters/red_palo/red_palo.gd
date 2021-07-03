@@ -2,7 +2,7 @@ extends "res://fighters/base_character.gd"
 
 func _ready():
 	$Sprite.modulate = Color(1, 0.494118, 0.494118)
-	cpu_level = 8
+	cpu_level = 0
 
 func forward_grab(): # Palizón
 	var rival_sprite = rival.get_node("Sprite")
@@ -10,8 +10,8 @@ func forward_grab(): # Palizón
 	if state == is_.GRABBING:
 		rival.grab_offset = Vector2(40, 0)
 		rival.position_is_locked = true
-		$AnimationPlayer.playback_speed = 1.5
-		strike_data(10, 10, 0, "Heavy", "Mid", "Normal", 0, false)
+		$AnimationPlayer.playback_speed = 1.2
+		strike_data(10, 10, 10, "Heavy", "Mid", "Normal", 0, false)
 		$AnimationPlayer.play("Attack standing LP")
 		for i in range (5):
 			$AnimationPlayer.queue("Attack crouching LP")
@@ -22,10 +22,11 @@ func forward_grab(): # Palizón
 		$AnimationPlayer.queue("Attack crouching MP")
 		$AnimationPlayer.queue("Attack standing HK")
 		$AnimationPlayer.queue("Attack crouching HP")
+		yield(get_tree().create_timer(3.6, false), "timeout")
 		$AnimationPlayer.playback_speed = 1
-		yield(get_tree().create_timer(4.3, false), "timeout")
 		rival.position_is_locked = false
 		rival.grab_offset = Vector2(0, 0)
+		hit_damg = 0
 		rival.air_received_hit(true)
 		yield(get_tree().create_timer(1, false), "timeout")
 		stand()
@@ -104,6 +105,7 @@ func backward_grab(): # Zangief SPD
 		if facing_right == true:
 			rival.position = self.position + Vector2(20, 30)
 		else: rival.position = self.position + Vector2(-20, 30)
+		rival.direct_damage(120)
 		yield(get_tree().create_timer(0.5, false), "timeout")
 		rival_sprite.frame = 107
 		rival_sprite.rotation_degrees = 0

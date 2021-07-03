@@ -7777,7 +7777,7 @@ tracks/8/keys = {
 
 [sub_resource type="RectangleShape2D" id=76]
 resource_local_to_scene = true
-extents = Vector2( 21, 45 )
+extents = Vector2( 20, 23 )
 
 [sub_resource type="RectangleShape2D" id=77]
 resource_local_to_scene = true
@@ -7785,15 +7785,15 @@ extents = Vector2( 31, 13 )
 
 [sub_resource type="RectangleShape2D" id=78]
 resource_local_to_scene = true
-extents = Vector2( 24, 11 )
+extents = Vector2( 15, 13 )
 
 [sub_resource type="RectangleShape2D" id=79]
 resource_local_to_scene = true
-extents = Vector2( 26, 19 )
+extents = Vector2( 26, 25 )
 
 [sub_resource type="RectangleShape2D" id=80]
 resource_local_to_scene = true
-extents = Vector2( 36, 11 )
+extents = Vector2( 16, 5 )
 
 [sub_resource type="RectangleShape2D" id=81]
 resource_local_to_scene = true
@@ -7823,7 +7823,7 @@ texture = ExtResource( 1 )
 offset = Vector2( 0, -14 )
 hframes = 8
 vframes = 52
-frame = 409
+frame = 64
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7941,7 +7941,7 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="PushBox" type="CollisionShape2D" parent="."]
-position = Vector2( 1, -45 )
+position = Vector2( 1, -56 )
 shape = SubResource( 76 )
 script = ExtResource( 7 )
 
@@ -7972,17 +7972,17 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 18, -71 )
+position = Vector2( -7.62939e-06, -100 )
 shape = SubResource( 78 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 7, -41 )
+position = Vector2( -7.62939e-06, -62 )
 shape = SubResource( 79 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 1, -11 )
+position = Vector2( -7.62939e-06, -32 )
 shape = SubResource( 80 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
@@ -8002,7 +8002,6 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 82 )
-disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
 collision_layer = 0

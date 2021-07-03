@@ -149,6 +149,7 @@ func _ready():
 	$ProximityBox/ProxBox1.disabled = true
 	$HitBoxes/HitBox1.disabled = true
 	health_level = init_health
+	randomize()
 
 func _process(delta):
 	screen_clamp()
@@ -165,6 +166,7 @@ func _process(delta):
 			player_control(delta)
 		else:
 			cpu_control(delta)
+			cpu_auto_block()
 	normal_cancels()
 	repulse_players(delta)
 	pushing_player(delta)
@@ -198,9 +200,11 @@ func find_nodes():
 func change_facing_direction():
 	if facing_right != must_face_right:
 		waiting_for_flip = true
+	else: waiting_for_flip = false
 
 func facing_direction():
 	if waiting_for_flip == true and (state == is_.STANDING or state == is_.CROUCHING):
+		self.scale.x *= -1
 		waiting_for_flip = false
 		facing_right = not facing_right
 		walk_forward_speed = -walk_forward_speed
@@ -212,7 +216,6 @@ func facing_direction():
 		airborne_hit_lenght = -airborne_hit_lenght
 		rolling_back_dist = -rolling_back_dist
 		ground_impact_lenght = -ground_impact_lenght
-		self.scale.x *= -1
 
 "--- PLAYER CONTROL --------------------------------------------------------------------"
 
@@ -255,13 +258,13 @@ func player_control(delta):
 	if state == is_.BLOCKING_H:
 		if facing_right == true:
 			if Input.is_action_just_released("%s_LEFT" % px) or can_guard == false:
-				state = is_.STANDING
+				stand()
 			elif Input.is_action_just_pressed("%s_DOWN" % px):
 				$Sprite.frame = 85
 				state = is_.BLOCKING_L
 		else:
 			if Input.is_action_just_released("%s_RIGHT" % px) or can_guard == false:
-				state = is_.STANDING
+				stand()
 			elif Input.is_action_just_pressed("%s_DOWN" % px):
 				$Sprite.frame = 85
 				state = is_.BLOCKING_L
@@ -445,6 +448,9 @@ func player_control(delta):
 		if Input.is_key_pressed(51):
 			Engine.time_scale = 2
 			Engine.iterations_per_second = 120
+		if Input.is_key_pressed(52):
+			power_level += 1000
+			hud.manage_power(player, power_level)
 
 func stand():
 	if health_level > 0:
@@ -667,6 +673,10 @@ func player_wins():
 	var victory_animation = round(rand_range(0, 1))
 	Engine.time_scale = 1
 	Engine.iterations_per_second = 60
+	if player == 1:
+		print("MrPalo wins")
+	else:
+		print("RedPalo wins")
 	if victory_animation == 0:
 		$AnimationPlayer.play("Victory 1")
 	else: $AnimationPlayer.play("Victory 2")
@@ -838,8 +848,6 @@ func trigger_special_1(): # HADOKEN
 				or Input.is_action_just_pressed("%s_MP" % px) and \
 				Input.is_action_just_pressed("%s_HP" % px):
 				if power_level >= 100:
-					power_level -= 100
-					hud.manage_power(player, power_level)
 					special_1("Powered")
 				else: pass
 		if Input.is_action_just_pressed("%s_HP" % px):
@@ -939,9 +947,14 @@ func special_1(strenght):
 				can_special_cancel = false
 				$ProximityBox/ProxBox1.disabled = true
 			state = is_.ATTACKING_SP
+			if strenght != "Powered":
+				power_level += power_sp_inc
+			else:
+				power_level -= 100
+			hud.manage_power(player, power_level)
 			$AnimationPlayer.play("Special 1")
-			yield(get_tree().create_timer(0.1667, false), "timeout")
-			if state != is_.GRABBED or state != is_.HIT_STUNNED_ST:
+			yield(get_tree().create_timer(0.2333, false), "timeout")
+			if state == is_.ATTACKING_SP:
 				if facing_right == true:
 					fireball.position.x = self.position.x + 35
 				else: fireball.position.x = self.position.x - 35
@@ -949,9 +962,6 @@ func special_1(strenght):
 				fireball.set_as_toplevel(true)
 				fireball.fireball_data(player, facing_right, strenght)
 				add_child(fireball)
-				if strenght != "Powered":
-					power_level += power_sp_inc
-					hud.manage_power(player, power_level)
 				yield($AnimationPlayer, "animation_finished")
 				stand()
 		else: pass
@@ -1119,14 +1129,17 @@ func grab():
 	$AnimationPlayer.stop(true)
 	$GrabBox/GrabBox1.set_deferred("disabled", true)
 	rival.grabbed()
-	if facing_right == true:
-		if Input.is_action_pressed("%s_LEFT" % px):
-			backward_grab()
-		else: forward_grab()
+	if cpu_level == 0:
+		if facing_right == true:
+			if Input.is_action_pressed("%s_LEFT" % px):
+				backward_grab()
+			else: forward_grab()
+		else:
+			if Input.is_action_pressed("%s_RIGHT" % px):
+				backward_grab()
+			else: forward_grab()
 	else:
-		if Input.is_action_pressed("%s_RIGHT" % px):
-			backward_grab()
-		else: forward_grab()
+		cpu_grab_choose()
 
 func grabbed():
 	state = is_.GRABBED
@@ -1212,7 +1225,6 @@ func throwed(distance, height):
 		self.position.y, self.position.y - height,
 		0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
-	state = is_.AIR_STUNNED
 	yield(tween, "tween_all_completed")
 	#Arco descendente -------------------------------
 	tween.interpolate_property(self, "position:x",
@@ -1222,6 +1234,7 @@ func throwed(distance, height):
 		self.position.y, self.position.y + 500,
 		0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
+	state = is_.AIR_STUNNED
 	yield(tween, "tween_all_completed")
 
 func _on_GrabBox_area_entered(area):
@@ -1258,7 +1271,9 @@ func _on_hit_connects(area):
 				can_special_cancel = true
 			if hit_canc >= 3:
 				can_normal_cancel = true
-			yield(get_tree().create_timer(0.0001), "timeout")
+			if cpu_level != 0:
+				cpu_combo()
+			yield(get_tree().create_timer(0.0001, false), "timeout")
 			var hit_freeze
 			if hit_strg == "Light":
 				hit_freeze = FREEZE_LIGHT
@@ -1276,37 +1291,6 @@ func _on_hit_connects(area):
 			$Tween.resume_all()
 			$StrikeTimer.set_paused(false)
 			$TweenTimer.set_paused(false)
-
-func on_hit_freeze():
-	yield(get_tree().create_timer(0.0001), "timeout")
-	var hit_freeze
-	if damaging_area.hit_strg == "Light":
-		hit_freeze = FREEZE_LIGHT
-	elif damaging_area.hit_strg == "Medium":
-		hit_freeze = FREEZE_MEDIUM
-	else: hit_freeze = FREEZE_HEAVY
-	if damaging_area != rival:
-		damaging_area.on_hit_freeze(hit_freeze)
-	hit_shake()
-	$AnimationPlayer.stop(false)
-	$Tween.stop_all()
-	$TweenTimer.set_paused(true)
-	yield(get_tree().create_timer(hit_freeze), "timeout")
-	$AnimationPlayer.play()
-	$Tween.resume_all()
-	$TweenTimer.set_paused(false)
-	is_shaked = false
-
-func hit_shake():
-	is_shaked = true
-	if is_shaked == true:
-		$Sprite.position.x += 3
-		yield(get_tree().create_timer(0.0167), "timeout")
-		$Sprite.position.x -= 3
-		yield(get_tree().create_timer(0.0167), "timeout")
-	if is_shaked == false:
-		$Sprite.position.x = 0
-	else: hit_shake()
 
 func _on_HurtBoxes_area_shape_entered(area_id, area, area_shape, self_shape):
 	var collision_name = area.shape_owner_get_owner(shape_find_owner(area_shape))
@@ -1389,44 +1373,6 @@ func calculate_hitfx_drawing_area():
 	else: hitfx_area_end.y = hurt_area_end.y
 	hitfx_area_size = hitfx_area_end - hitfx_area_pos
 	hitfx_area_rect = Rect2(hitfx_area_pos, hitfx_area_size)
-
-func calculate_damage(blocked):
-	var raw_damage
-	var scaled_damage
-
-	if blocked == false:
-		raw_damage = damaging_area.hit_damg
-	else: raw_damage = damaging_area.hit_damg / 6
-
-	if combo_counter <= 2:
-		scaled_damage = raw_damage
-	elif combo_counter == 3:
-		scaled_damage = raw_damage * 80 / 100
-	elif combo_counter == 4:
-		scaled_damage = raw_damage * 70 / 100
-	elif combo_counter == 5:
-		scaled_damage = raw_damage * 60 / 100
-	elif combo_counter == 6:
-		scaled_damage = raw_damage * 50 / 100
-	elif combo_counter == 7:
-		scaled_damage = raw_damage * 40 / 100
-	elif combo_counter == 8:
-		scaled_damage = raw_damage * 30 / 100
-	elif combo_counter == 9:
-		scaled_damage = raw_damage * 20 / 100
-	elif combo_counter >= 10:
-		scaled_damage = raw_damage * 10 / 100
-
-	health_level -= scaled_damage
-	hud.substract_health(player, scaled_damage)
-
-	if blocked == true:
-		hud.combo_ended(player, combo_counter, health_level, true)
-	if health_level <= 0:
-		can_control = false
-		rival.can_control = false
-		Engine.time_scale = 0.5
-		Engine.iterations_per_second = 30
 
 func on_hit():
 	$HitBoxes/HitBox1.set_deferred("disabled", true)
@@ -1513,10 +1459,10 @@ func received_hit():
 	calculate_damage(false)
 	power_level += damaging_area.hit_damg / 6
 	hud.manage_power(player, power_level)
-	if damaging_area.has_method("disable_projectile"):
-		damaging_area.disable_projectile()
 	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or \
 			state == is_.BLOCK_STUNNED_L or state == is_.HIT_STUNNED_CR:
+		if damaging_area.has_method("disable_projectile"):
+			damaging_area.disable_projectile()
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected", damaging_area.hit_strg)
 		state = is_.HIT_STUNNED_CR
 		$AnimationPlayer.stop()
@@ -1532,7 +1478,10 @@ func received_hit():
 			knockback(damaging_area.hit_push)
 		elif damaging_area.hit_strg == "Sweep":
 			knocked_down()
-		else: air_received_hit(true)
+		else:
+			air_received_hit(true)
+		
+		on_hit_freeze()
 		yield($Tween, "tween_completed")
 		if cpu_level != 0:
 			$CPUMove.start(rand_range(0, 1))
@@ -1543,6 +1492,9 @@ func received_hit():
 	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.ATTACKING_SP or \
 			state == is_.BLOCKING_H or state == is_.HIT_STUNNED_ST or \
 			state == is_.BLOCK_STUNNED_H or state == is_.LOCKED or state == is_.PRE_JUMP:
+		if state != is_.LOCKED:
+			if damaging_area.has_method("disable_projectile"):
+				damaging_area.disable_projectile()
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected", damaging_area.hit_strg)
 		state = is_.HIT_STUNNED_ST
 		$AnimationPlayer.stop()
@@ -1596,18 +1548,19 @@ func received_hit():
 
 func air_received_hit(from_ground):
 	var hit_impulse = airborne_hit_lenght
+	
 	disable_hit_boxes()
 	if waiting_for_flip == true:
 		hit_impulse = -hit_impulse
 	if from_ground == false:
+		if damaging_area.has_method("disable_projectile"):
+			damaging_area.disable_projectile()
 		combo_counter += 1
 		get_parent().play_hitfx(facing_right, hitfx_area_rect, "Connected", damaging_area.hit_strg)
 	else: pass
 	calculate_damage(false)
 	power_level += damaging_area.hit_damg / 6
 	hud.manage_power(player, power_level)
-	if damaging_area.has_method("disable_projectile"):
-		damaging_area.disable_projectile()
 	tween.remove_all()
 	$AnimationPlayer.stop()
 	if damaging_area.hit_type == "Normal" and knockdown_level == 0 and health_level > 0:
@@ -1620,23 +1573,99 @@ func air_received_hit(from_ground):
 	state = is_.AIR_STUNNED
 	on_hit_freeze()
 	#Arco ascendente --------------------------------
-	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x - hit_impulse / 2,
-		0.4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y - 50,
-		0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
-	tween.start()
-	$TweenTimer.start(0.4)
-	yield($TweenTimer, "timeout")
-	#Arco descendente -------------------------------
-	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x - hit_impulse / 2,
-		0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y + 500,
-		0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
-	tween.start()
+	if damaging_area.hit_push != 0:
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x - hit_impulse / 2,
+			0.4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y - 50,
+			0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		tween.start()
+		$TweenTimer.start(0.4)
+		yield($TweenTimer, "timeout")
+		#Arco descendente -------------------------------
+		tween.interpolate_property(self, "position:x",
+			self.position.x, self.position.x - hit_impulse / 2,
+			0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_property(self, "position:y",
+			self.position.y, self.position.y + 500,
+			0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
+		tween.start()
+
+func calculate_damage(blocked):
+	var raw_damage
+	var scaled_damage
+
+	if blocked == false:
+		raw_damage = damaging_area.hit_damg
+	else: raw_damage = damaging_area.hit_damg / 6
+
+	if combo_counter <= 2:
+		scaled_damage = raw_damage
+	elif combo_counter == 3:
+		scaled_damage = raw_damage * 80 / 100
+	elif combo_counter == 4:
+		scaled_damage = raw_damage * 70 / 100
+	elif combo_counter == 5:
+		scaled_damage = raw_damage * 60 / 100
+	elif combo_counter == 6:
+		scaled_damage = raw_damage * 50 / 100
+	elif combo_counter == 7:
+		scaled_damage = raw_damage * 40 / 100
+	elif combo_counter == 8:
+		scaled_damage = raw_damage * 30 / 100
+	elif combo_counter == 9:
+		scaled_damage = raw_damage * 20 / 100
+	elif combo_counter >= 10:
+		scaled_damage = raw_damage * 10 / 100
+
+	health_level -= scaled_damage
+	hud.substract_health(player, scaled_damage)
+
+	if blocked == true:
+		hud.combo_ended(player, combo_counter, health_level, true)
+		
+	if health_level <= 0:
+		can_control = false
+		rival.can_control = false
+		Engine.time_scale = 0.5
+		Engine.iterations_per_second = 30
+
+func direct_damage(damage):
+	health_level -= damage
+	hud.substract_health(player, damage)
+	hud.combo_ended(player, combo_counter, health_level, false)
+
+func on_hit_freeze():
+	yield(get_tree().create_timer(0.0001), "timeout")
+	var hit_freeze
+	if damaging_area.hit_strg == "Light":
+		hit_freeze = FREEZE_LIGHT
+	elif damaging_area.hit_strg == "Medium":
+		hit_freeze = FREEZE_MEDIUM
+	else: hit_freeze = FREEZE_HEAVY
+	if damaging_area != rival:
+		damaging_area.on_hit_freeze(hit_freeze)
+	hit_shake()
+	$AnimationPlayer.stop(false)
+	$Tween.stop_all()
+	$TweenTimer.set_paused(true)
+	yield(get_tree().create_timer(hit_freeze, false), "timeout")
+	$AnimationPlayer.play()
+	$Tween.resume_all()
+	$TweenTimer.set_paused(false)
+	is_shaked = false
+
+func hit_shake():
+	is_shaked = true
+	if is_shaked == true:
+		$Sprite.position.x += 3
+		yield(get_tree().create_timer(0.0167, false), "timeout")
+		$Sprite.position.x -= 3
+		yield(get_tree().create_timer(0.0167, false), "timeout")
+	if is_shaked == false:
+		$Sprite.position.x = 0
+	else: hit_shake()
 
 func knockback(distance):
 	var no_surplus = false
@@ -1922,13 +1951,16 @@ func cpu_control(delta):
 		if cpu_move == do_.JUMP_V or cpu_move == do_.JUMP_F or cpu_move == do_.JUMP_B:
 			state = is_.PRE_JUMP
 			$AnimationPlayer.play("Pre jump")
-			yield($AnimationPlayer, "animation_finished")
-			if cpu_move == do_.JUMP_V:
-				yield(jump_vertical(), "completed")
-			elif cpu_move == do_.JUMP_F:
-				yield(jump_forward(), "completed")
-			elif cpu_move == do_.JUMP_B:
-				yield(jump_backward(), "completed")
+			$StrikeTimer.start($AnimationPlayer.current_animation_length)
+			yield($StrikeTimer, "timeout")
+			if state == is_.PRE_JUMP:
+				if cpu_move == do_.JUMP_V:
+					yield(jump_vertical(), "completed")
+				elif cpu_move == do_.JUMP_F:
+					yield(jump_forward(), "completed")
+				elif cpu_move == do_.JUMP_B:
+					yield(jump_backward(), "completed")
+			else: pass
 			cpu_move = do_.STAND
 		if cpu_move == do_.DASH_F or cpu_move == do_.DASH_B:
 			if cpu_move == do_.DASH_F:
@@ -1941,15 +1973,14 @@ func cpu_movement():
 	var main_action = rand_range(0, 10)
 	var sub_action = rand_range(0, 10)
 	var rival_distance = self.position.x - rival.position.x
-	var border_distance
+	var camera_limit_distance
 
 	if rival_distance < 0:
 		rival_distance = -rival_distance
 	if facing_right == true:
-		border_distance = -((camera_pos.x - 172) - self.position.x)
-	else: border_distance = (camera_pos.x + 172) - self.position.x
+		camera_limit_distance = -((camera_pos.x - 172) - self.position.x)
+	else: camera_limit_distance = (camera_pos.x + 172) - self.position.x
 
-#	print(rival_distance)
 	if state == is_.STANDING or state == is_.CROUCHING:
 		if rival_distance < 180:
 			if main_action <= 1:
@@ -2015,8 +2046,9 @@ func cpu_movement():
 
 func cpu_attack():
 	var attack_action = rand_range(0, 10)
+	var second_decision = rand_range(0, 10)
 	var rival_distance = self.position.x - rival.position.x
-	var reaction_time = -(cpu_level - 10) / 10.0
+	var reaction_time = -(cpu_level - 15) / 10.0
 
 	if rival_distance < 0:
 		rival_distance = -rival_distance
@@ -2024,23 +2056,36 @@ func cpu_attack():
 		if rival_distance <= 90:
 			if rival.state == is_.JUMPING or rival.state == is_.AIR_ATTACKING:
 				if attack_action <= cpu_level:
-					special_2("heavy")
+					if second_decision <= 4:
+						special_2("heavy")
+					else: crouching_normal("HP")
 			else:
 				if rival_distance <= 50:
-					if attack_action <= 3.5:
+					if attack_action <= 2:
 						standing_normal("LP")
-					elif attack_action <= 7.5:
+					elif attack_action <= 4:
+						standing_normal("LK")
+					elif attack_action <= 6:
+						crouching_normal("LP")
+					elif attack_action <= 8:
 						crouching_normal("LK")
 					else: grab_attempt()
 				elif rival_distance <= 70:
-					if attack_action <= 5:
+					if attack_action <= 2:
 						standing_normal("MP")
-					else: standing_normal("MK")
-				else:
-					if attack_action <= 5:
+					elif attack_action <= 4:
+						standing_normal("MK")
+					elif attack_action <= 6:
+						crouching_normal("MP")
+					elif attack_action <= 8:
 						crouching_normal("MK")
-					elif attack_action <= 10:
+					else: overhead()
+				elif rival_distance <= 90:
+					if attack_action <= 3:
+						standing_normal("HP")
+					elif attack_action <= 6:
 						standing_normal("HK")
+					else: crouching_normal("HK")
 	elif state == is_.JUMPING:
 		if rival_distance <= 90:
 			if attack_action <= 3:
@@ -2067,18 +2112,38 @@ func cpu_block():
 				else: block_crouching()
 	else: pass
 
+func cpu_grab_choose():
+	if facing_right == true:
+		if self.position.x <= stage_size.end.x / 2:
+			backward_grab()
+		else: forward_grab()
+	else:
+		if self.position.x <= stage_size.end.x / 2:
+			forward_grab()
+		else: backward_grab()
+
 func cpu_grab_escape():
 	var escape_probability = rand_range(0, 12)
 
 	if nearly_grabbed == true and (state == is_.STANDING or state == is_.CROUCHING or \
 			state == is_.BLOCKING_H or state == is_.BLOCKING_L):
-		print(escape_probability)
 		if escape_probability <= cpu_level and state != is_.AIR_ATTACKING:
 			grab_escape()
 
 func cpu_combo():
-	pass
-	pass
+	var combo_probability = rand_range(0, 12)
+	var combo_chosen = rand_range(0, 10)
+
+	if can_special_cancel == true and combo_probability <= cpu_level:
+		if combo_chosen <= 3:
+			special_1("Heavy")
+		elif combo_chosen <= 6:
+			special_4()
+		else: special_3("Light")
+
+func cpu_auto_block():
+	if is_walking_backward == true and can_guard == true:
+		block_standing()
 
 func _on_CPUMove_timeout():
 #	return

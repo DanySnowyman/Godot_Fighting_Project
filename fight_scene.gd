@@ -10,7 +10,6 @@ var player2
 var stage
 var hud
 var hitsfx
-var player1_on_left
 var stage_size
 
 func _ready():
@@ -44,11 +43,9 @@ func set_new_round():
 func _process(delta):
 	if is_instance_valid(player1):
 		if player1.position.x < player2.position.x:
-			player1_on_left = true
 			player1.must_face_right = true
 			player2.must_face_right = false
 		else:
-			player1_on_left = false
 			player1.must_face_right = false
 			player2.must_face_right = true
 	else: pass
