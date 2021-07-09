@@ -13,7 +13,7 @@ enum is_ {LOCKED, STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST,
 		BLOCK_STUNNED_H, BLOCK_STUNNED_L, HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING,
 		GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 
-enum do_ {STAND, CROUCH, WALK_F, WALK_B, DASH_F, DASH_B, JUMP_V, JUMP_F, JUMP_B}
+enum do_ {PASS, STAND, CROUCH, WALK_F, WALK_B, DASH_F, DASH_B, JUMP_V, JUMP_F, JUMP_B}
 
 var state
 var cpu_move
@@ -465,14 +465,17 @@ func stand():
 			$AnimationPlayer.queue("Stand")
 		else: $AnimationPlayer.play("Stand")
 	else:
-		state = is_.LOCKED
-		$AnimationPlayer.play("Exhausted")
-		yield($AnimationPlayer, "animation_finished")
-		yield(get_tree().create_timer(1), "timeout")
-		rival.player_wins()
+		if can_control == true:
+			can_control = false
+			$AnimationPlayer.play("Exhausted")
+			yield($AnimationPlayer, "animation_finished")
+			yield(get_tree().create_timer(1), "timeout")
+			rival.player_wins()
+			hud.combo_ended(player, combo_counter, health_level, false)
+			print("from stand")
 
 func crouch():
-	if health_level >0:
+	if health_level > 0:
 		state = is_.CROUCHING
 		dash_l_ready = false
 		dash_r_ready = false
@@ -482,11 +485,15 @@ func crouch():
 			yield($AnimationPlayer, "animation_finished")
 		$AnimationPlayer.play("Crouch already")
 	else:
-		$AnimationPlayer.play("Exhausted")
-		$AnimationPlayer.seek(0.333)
-		yield($AnimationPlayer, "animation_finished")
-		yield(get_tree().create_timer(1), "timeout")
-		rival.player_wins()
+		if can_control == true:
+			can_control = false
+			$AnimationPlayer.play("Exhausted")
+			$AnimationPlayer.seek(0.333)
+			yield($AnimationPlayer, "animation_finished")
+			yield(get_tree().create_timer(1), "timeout")
+			rival.player_wins()
+			hud.combo_ended(player, combo_counter, health_level, false)
+			print("from crouch")
 
 func walk_forward(delta):
 	$AnimationPlayer.play("Walk forward")
@@ -525,7 +532,7 @@ func jump_vertical():
 					self.position.y, (self.position.y + jump_height),
 					jump_des_time, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
-			$TweenTimer.start(jump_des_time)
+			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
 			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
 						and state != is_.LOCKED:
@@ -563,7 +570,7 @@ func jump_forward():
 					self.position.y, self.position.y + jump_height,
 					jump_des_time, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
-			$TweenTimer.start(jump_des_time)
+			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
 			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED \
 						and state != is_.LOCKED:
@@ -602,7 +609,7 @@ func jump_backward():
 					self.position.y, self.position.y + jump_height,
 					jump_des_time, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
-			$TweenTimer.start(jump_des_time)
+			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
 			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED \
 						and state != is_.LOCKED:
@@ -633,7 +640,6 @@ func dash_forward():
 				and state != is_.LOCKED:
 		tween.remove_all()
 		stand()
-	else: pass
 
 func dash_backward():
 	$AnimationPlayer.play("Dash backward")
@@ -650,7 +656,6 @@ func dash_backward():
 				and state != is_.LOCKED:
 		tween.remove_all()
 		stand()
-	else: pass
 
 func set_false_to_dash_forward():
 	is_dashing_forward = false # Probar restar un tween al colisionar dashes
@@ -710,7 +715,6 @@ func standing_normal(button_pressed):
 	yield($StrikeTimer, "timeout")
 	if state == is_.ATTACKING_ST:
 		stand()
-	else: pass
 
 func crouching_normal(button_pressed):
 	state = is_.ATTACKING_CR
@@ -738,7 +742,6 @@ func crouching_normal(button_pressed):
 	yield($StrikeTimer, "timeout")
 	if state == is_.ATTACKING_CR:
 		crouch()
-	else: pass
 
 func air_normal(button_pressed):
 	state = is_.AIR_ATTACKING
@@ -1397,7 +1400,6 @@ func on_hit():
 	elif state == is_.AIR_STUNNED:
 		if damaging_area.hit_jugg == true:
 			air_received_hit(false)
-		else: pass
 
 	else:
 		received_hit()
@@ -1486,7 +1488,7 @@ func received_hit():
 		if cpu_level != 0:
 			$CPUMove.start(rand_range(0, 1))
 			cpu_move = do_.STAND
-		if state != is_.KNOCKED_DOWN and state != is_.AIR_STUNNED:
+		if state != is_.WAKING_UP and state != is_.AIR_STUNNED:
 			crouch()
 
 	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.ATTACKING_SP or \
@@ -1626,15 +1628,19 @@ func calculate_damage(blocked):
 		hud.combo_ended(player, combo_counter, health_level, true)
 		
 	if health_level <= 0:
-		can_control = false
-		rival.can_control = false
-		Engine.time_scale = 0.5
-		Engine.iterations_per_second = 30
+		knockout_slowdown()
 
 func direct_damage(damage):
 	health_level -= damage
 	hud.substract_health(player, damage)
-	hud.combo_ended(player, combo_counter, health_level, false)
+	if health_level <= 0:
+		knockout_slowdown()
+	else: hud.combo_ended(player, combo_counter, health_level, false)
+
+func knockout_slowdown():
+	rival.can_control = false
+	Engine.time_scale = 0.5
+	Engine.iterations_per_second = 30
 
 func on_hit_freeze():
 	yield(get_tree().create_timer(0.0001), "timeout")
@@ -1765,10 +1771,12 @@ func wake_up():
 			$Sprite.flip_h = false
 		stand()
 	else:
-		state = is_.LOCKED
-		rival.state = is_.LOCKED
-		yield(get_tree().create_timer(1), "timeout")
-		rival.player_wins()
+		if can_control == true:
+			can_control = false
+			yield(get_tree().create_timer(1), "timeout")
+			rival.player_wins()
+			hud.combo_ended(player, combo_counter, health_level, false)
+			print("from ground")
 
 "--- PUSHES AND STUCKS -----------------------------------------------------------------"
 
@@ -1917,7 +1925,7 @@ func re_check_states():
 func pass_info_to_hud():
 	if state == is_.STANDING or state == is_.CROUCHING \
 			or state == is_.GROUND_IMPACT or state == is_.LOCKED:
-		if combo_counter > 0:
+		if combo_counter > 0 and health_level > 0:
 			hud.combo_ended(player, combo_counter, health_level, false)
 			combo_counter = 0
 	if state == is_.HIT_STUNNED_ST or state == is_.HIT_STUNNED_CR or state == is_.AIR_STUNNED:
@@ -1970,13 +1978,16 @@ func cpu_control(delta):
 			cpu_move = do_.STAND
 
 func cpu_movement():
+	var best_action = rand_range(0, 10)
 	var main_action = rand_range(0, 10)
 	var sub_action = rand_range(0, 10)
 	var rival_distance = self.position.x - rival.position.x
+
 	var camera_limit_distance
 
 	if rival_distance < 0:
 		rival_distance = -rival_distance
+		
 	if facing_right == true:
 		camera_limit_distance = -((camera_pos.x - 172) - self.position.x)
 	else: camera_limit_distance = (camera_pos.x + 172) - self.position.x
@@ -1988,23 +1999,27 @@ func cpu_movement():
 			elif main_action <= 2:
 				cpu_move = do_.CROUCH
 			elif main_action <= 4:
-				if sub_action <= 8:
-					cpu_move = do_.WALK_F
-				else: cpu_move = do_.WALK_B
+				if camera_limit_distance > 100:
+					if sub_action <= 6:
+						cpu_move = do_.WALK_F
+					else: cpu_move = do_.WALK_B
+				else: cpu_move = do_.WALK_F
 			elif main_action <= 6:
-				if sub_action <= 6:
-					cpu_move = do_.DASH_F
-				else: cpu_move = do_.DASH_B
+				if camera_limit_distance > 100:
+					if sub_action <= 6:
+						cpu_move = do_.DASH_F
+					else: cpu_move = do_.DASH_B
+				else: cpu_move = do_.DASH_F
 			elif main_action <= 7:
-				if sub_action <= 3:
+				if sub_action <= 5:
 					cpu_move = do_.JUMP_F
 				elif sub_action <= 7:
 					cpu_move = do_.JUMP_V
 				else: cpu_move = do_.JUMP_B
 			elif main_action <= 8:
 				special_3("Medium")
-			elif main_action <= 9:
-				special_4()
+			elif main_action <= 9.5:
+				pass
 			elif main_action <= 10:
 				if sub_action < 1:
 					special_1("Light")
@@ -2017,83 +2032,94 @@ func cpu_movement():
 						special_1("Powered")
 					else: special_1("Heavy")
 		elif rival_distance >= 180:
-			if main_action <= 0.5:
-				cpu_move = do_.STAND
-			elif main_action <= 1:
-				cpu_move = do_.CROUCH
-			elif main_action <= 3:
-				cpu_move = do_.WALK_F
-			elif main_action <= 4.5:
-				cpu_move = do_.DASH_F
-			elif main_action <= 6:
-				if sub_action <= 8:
-					cpu_move = do_.JUMP_F
-				else: cpu_move = do_.JUMP_V
-			elif main_action <= 7:
-				special_3("Heavy")
-			elif main_action <= 10:
-				if sub_action < 2:
-					special_1("Light")
-				elif sub_action < 5:
-					special_1("Medium")
-				elif sub_action < 8:
-					special_1("Heavy")
-				elif sub_action <= 10:
-					if power_level >= 100:
-						special_1("Powered")
-					else: special_1("Heavy")
+			if player == 1 and get_tree().get_nodes_in_group("P2_projectiles").size() > 0 \
+					or player == 2 and get_tree().get_nodes_in_group("P1_projectiles").size() > 0 \
+					and best_action <= cpu_level:
+				if power_level >= 100:
+					special_1("Powered")
+				else: special_1("Heavy")
+			else: 
+				if main_action <= 0.5:
+					cpu_move = do_.STAND
+				elif main_action <= 1:
+					cpu_move = do_.CROUCH
+				elif main_action <= 3:
+					cpu_move = do_.WALK_F
+				elif main_action <= 4.5:
+					cpu_move = do_.DASH_F
+				elif main_action <= 6:
+					if sub_action <= 8:
+						cpu_move = do_.JUMP_F
+					else: cpu_move = do_.JUMP_V
+				elif main_action <= 7:
+					special_3("Heavy")
+				elif main_action <= 10:
+					if sub_action < 2:
+						special_1("Light")
+					elif sub_action < 5:
+						special_1("Medium")
+					elif sub_action < 8:
+						special_1("Heavy")
+					elif sub_action <= 10:
+						if power_level >= 100:
+							special_1("Powered")
+						else: special_1("Heavy")
 	$CPUMove.start(rand_range(0.5, 2))
 
 func cpu_attack():
 	var attack_action = rand_range(0, 10)
 	var second_decision = rand_range(0, 10)
-	var rival_distance = self.position.x - rival.position.x
+	var rival_distance_x = self.position.x - rival.position.x
+	var rival_distance_y = self.position.y - rival.position.y
 	var reaction_time = -(cpu_level - 15) / 10.0
 
-	if rival_distance < 0:
-		rival_distance = -rival_distance
-	if state == is_.STANDING or state == is_.CROUCHING:
-		if rival_distance <= 90:
-			if rival.state == is_.JUMPING or rival.state == is_.AIR_ATTACKING:
+	if rival_distance_x < 0:
+		rival_distance_x = -rival_distance_x
+	if rival_distance_y < 0:
+		rival_distance_y = -rival_distance_y
+
+	if state == is_.STANDING or state == is_.CROUCHING \
+			and (rival.state != is_.KNOCKED_DOWN or rival.state != is_.WAKING_UP):
+		if rival.state == is_.JUMPING or rival.state == is_.AIR_ATTACKING:
+			if rival_distance_x <= 70 and rival_distance_y <= 70:
 				if attack_action <= cpu_level:
 					if second_decision <= 4:
 						special_2("heavy")
 					else: crouching_normal("HP")
-			else:
-				if rival_distance <= 50:
-					if attack_action <= 2:
-						standing_normal("LP")
-					elif attack_action <= 4:
-						standing_normal("LK")
-					elif attack_action <= 6:
-						crouching_normal("LP")
-					elif attack_action <= 8:
-						crouching_normal("LK")
-					else: grab_attempt()
-				elif rival_distance <= 70:
-					if attack_action <= 2:
-						standing_normal("MP")
-					elif attack_action <= 4:
-						standing_normal("MK")
-					elif attack_action <= 6:
-						crouching_normal("MP")
-					elif attack_action <= 8:
-						crouching_normal("MK")
-					else: overhead()
-				elif rival_distance <= 90:
-					if attack_action <= 3:
-						standing_normal("HP")
-					elif attack_action <= 6:
-						standing_normal("HK")
-					else: crouching_normal("HK")
+		else:
+			if rival_distance_x <= 50:
+				if attack_action <= 2:
+					standing_normal("LP")
+				elif attack_action <= 4:
+					standing_normal("LK")
+				elif attack_action <= 6:
+					crouching_normal("LP")
+				elif attack_action <= 8:
+					crouching_normal("LK")
+				else: grab_attempt()
+			elif rival_distance_x <= 80:
+				if attack_action <= 2:
+					standing_normal("MP")
+				elif attack_action <= 4:
+					standing_normal("MK")
+				elif attack_action <= 6:
+					crouching_normal("MP")
+				elif attack_action <= 8:
+					crouching_normal("MK")
+				else: overhead()
+			elif rival_distance_x <= 90:
+				if attack_action <= 3:
+					standing_normal("HP")
+				elif attack_action <= 6:
+					standing_normal("HK")
+				else: crouching_normal("HK")
 	elif state == is_.JUMPING:
-		if rival_distance <= 90:
+		if rival_distance_x <= 100 and rival_distance_y <= 80:
 			if attack_action <= 3:
 				air_normal("LK")
 			elif attack_action <= 6:
 				air_normal("HP")
 			else: air_normal("HK")
-
 	$CPUAttack.start(rand_range(0, reaction_time))
 
 func cpu_block():
@@ -2144,13 +2170,13 @@ func cpu_combo():
 func cpu_auto_block():
 	if is_walking_backward == true and can_guard == true:
 		block_standing()
+	if $AnimationPlayer.current_animation == "Block standing" and can_guard == false:
+		stand()
 
 func _on_CPUMove_timeout():
-#	return
 	if can_control == true and cpu_level != 0:
 		cpu_movement()
 
 func _on_CPUAttack_timeout():
-#	return
 	if can_control == true and cpu_level != 0:
 		cpu_attack()

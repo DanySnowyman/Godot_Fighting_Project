@@ -2,7 +2,7 @@ extends "res://fighters/base_character.gd"
 
 func _ready():
 	$Sprite.modulate = Color(1, 0.494118, 0.494118)
-	cpu_level = 0
+	cpu_level = 5
 
 func forward_grab(): # Palizón
 	var rival_sprite = rival.get_node("Sprite")
