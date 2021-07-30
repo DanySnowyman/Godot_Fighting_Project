@@ -48,7 +48,6 @@ func _process(delta):
 		else:
 			player1.must_face_right = false
 			player2.must_face_right = true
-	else: pass
 	update()
 	
 #func _draw():

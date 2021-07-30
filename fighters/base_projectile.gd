@@ -74,7 +74,7 @@ func disable_projectile():
 
 func on_hit_freeze(freeze_time):
 	$AnimationPlayer.stop()
-	yield(get_tree().create_timer(freeze_time, true), "timeout")
+	yield(get_tree().create_timer(freeze_time, false), "timeout")
 	if armor >= 0:
 		hitted = false
 		$HitBox.set_deferred("disabled", false)

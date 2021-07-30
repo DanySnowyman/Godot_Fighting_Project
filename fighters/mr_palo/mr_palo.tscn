@@ -5633,7 +5633,7 @@ tracks/7/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, 23 ) ]
+"values": [ Vector2( 20, 30 ) ]
 }
 tracks/8/type = "value"
 tracks/8/path = NodePath("PushBox:position")
@@ -5645,7 +5645,7 @@ tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 1, -56 ) ]
+"values": [ Vector2( 0, -56 ) ]
 }
 tracks/9/type = "value"
 tracks/9/path = NodePath("PushingRay:cast_to")
@@ -5793,7 +5793,7 @@ tracks/7/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, 23 ) ]
+"values": [ Vector2( 20, 30 ) ]
 }
 tracks/8/type = "value"
 tracks/8/path = NodePath("PushBox:position")
@@ -5805,7 +5805,7 @@ tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 1, -56 ) ]
+"values": [ Vector2( 0, -56 ) ]
 }
 tracks/9/type = "value"
 tracks/9/path = NodePath("PushingRay:cast_to")
@@ -5964,7 +5964,7 @@ tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, 23 ) ]
+"values": [ Vector2( 20, 30 ) ]
 }
 tracks/9/type = "value"
 tracks/9/path = NodePath("PushBox:position")
@@ -5976,7 +5976,7 @@ tracks/9/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 1, -56 ) ]
+"values": [ Vector2( 0, -56 ) ]
 }
 tracks/10/type = "value"
 tracks/10/path = NodePath("PushingRay:cast_to")
@@ -6295,7 +6295,7 @@ tracks/11/keys = {
 "times": PoolRealArray( 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ Vector2( 22, 23 ), Vector2( 22, 61 ) ]
+"values": [ Vector2( 22, 23 ), Vector2( 29, 61 ) ]
 }
 tracks/12/type = "value"
 tracks/12/path = NodePath("HitBoxes/HitBox1:position")
@@ -6307,7 +6307,7 @@ tracks/12/keys = {
 "times": PoolRealArray( 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ Vector2( 17, -42 ), Vector2( 12, -68 ) ]
+"values": [ Vector2( 17, -42 ), Vector2( 25, -70 ) ]
 }
 tracks/13/type = "value"
 tracks/13/path = NodePath("ProximityBox/ProxBox1:disabled")
@@ -7296,7 +7296,7 @@ tracks/11/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 20, 45 ) ]
+"values": [ Vector2( 20, 40 ) ]
 }
 tracks/12/type = "value"
 tracks/12/path = NodePath("PushBox:position")
@@ -7308,7 +7308,7 @@ tracks/12/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Vector2( 1, -45 ) ]
+"values": [ Vector2( 0, -40 ) ]
 }
 tracks/13/type = "value"
 tracks/13/path = NodePath("HurtBoxes/HurtBox4:disabled")
@@ -7503,8 +7503,8 @@ tracks/7/enabled = true
 tracks/7/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ Vector2( 21, 45 ) ]
+"update": 0,
+"values": [ Vector2( 20, 40 ) ]
 }
 tracks/8/type = "value"
 tracks/8/path = NodePath("PushBox:position")
@@ -7515,8 +7515,8 @@ tracks/8/enabled = true
 tracks/8/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ Vector2( 1, -45 ) ]
+"update": 0,
+"values": [ Vector2( 0, -40 ) ]
 }
 
 [sub_resource type="Animation" id=74]
@@ -7607,50 +7607,26 @@ tracks/6/keys = {
 "update": 1,
 "values": [ Vector2( -2.00001, -10 ) ]
 }
-tracks/7/type = "value"
-tracks/7/path = NodePath("PushBox:shape:extents")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ Vector2( 21, 45 ) ]
-}
-tracks/8/type = "value"
-tracks/8/path = NodePath("PushBox:position")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ Vector2( 1, -45 ) ]
-}
 
 [sub_resource type="RectangleShape2D" id=75]
 resource_local_to_scene = true
-extents = Vector2( 21, 45 )
+extents = Vector2( 20, 40 )
 
 [sub_resource type="RectangleShape2D" id=76]
 resource_local_to_scene = true
-extents = Vector2( 25, 9 )
+extents = Vector2( 22, 61 )
 
 [sub_resource type="RectangleShape2D" id=77]
 resource_local_to_scene = true
-extents = Vector2( 11, 11 )
+extents = Vector2( 11, 22 )
 
 [sub_resource type="RectangleShape2D" id=78]
 resource_local_to_scene = true
-extents = Vector2( 19, 26 )
+extents = Vector2( 16, 21 )
 
 [sub_resource type="RectangleShape2D" id=79]
 resource_local_to_scene = true
-extents = Vector2( 14, 10 )
+extents = Vector2( 9, 11 )
 
 [sub_resource type="RectangleShape2D" id=80]
 resource_local_to_scene = true
@@ -7662,13 +7638,11 @@ extents = Vector2( 60, 10 )
 
 [sub_resource type="RectangleShape2D" id=82]
 resource_local_to_scene = true
-extents = Vector2( 25, 23 )
+extents = Vector2( 21, 23 )
 
 [node name="MrPalo" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
-
-[node name="Sprite" parent="." index="0"]
-frame = 8
+walk_forward_speed = 220
 
 [node name="AnimationPlayer" parent="." index="1"]
 "anims/Attack crouching HK" = SubResource( 1 )
@@ -7750,18 +7724,20 @@ anims/Stand = SubResource( 69 )
 shape = SubResource( 75 )
 
 [node name="HitBox1" parent="HitBoxes" index="0"]
+position = Vector2( 12, -68 )
 shape = SubResource( 76 )
+disabled = false
 
 [node name="HurtBox1" parent="HurtBoxes" index="0"]
-position = Vector2( -2.00001, -83 )
+position = Vector2( -1, -94 )
 shape = SubResource( 77 )
 
 [node name="HurtBox2" parent="HurtBoxes" index="1"]
-position = Vector2( -2.00001, -46 )
+position = Vector2( 0, -51 )
 shape = SubResource( 78 )
 
 [node name="HurtBox3" parent="HurtBoxes" index="2"]
-position = Vector2( -2.00001, -10 )
+position = Vector2( -1, -19 )
 shape = SubResource( 79 )
 
 [node name="HurtBox4" parent="HurtBoxes" index="3"]
@@ -7769,6 +7745,7 @@ shape = SubResource( 80 )
 
 [node name="ProxBox1" parent="ProximityBox" index="0"]
 shape = SubResource( 81 )
+disabled = false
 
 [node name="GrabBox1" parent="GrabBox" index="0"]
 shape = SubResource( 82 )

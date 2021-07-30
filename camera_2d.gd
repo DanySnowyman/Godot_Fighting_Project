@@ -26,6 +26,6 @@ func _process(delta):
 			limit_top = stage_size.position.y
 			limit_bottom = stage_size.end.y
 			position.x = clamp(position.x, stage_size.position.x + screen_size.end.x / 2, 
-							stage_size.end.x - screen_size.end.x / 2)
+					stage_size.end.x - screen_size.end.x / 2)
 		else: pass
 	else: pass
