@@ -35,7 +35,7 @@ var knockdown_level = 0 # CERO es "NADA", UNO es "SOFT", DOS es "HARD"
 var nearly_grabbed = false
 var grab_offset = Vector2()
 var players_collide = false
-var walk_push_force # Este valor determina qué jugador empuja al otro al andar hacia adelante a la vez
+var walk_push_force # Determina qué jugador empuja al otro al andar hacia adelante a la vez
 var repulse_distance
 var proxboxes_detected = 0
 var can_guard = false
@@ -78,8 +78,8 @@ var hit_area_pos:= Vector2()
 var hit_area_size:= Vector2()
 var hurt_area_pos:= Vector2()
 var hurt_area_size:= Vector2()
-var hit_area_rect:= Rect2() # Eliminar tras video
-var hurt_area_rect:= Rect2() # Eliminar tras video
+var hit_area_rect:= Rect2() # Solo para función _draw() de FightScene
+var hurt_area_rect:= Rect2() # Solo para función _draw() de FightScene
 var hitfx_area_rect:= Rect2()
 
 export var char_name : String
@@ -168,6 +168,7 @@ func _process(delta):
 		else:
 			cpu_control(delta)
 			cpu_auto_block()
+	pushbox_auto_size()
 	normal_cancels()
 	pushing_player(delta)
 	repulse_players(delta)
@@ -594,8 +595,8 @@ func jump_forward():
 						jump_des_time, Tween.TRANS_LINEAR, Tween.EASE_IN)
 			else:
 				tween.interpolate_property(self, "position:x",
-					self.position.x, self.position.x + jump_f_lenght / 2,
-					jump_asc_time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+						self.position.x, self.position.x + jump_f_lenght / 2,
+						jump_asc_time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 			tween.interpolate_property(self, "position:y",
 					self.position.y, self.position.y + jump_height,
 					jump_des_time, Tween.TRANS_QUINT, Tween.EASE_IN)
@@ -656,6 +657,10 @@ func dash_forward():
 	tween.start()
 	state = is_.DASHING
 	$TweenTimer.start(dash_f_time)
+	$StrikeTimer.start(dash_f_time - 0.1)
+	yield($StrikeTimer, "timeout")
+	is_dashing_forward = false
+	can_push = false
 	yield($TweenTimer, "timeout")
 	if state == is_.DASHING:
 		stand()
@@ -673,9 +678,6 @@ func dash_backward():
 	yield($TweenTimer, "timeout")
 	if state == is_.DASHING:
 		stand()
-
-func set_false_to_dash_forward():
-	is_dashing_forward = false # Probar restar un tween al colisionar dashes
 
 func block_standing():
 	state = is_.BLOCKING_H
@@ -1246,20 +1248,20 @@ func throwed(distance, height):
 		distance = -distance
 	#Arco ascendente --------------------------------
 	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x + distance / 2,
-		0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			self.position.x, self.position.x + distance / 2,
+			0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y - height,
-		0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
+			self.position.y, self.position.y - height,
+			0.2, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	yield(tween, "tween_all_completed")
 	#Arco descendente -------------------------------
 	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x + distance / 2,
-		0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+			self.position.x, self.position.x + distance / 2,
+			0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y + 500,
-		0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
+			self.position.y, self.position.y + 500,
+			0.2, Tween.TRANS_QUINT, Tween.EASE_IN)
 	tween.start()
 	state = is_.AIR_STUNNED
 	yield(tween, "tween_all_completed")
@@ -1361,7 +1363,7 @@ func get_hitbox_rect():
 	hit_area_pos = to_global(hit_area_center) - hit_area_extents
 	hit_area_size = hit_area_extents * 2
 
-	hit_area_rect = Rect2(hit_area_pos, hit_area_size) # Eliminar tras video
+	hit_area_rect = Rect2(hit_area_pos, hit_area_size) # Solo para función _draw() de FightScene
 
 func get_hurtbox_rectangle(hurt_box):
 	var hurt_area_center:= Vector2()
@@ -1382,7 +1384,7 @@ func get_hurtbox_rectangle(hurt_box):
 
 	hurt_area_pos = to_global(hurt_area_center) - hurt_area_extents
 	hurt_area_size = hurt_area_extents * 2
-	hurt_area_rect = Rect2(hurt_area_pos, hurt_area_size) # Eliminar tras video
+	hurt_area_rect = Rect2(hurt_area_pos, hurt_area_size) # Solo para función _draw() de FightScene
 
 func calculate_hitfx_drawing_area():
 	var hitfx_area_pos := Vector2()
@@ -1602,22 +1604,22 @@ func air_received_hit(from_ground):
 	#Arco ascendente --------------------------------
 	if damaging_area.hit_push != 0:
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x - hit_impulse / 2,
-			0.4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				self.position.x, self.position.x - hit_impulse / 2,
+				0.4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 		tween.interpolate_property(self, "position:y",
-			self.position.y, self.position.y - 50,
-			0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.y, self.position.y - 50,
+				0.4, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 		$TweenTimer.start(0.4)
 		state = is_.AIR_STUNNED
 		yield($TweenTimer, "timeout")
 		#Arco descendente -------------------------------
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x - hit_impulse / 2,
-			0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				self.position.x, self.position.x - hit_impulse / 2,
+				0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
 		tween.interpolate_property(self, "position:y",
-			self.position.y, self.position.y + 500,
-			0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
+				self.position.y, self.position.y + 500,
+				0.4, Tween.TRANS_QUINT, Tween.EASE_IN)
 		tween.start()
 
 func calculate_damage(blocked):
@@ -1714,16 +1716,19 @@ func knockback(distance):
 		distance = -distance
 
 	if no_surplus == false and rival == damaging_area:
-		if self.position.x + distance > camera_pos.x + 172:
-			rival.knockback_surplus((self.position.x + distance) - (camera_pos.x + 172))
-		elif self.position.x - distance < camera_pos.x - 172:
-			rival.knockback_surplus((self.position.x + distance) - (camera_pos.x - 172))
+		if is_stuck == true:
+			rival.knockback_surplus(distance)
+		else:
+			if self.position.x + distance > camera_pos.x + 172:
+				rival.knockback_surplus((self.position.x + distance) - (camera_pos.x + 167))
+			elif self.position.x - distance < camera_pos.x - 172:
+				rival.knockback_surplus((self.position.x + distance) - (camera_pos.x - 167))
 	tween.remove_all()
 	if must_face_right == false:
 		distance = -distance
 	tween.interpolate_property(self, "position:x", self.position.x,
-		self.position.x - distance, time,
-		Tween.TRANS_QUINT, Tween.EASE_OUT)
+			self.position.x - distance, time,
+			Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	
 func knockback_surplus(distance):
@@ -1734,14 +1739,14 @@ func knockback_surplus(distance):
 	if state == is_.ATTACKING_ST or state == is_.ATTACKING_CR or state == is_.ATTACKING_SP:
 		tween.remove_all()
 		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - distance, time,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.x - distance, time,
+				Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 	if state == is_.AIR_ATTACKING or state == is_.AIR_ATTACKING_SP:
 		tween.stop(self, "position:x")
 		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - distance, time,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.x - distance, time,
+				Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
 	else: pass
 
@@ -1766,12 +1771,12 @@ func ground_impact():
 	$AnimationPlayer.play("Ground impact")
 	if facing_right == must_face_right:
 		tween.interpolate_property(self, "position:x", self.position.x,
-			self.position.x - ground_impact_lenght, 0.5,
-			Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.x - ground_impact_lenght, 0.5,
+				Tween.TRANS_QUINT, Tween.EASE_OUT)
 	else:
 		tween.interpolate_property(self, "position:x", self.position.x,
-		self.position.x + ground_impact_lenght, 0.5,
-		Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.x + ground_impact_lenght, 0.5,
+				Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	yield($AnimationPlayer, "animation_finished")
 	wake_up()
@@ -1788,8 +1793,8 @@ func wake_up():
 							Input.is_action_pressed("%s_RIGHT" % px) and must_face_right == false:
 				$AnimationPlayer.play("Rolling back")
 				tween.interpolate_property(self, "position:x", self.position.x,
-					self.position.x - rolling_direction, 0.3,
-					Tween.TRANS_LINEAR, Tween.EASE_OUT)
+						self.position.x - rolling_direction, 0.3,
+						Tween.TRANS_LINEAR, Tween.EASE_OUT)
 				tween.start()
 				yield(tween, "tween_completed")
 			elif Input.is_action_pressed("%s_DOWN" % px):
@@ -1826,7 +1831,7 @@ func repulse_players(delta):
 
 func pushing_player(delta):
 	if players_collide == true:
-		if (is_walking_forward == true and rival.is_dashing_forward == false) or \
+		if (is_walking_forward == true and rival.can_push == false) or \
 				can_push == true and rival.global_position.y == ground_height:
 			if must_face_right == true:
 				rival.position.x = self.position.x + 39
@@ -1895,12 +1900,12 @@ func tween_linear(distance, linear, time):
 		distance = -distance
 	if linear == true:
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + distance,
-			time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				self.position.x, self.position.x + distance,
+				time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	else:
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + distance,
-			time, Tween.TRANS_QUINT, Tween.EASE_OUT)
+				self.position.x, self.position.x + distance,
+				time, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 
 func tween_parable(distance, height, time):
@@ -1909,26 +1914,26 @@ func tween_parable(distance, height, time):
 		distance = -distance
 	#Arco ascendente --------------------------------
 	tween.interpolate_property(self, "position:x",
-		self.position.x, self.position.x + distance / 2,
-		time / 2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			self.position.x, self.position.x + distance / 2,
+			time / 2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.interpolate_property(self, "position:y",
-		self.position.y, self.position.y - height,
-		time / 2, Tween.TRANS_QUINT, Tween.EASE_OUT)
+			self.position.y, self.position.y - height,
+			time / 2, Tween.TRANS_QUINT, Tween.EASE_OUT)
 	tween.start()
 	$TweenTimer.start(time / 2)
 	yield($TweenTimer, "timeout")
 	#Arco descendente -------------------------------
 	if state == actual_state:
 		tween.interpolate_property(self, "position:x",
-			self.position.x, self.position.x + distance / 2,
-			time / 2, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				self.position.x, self.position.x + distance / 2,
+				time / 2, Tween.TRANS_LINEAR, Tween.EASE_IN)
 		tween.interpolate_property(self, "position:y",
-			self.position.y, self.position.y + height,
-			time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
+				self.position.y, self.position.y + height,
+				time / 2, Tween.TRANS_QUINT, Tween.EASE_IN)
 		tween.start()
 	else: pass
 
-func boxes_auto_visibility():
+func boxes_auto_visibility(): # Ayuda visual para testear
 	if $HitBoxes/HitBox1.disabled == true:
 		$HitBoxes/HitBox1.visible = false
 	else: $HitBoxes/HitBox1.visible = true
@@ -1972,6 +1977,26 @@ func disable_hit_boxes():
 	$HitBoxes/HitBox1.set_deferred("disabled", true)
 	$ProximityBox/ProxBox1.set_deferred("disabled", true)
 	$GrabBox/GrabBox1.set_deferred("disabled", true)
+
+func pushbox_auto_size():
+	if state == is_.STANDING or state == is_.ATTACKING_ST or state == is_.BLOCKING_H or \
+			state == is_.HIT_STUNNED_ST or state == is_.ATTACKING_SP:
+		$PushBox.shape.extents = Vector2(20, 40)
+		$PushBox.position = Vector2(0, -40)
+	if state == is_.CROUCHING or state == is_.ATTACKING_CR or state == is_.BLOCKING_L or \
+			state == is_.HIT_STUNNED_CR or state == is_.GROUND_IMPACT:
+		$PushBox.shape.extents = Vector2(20, 20)
+		$PushBox.position = Vector2(0, -20)
+	if state == is_.JUMPING or state == is_.AIR_ATTACKING:
+		if is_jumping_forward == true or is_jumping_backward == true:
+			$PushBox.shape.extents = Vector2(20, 20)
+			$PushBox.position = Vector2(0, -50)
+		else:
+			$PushBox.shape.extents = Vector2(20, 30)
+			$PushBox.position = Vector2(0, -60)
+	if state == is_.AIR_STUNNED:
+		$PushBox.shape.extents = Vector2(20, 20)
+		$PushBox.position = Vector2(0, -50)
 
 func re_check_states():
 	if state != is_.STANDING:
@@ -2189,7 +2214,6 @@ func cpu_block():
 				if block_probability < 1:
 					block_standing()
 				else: block_crouching()
-	else: pass
 
 func cpu_grab_choose():
 	if facing_right == true:

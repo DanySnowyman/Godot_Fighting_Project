@@ -50,10 +50,11 @@ func _process(delta):
 			player2.must_face_right = true
 	update()
 	
-#func _draw():
-#	draw_rect(player1.hit_area_rect, Color(1, 0, 1))
-#	draw_rect(player2.hurt_area_rect, Color(0, 1, 1))
-#	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
+func _draw(): # Eliminar return para ver las áreas de colisión al golpear
+	return
+	draw_rect(player1.hit_area_rect, Color(1, 0, 1))
+	draw_rect(player2.hurt_area_rect, Color(0, 1, 1))
+	draw_rect(player2.hitfx_area_rect, Color(1, 1, 0))
 
 func play_hitfx(facing_right, hitfx_area_rect, hit_type, hit_strenght):
 	hitsfx = Hits_FX.instance()
