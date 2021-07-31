@@ -7745,7 +7745,6 @@ shape = SubResource( 80 )
 
 [node name="ProxBox1" parent="ProximityBox" index="0"]
 shape = SubResource( 81 )
-disabled = false
 
 [node name="GrabBox1" parent="GrabBox" index="0"]
 shape = SubResource( 82 )

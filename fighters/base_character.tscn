@@ -7713,15 +7713,15 @@ extents = Vector2( 30, 18 )
 
 [sub_resource type="RectangleShape2D" id=78]
 resource_local_to_scene = true
-extents = Vector2( 13, 13 )
+extents = Vector2( 23, 11 )
 
 [sub_resource type="RectangleShape2D" id=79]
 resource_local_to_scene = true
-extents = Vector2( 18, 17 )
+extents = Vector2( 19, 6 )
 
 [sub_resource type="RectangleShape2D" id=80]
 resource_local_to_scene = true
-extents = Vector2( 13, 11 )
+extents = Vector2( 24, 10 )
 
 [sub_resource type="RectangleShape2D" id=81]
 resource_local_to_scene = true
@@ -7751,7 +7751,7 @@ texture = ExtResource( 1 )
 offset = Vector2( 0, -14 )
 hframes = 8
 vframes = 52
-frame = 349
+frame = 288
 __meta__ = {
 "_edit_lock_": true
 }
@@ -7901,17 +7901,17 @@ __meta__ = {
 
 [node name="HurtBox1" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 14, -82 )
+position = Vector2( -6, -43 )
 shape = SubResource( 78 )
 
 [node name="HurtBox2" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 1, -52 )
+position = Vector2( -11, -26 )
 shape = SubResource( 79 )
 
 [node name="HurtBox3" type="CollisionShape2D" parent="HurtBoxes"]
 modulate = Color( 0.0901961, 0.996078, 0.0117647, 1 )
-position = Vector2( 13, -24 )
+position = Vector2( -7, -10 )
 shape = SubResource( 80 )
 
 [node name="HurtBox4" type="CollisionShape2D" parent="HurtBoxes"]
@@ -7932,7 +7932,6 @@ __meta__ = {
 [node name="ProxBox1" type="CollisionShape2D" parent="ProximityBox"]
 position = Vector2( 60, 0 )
 shape = SubResource( 82 )
-disabled = true
 
 [node name="GrabBox" type="Area2D" parent="."]
 visible = false

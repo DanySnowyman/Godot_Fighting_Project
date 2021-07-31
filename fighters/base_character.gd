@@ -13,7 +13,7 @@ enum is_ {LOCKED, STANDING, CROUCHING, DASHING, PRE_JUMP, JUMPING, ATTACKING_ST,
 		BLOCK_STUNNED_H, BLOCK_STUNNED_L, HIT_STUNNED_ST, HIT_STUNNED_CR, AIR_STUNNED, FALLING,
 		GROUND_IMPACT, KNOCKED_DOWN, WAKING_UP}
 
-enum do_ {PASS, STAND, CROUCH, WALK_F, WALK_B, DASH_F, DASH_B, JUMP_V, JUMP_F, JUMP_B}
+enum do_ {STAND, CROUCH, WALK_F, WALK_B, DASH_F, DASH_B, JUMP_V, JUMP_F, JUMP_B}
 
 var state
 var cpu_move
@@ -229,8 +229,10 @@ func change_facing_direction():
 		rolling_back_dist = -rolling_back_dist
 		ground_impact_lenght = -ground_impact_lenght
 		if cpu_level != 0:
-			cpu_move = do_.PASS
-			$CPUMove.start(rand_range(0.2, 1))
+			if cpu_move == do_.WALK_F:
+				cpu_move = do_.WALK_B
+			elif cpu_move == do_.WALK_B:
+				cpu_move = do_.WALK_F
 
 "--- PLAYER CONTROL --------------------------------------------------------------------"
 
@@ -470,6 +472,8 @@ func player_control(delta):
 func stand():
 	if health_level > 0:
 		state = is_.STANDING
+		if cpu_level != 0:
+			cpu_move = do_.STAND
 		enable_hurt_boxes()
 		is_walking_forward = false
 		is_walking_backward = false
@@ -537,30 +541,25 @@ func jump_vertical():
 	#Arco ascendente --------------------------------
 	if state == is_.PRE_JUMP or state == is_.AIR_ATTACKING:
 		if state != is_.AIR_ATTACKING:
+			state = is_.JUMPING
 			$AnimationPlayer.play("Jump vertical")
 		tween.interpolate_property(self, "position:y",
 				self.position.y, (self.position.y - jump_height),
 				jump_asc_time, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
-		state = is_.JUMPING
 		$TweenTimer.start(jump_asc_time)
 		yield($TweenTimer, "timeout")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
-						and state != is_.LOCKED:
+		if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 			tween.interpolate_property(self, "position:y",
 					self.position.y, (self.position.y + jump_height),
 					jump_des_time, Tween.TRANS_QUINT, Tween.EASE_IN)
 			tween.start()
 			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
-			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED\
-						and state != is_.LOCKED:
+			if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 				disable_hit_boxes()
 				stand()
-			else: return
-		else: return
-	else: return
 
 func jump_forward():
 	var disrupted_jump = false
@@ -569,6 +568,7 @@ func jump_forward():
 	#Arco ascendente --------------------------------
 	if state == is_.PRE_JUMP or state == is_.AIR_ATTACKING:
 		if state != is_.AIR_ATTACKING:
+			state = is_.JUMPING
 			$AnimationPlayer.play("Jump forward")
 		if players_collide == true and rival.position.y != ground_height:
 			disrupted_jump = true
@@ -583,13 +583,11 @@ func jump_forward():
 				self.position.y, self.position.y - jump_height,
 				jump_asc_time, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
-		state = is_.JUMPING
 		is_jumping_forward = true
 		$TweenTimer.start(jump_asc_time)
 		yield($TweenTimer, "timeout")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED \
-						and state != is_.LOCKED:
+		if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 			if players_collide == true or disrupted_jump == true:
 				tween.interpolate_property(self, "position:x",
 						self.position.x, self.position.x + jump_f_lenght / 4,
@@ -604,21 +602,18 @@ func jump_forward():
 			tween.start()
 			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
-			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED \
-						and state != is_.LOCKED:
+			if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 				disrupted_jump = false
 				tween.remove_all()
 				disable_hit_boxes()
 				stand()
-			else: return
-		else: return
-	else: return
 
 func jump_backward():
 	tween.remove_all()
 	#Arco ascendente --------------------------------
 	if state == is_.PRE_JUMP or state == is_.AIR_ATTACKING:
 		if state != is_.AIR_ATTACKING:
+			state = is_.JUMPING
 			$AnimationPlayer.play("Jump backward")
 		tween.interpolate_property(self, "position:x",
 				self.position.x, self.position.x - jump_b_lenght / 2,
@@ -627,13 +622,11 @@ func jump_backward():
 				self.position.y, self.position.y - jump_height,
 				jump_des_time, Tween.TRANS_QUINT, Tween.EASE_OUT)
 		tween.start()
-		state = is_.JUMPING
 		is_jumping_backward = true
 		$TweenTimer.start(jump_asc_time)
 		yield($TweenTimer, "timeout")
 		#Arco descendente -------------------------------
-		if state != is_.AIR_STUNNED  and state != is_.GRABBING and state != is_.GRABBED \
-					and state != is_.LOCKED:
+		if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 			tween.interpolate_property(self, "position:x",
 					self.position.x, self.position.x - jump_b_lenght / 2,
 					jump_des_time, Tween.TRANS_LINEAR, Tween.EASE_IN)
@@ -643,14 +636,10 @@ func jump_backward():
 			tween.start()
 			$TweenTimer.start(jump_des_time + 0.05)
 			yield($TweenTimer, "timeout")
-			if state != is_.AIR_STUNNED and state != is_.GRABBING and state != is_.GRABBED \
-						and state != is_.LOCKED:
+			if state == is_.JUMPING or state == is_.AIR_ATTACKING:
 				tween.remove_all()
 				disable_hit_boxes()
 				stand()
-			else: return
-		else: return
-	else: return
 
 func dash_forward():
 	$AnimationPlayer.play("Dash forward")
@@ -669,7 +658,6 @@ func dash_forward():
 	$TweenTimer.start(dash_f_time)
 	yield($TweenTimer, "timeout")
 	if state == is_.DASHING:
-#		tween.remove_all()
 		stand()
 	can_push = false
 
@@ -684,7 +672,6 @@ func dash_backward():
 	$TweenTimer.start(dash_b_time)
 	yield($TweenTimer, "timeout")
 	if state == is_.DASHING:
-#		tween.remove_all()
 		stand()
 
 func set_false_to_dash_forward():
@@ -807,9 +794,6 @@ func overhead():
 	if state == is_.ATTACKING_ST:
 		state = is_.AIR_ATTACKING_SP
 		tween_parable(80, 20, 0.3)
-	$TweenTimer.start(0.15)
-	yield($TweenTimer, "timeout")
-	can_push = false
 	yield($StrikeTimer, "timeout")
 	if state == is_.AIR_ATTACKING_SP:
 		stand()
@@ -992,7 +976,9 @@ func special_1(strenght):
 				power_level -= 100
 			hud.manage_power(player, power_level)
 			$AnimationPlayer.play("Special 1")
-			yield(get_tree().create_timer(0.2333, false), "timeout")
+			$StrikeTimer.start(0.2333)
+			$TweenTimer.start($AnimationPlayer.current_animation_length)
+			yield($StrikeTimer, "timeout")
 			if state == is_.ATTACKING_SP:
 				if facing_right == true:
 					fireball.position.x = self.position.x + 35
@@ -1001,10 +987,9 @@ func special_1(strenght):
 				fireball.set_as_toplevel(true)
 				fireball.fireball_data(player, facing_right, strenght)
 				add_child(fireball)
-				yield($AnimationPlayer, "animation_finished")
-				stand()
-		else: pass
-	else: pass
+				yield($StrikeTimer, "timeout")
+				if state == is_.ATTACKING_SP:
+					stand()
 
 func special_2(strenght):
 	var shoryu_height = 60
@@ -1028,7 +1013,7 @@ func special_2(strenght):
 		strike_data(70, 180, 30, "Launch", "Mid", "Special", 0, false)
 		$StrikeTimer.start(0.1)
 		yield($StrikeTimer, "timeout")
-		if state == is_.AIR_ATTACKING_SP or state == is_.PRE_JUMP:
+		if state == is_.AIR_ATTACKING_SP:
 			tween.interpolate_property(self, "position:y",
 					self.position.y, (self.position.y - shoryu_height),
 					0.35, Tween.TRANS_QUINT, Tween.EASE_OUT)
@@ -1040,7 +1025,7 @@ func special_2(strenght):
 			hud.manage_power(player, power_level)
 			$TweenTimer.start(0.35)
 			yield($TweenTimer, "timeout")
-			if state != is_.AIR_STUNNED:
+			if state == is_.AIR_ATTACKING_SP:
 				tween.interpolate_property(self, "position:y",
 						self.position.y, (self.position.y + shoryu_height),
 						0.35, Tween.TRANS_QUINT, Tween.EASE_IN)
@@ -1049,11 +1034,7 @@ func special_2(strenght):
 				yield($TweenTimer, "timeout")
 				if state == is_.AIR_ATTACKING_SP:
 					stand()
-					can_push = false
-				else: return
-			else: return
-		else: return
-	else: return
+		can_push = false
 
 func special_3(strenght):
 	var tatsu_lenght
@@ -1100,11 +1081,9 @@ func special_3(strenght):
 				yield($AnimationPlayer, "animation_finished")
 			$AnimationPlayer.play("Special 3 end")
 			yield($TweenTimer, "timeout")
-			if state != is_.AIR_STUNNED:
-				tween.remove_all()
+			if state == is_.AIR_ATTACKING_SP:
 				stand()
-				can_push = false
-	else: pass
+		can_push = false
 
 func special_4():
 	can_auto_cancel = false
@@ -1114,7 +1093,7 @@ func special_4():
 			$ProximityBox/ProxBox1.disabled = true
 		state = is_.ATTACKING_SP
 		sp4_slap_buffer = 0
-		strike_data(30, 20, 10, "Medium", "Mid", "Special", 0, false)
+		strike_data(30, 20, 5, "Medium", "Mid", "Special", 0, false)
 		$AnimationPlayer.play("Special 4 start")
 		power_level += power_sp_inc
 		hud.manage_power(player, power_level)
@@ -1125,7 +1104,6 @@ func special_4():
 		yield($AnimationPlayer, "animation_finished")
 		if state == is_.ATTACKING_SP:
 			stand()
-	else: pass
 
 func _on_SpecialTimer1_timeout():
 	sp1_input_count = 0
@@ -1143,7 +1121,8 @@ func grab_attempt():
 func air_grab_attempt():
 	state = is_.AIR_ATTACKING
 	$GrabBox/GrabBox1.disabled = false
-	yield(get_tree().create_timer(0.2, false), "timeout")
+	$StrikeTimer.start(0.2)
+	yield($StrikeTimer, "timeout")
 	$GrabBox/GrabBox1.disabled = true
 
 func detect_concurrent_grab():
@@ -1314,6 +1293,7 @@ func _on_GrabCounterTimer_timeout():
 func _on_hit_connects(area):
 	var hit_freeze
 	
+	can_push = false
 	if area.has_method("fighter_hurt_box"):
 		$HitBoxes/HitBox1.set_deferred("disabled", true)
 		if state != is_.GRABBING:
@@ -1427,8 +1407,6 @@ func calculate_hitfx_drawing_area():
 func on_hit():
 	$HitBoxes/HitBox1.set_deferred("disabled", true)
 	$ProximityBox/ProxBox1.set_deferred("disabled", true)
-#	is_walking_forward = false
-#	is_dashing_forward = false
 	can_push = false
 	if state == is_.BLOCKING_H or state == is_.BLOCK_STUNNED_H:
 		if damaging_area.hit_area == "High" or damaging_area.hit_area == "Mid":
@@ -1859,7 +1837,7 @@ func pushing_player(delta):
 					rival.position.x = self.position.x + 38
 				else:
 					rival.position.x = self.position.x - 38
-				
+
 func stop_tweens_on_push():
 	if players_collide == true:
 		if can_push == true and (rival.is_dashing_forward == true or rival.is_stuck == true or \
@@ -2057,13 +2035,11 @@ func cpu_control(delta):
 				elif cpu_move == do_.JUMP_B:
 					yield(jump_backward(), "completed")
 			else: pass
-			cpu_move = do_.STAND
 		if cpu_move == do_.DASH_F or cpu_move == do_.DASH_B:
 			if cpu_move == do_.DASH_F:
 				yield(dash_forward(), "completed")
 			if cpu_move == do_.DASH_B:
 				yield(dash_backward(), "completed")
-			cpu_move = do_.STAND
 
 func cpu_movement():
 	var best_action = rand_range(0, 10)
@@ -2074,7 +2050,7 @@ func cpu_movement():
 	if facing_right == true:
 		camera_limit_distance = -((camera_pos.x - 172) - self.position.x)
 	else: camera_limit_distance = (camera_pos.x + 172) - self.position.x
-
+	
 	if state == is_.STANDING or state == is_.CROUCHING:
 		if rival_distance().x < 180:
 			if main_action <= 1:
